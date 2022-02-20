@@ -112,17 +112,17 @@ namespace CRM.ViewModels
 
         public void OnLoadDatabase_Click(object _)
         {
-            var db = repo.Load();
+            var db = repo.LoadSQLiteDb();
 
-            foreach (var client in db.Clients)
-            {
-                Database.Clients.Add(client);
-            }
+            //foreach (var client in db.Clients)
+            //{
+            //    Database.Clients.Add(client);
+            //}
 
-            foreach (var item in db.Stock)
-            {
-                Database.Stock.Add(item);
-            }
+            //foreach (var item in db.Stock)
+            //{
+            //    Database.Stock.Add(item);
+            //}
         }
     }
 }

@@ -152,8 +152,8 @@ namespace CRM.ViewModels
         void OnAddClientButton_Click(object _)
         {
             // Close Window / Set Window Result (true)
-            var client = new Client(Id, Name, Nickname, Phone, Email, Country, City, Address, ShippingMethod, Index);
-            mainViewModel.Database.Clients.Add(client);
+            //var client = new Client(Id, Name, Nickname, Phone, Email, Country, City, Address, ShippingMethod, Index);
+            //mainViewModel.Database.Clients.Add(client);
 
             Name = null;
             Nickname = null;

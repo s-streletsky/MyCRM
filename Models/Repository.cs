@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Data.SQLite;
 
 namespace CRM.Models
 {
@@ -39,6 +40,45 @@ namespace CRM.Models
             }
 
             return db;            
+        }
+
+        public Database LoadSQLiteDb()
+        {
+            string connectionString = @"Data Source=C:\SQLiteStudio\crm_db;Version=3;";
+
+            Database db = new Database();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                var cmd = new SQLiteCommand(connection);
+
+                cmd.CommandText = @"SELECT * 
+                                    FROM clients";
+
+                SQLiteDataReader sqlReader = cmd.ExecuteReader();
+
+                while (sqlReader.Read())
+                {
+                    var id = sqlReader.GetInt32(0);
+                    var created = sqlReader.GetString(1);
+                    var name = sqlReader.GetString(2);
+                    var nickname = sqlReader.GetString(3);
+                    var phone = sqlReader.GetString(4);
+                    var email = sqlReader.GetString(5);
+                    var country = (Country)sqlReader.GetInt32(6);
+                    var city = sqlReader.GetString(7);
+                    var address = sqlReader.GetString(8);
+                    var shippingMethod = (ShippingMethod)sqlReader.GetInt32(9);
+                    var postalCode = sqlReader.GetString(10);
+                    var notes = sqlReader.GetString(11);
+
+                    db.Clients.Add(new Client(id, name, nickname, phone, email, country, city, address, shippingMethod, postalCode));
+                }
+            }
+
+            return db;
         }
 
         //public bool TryLoad(string filePath, out List<Country> loadedList)

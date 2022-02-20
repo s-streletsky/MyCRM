@@ -16,7 +16,7 @@ namespace CRM.Models
 
     enum ShippingMethod
     {
-        NovaPoshta,
+        NovaPoshta = 1,
         Ukrposhta
     }
     
@@ -152,6 +152,11 @@ namespace CRM.Models
                 notes = value;
                 OnPropertyChanged();
             }
+        }
+
+        public Client()
+        {
+
         }
 
         public Client(int id)
