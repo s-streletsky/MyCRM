@@ -12,7 +12,8 @@ namespace CRM.Models
 {
     class Repository
     {
-        const string DbPath = "D:\\Prog\\CRM\\Db.txt";
+        private const string DbPath = "D:\\Prog\\CRM\\Db.txt";
+        private const string connectionString = @"Data Source=C:\SQLiteStudio\crm_db;Version=3;";
         private JsonSerializer serializer;
 
         public Repository()
@@ -29,23 +30,55 @@ namespace CRM.Models
             }
         }
 
-        public Database Load()
+        public void SaveClient(Client client)
         {
-            Database db = null;
-
-            using (StreamReader file = File.OpenText(DbPath))
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
-                JsonSerializer serializer = new JsonSerializer();
-                db = (Database)serializer.Deserialize(file, typeof(Database));
-            }
+                connection.Open();
 
-            return db;            
+                var cmd = new SQLiteCommand(connection);
+
+                cmd.CommandText = @"INSERT INTO clients (created, name, nickname, phone, email, country,
+                                                          city, address, shipping_method_id, postal_code, notes)
+                                    VALUES ()";
+
+                cmd.ExecuteNonQuery();
+
+                //while (sqlReader.Read())
+                //{
+                //    var id = sqlReader.GetInt32(0);
+                //    var created = sqlReader.GetString(1);
+                //    var name = sqlReader.GetString(2);
+                //    var nickname = sqlReader.GetString(3);
+                //    var phone = sqlReader.GetString(4);
+                //    var email = sqlReader.GetString(5);
+                //    var country = (Country)sqlReader.GetInt32(6);
+                //    var city = sqlReader.GetString(7);
+                //    var address = sqlReader.GetString(8);
+                //    var shippingMethod = (ShippingMethod)sqlReader.GetInt32(9);
+                //    var postalCode = sqlReader.GetString(10);
+                //    var notes = sqlReader.GetString(11);
+
+                //    db.Clients.Add(new Client(id, name, nickname, phone, email, country, city, address, shippingMethod, postalCode));
+                //}
+            }
         }
 
-        public Database LoadSQLiteDb()
-        {
-            string connectionString = @"Data Source=C:\SQLiteStudio\crm_db;Version=3;";
+        //public Database Load()
+        //{
+        //    Database db = null;
 
+        //    using (StreamReader file = File.OpenText(DbPath))
+        //    {
+        //        JsonSerializer serializer = new JsonSerializer();
+        //        db = (Database)serializer.Deserialize(file, typeof(Database));
+        //    }
+
+        //    return db;            
+        //}
+
+        public Database Load()
+        {
             Database db = new Database();
 
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
@@ -62,7 +95,7 @@ namespace CRM.Models
                 while (sqlReader.Read())
                 {
                     var id = sqlReader.GetInt32(0);
-                    var created = sqlReader.GetString(1);
+                    var created = DateTime.Parse(sqlReader.GetString(1));
                     var name = sqlReader.GetString(2);
                     var nickname = sqlReader.GetString(3);
                     var phone = sqlReader.GetString(4);
@@ -74,7 +107,7 @@ namespace CRM.Models
                     var postalCode = sqlReader.GetString(10);
                     var notes = sqlReader.GetString(11);
 
-                    db.Clients.Add(new Client(id, name, nickname, phone, email, country, city, address, shippingMethod, postalCode));
+                    db.Clients.Add(new Client(id, created, name, nickname, phone, email, country, city, address, shippingMethod, postalCode, notes));
                 }
             }
 

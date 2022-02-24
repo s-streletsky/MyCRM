@@ -22,8 +22,8 @@ namespace CRM.Models
     
     class Client : ViewModelBase
     {
-        private int id;
-        private DateTime created;
+        private int? id;
+        private DateTime? created;
         private string name;
         private string nickname;
         private string phone;
@@ -36,7 +36,7 @@ namespace CRM.Models
         private string postalCode;
         private string notes;
 
-        public int Id
+        public int? Id
         {
             get { return id; }
             set
@@ -45,7 +45,7 @@ namespace CRM.Models
                 OnPropertyChanged();
             }
         }
-        public DateTime Created
+        public DateTime? Created
         {
             get { return created; }
             set
@@ -135,7 +135,7 @@ namespace CRM.Models
                 OnPropertyChanged();
             }
         }
-        public string Index
+        public string PostalCode
         {
             get { return postalCode; }
             set
@@ -161,23 +161,24 @@ namespace CRM.Models
 
         public Client(int id)
         {
-            this.Created = DateTime.Today;
+            this.Created = DateTime.Now;
             this.Id = id;
             this.Orders = new ObservableCollection<Order>();
         }
 
         public Client(int id, string name)
         {
-            this.Created = DateTime.Today;
+            this.Created = DateTime.Now;
             this.Id = id;
             this.Name = name;
             this.Orders = new ObservableCollection<Order>();
         }
 
-        public Client(int id, string name, string nickname, string phone, string email,
-            Country country, string city, string address, ShippingMethod shippingMethod, string index)
+        public Client(int? id, DateTime created, string name, string nickname, string phone, string email,
+            Country country, string city, string address, ShippingMethod shippingMethod, 
+            string postalCode, string notes)
         {
-            this.Created = DateTime.Today;
+            this.Created = created;
             this.Id = id;
             this.Name = name;
             this.Nickname = nickname;
@@ -188,7 +189,8 @@ namespace CRM.Models
             this.City = city;
             this.Address = address;
             this.ShippingMethod = shippingMethod;
-            this.Index = index;            
+            this.PostalCode = postalCode;
+            this.Notes = notes;
         }
     }
 }

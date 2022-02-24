@@ -31,7 +31,7 @@
                             <DataGridTextColumn Header="Phone Number" Binding="{Binding Path=Phone}" />
                             <DataGridTextColumn Header="City" Binding="{Binding Path=City}" />
                             <DataGridTextColumn Header="Shipping Method" Binding="{Binding Path=ShippingMethod}" />
-                            <DataGridTextColumn Header="Index" Binding="{Binding Path=Index}" />
+                            <DataGridTextColumn Header="Postal Code" Binding="{Binding Path=PostalCode}" />
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>

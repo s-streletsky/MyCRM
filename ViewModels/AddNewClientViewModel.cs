@@ -12,45 +12,49 @@ namespace CRM.ViewModels
 {
     class AddNewClientViewModel : ViewModelBase
     {
-        public RelayCommand AddClientCommand { get; }
-        public RelayCommand EditClientCommand { get; }
+        //public RelayCommand AddClientCommand { get; }
+        //public RelayCommand EditClientCommand { get; }
+        public RelayCommand SaveClientCommand { get; }
         public RelayCommand AddNewOrderCommand { get; }
 
-        private Client selectedClientClone;
-        private Repository repo = new Repository();
-
-        public Client SelectedClientClone
-        { 
-            get { return selectedClientClone; } 
-            set { selectedClientClone = value; OnPropertyChanged(); } }
-
+        int? id;
+        DateTime created;
         string name;
         string nickname;
         string phone;
         string email;
-        ObservableCollection<Order> orders;
         Country country;
         string city;
         string address;
         ShippingMethod shippingMethod;
-        string index;
+        string postalCode;
+        string notes;
 
-        public int Id { get; set; }
+        ObservableCollection<Order> orders;
+
+        Client selectedClient;
+        Database database;
+        Repository repo = new Repository();
+
+        public int? Id 
+        { 
+            get { return id; }
+            set { id = value; OnPropertyChanged(); }
+        }
+        public DateTime Created
+        {
+            get { return created; }
+            set { created = value; OnPropertyChanged(); }
+        }
         public string Name
         {
             get { return name; }
-            set { 
-                name = value;
-                OnPropertyChanged();
-
-            }
+            set { name = value; OnPropertyChanged(); }
         }
         public string Nickname
         { 
             get { return nickname; }
-            set {
-                nickname = value;
-                OnPropertyChanged();
+            set { nickname = value; OnPropertyChanged();
             }
         }
         public string Phone
@@ -114,71 +118,117 @@ namespace CRM.ViewModels
                 OnPropertyChanged();
             }
         }
-        public string Index
+        public string PostalCode
         {
-            get { return index; }
+            get { return postalCode; }
             set
             {
-                index = value;
+                postalCode = value;
                 OnPropertyChanged();
             }
         }
-
-        public MainViewModel mainViewModel;
-
-        public AddNewClientViewModel()
+        public string Notes
         {
-            SelectedClientClone = new Client(1);
-            AddClientCommand = new RelayCommand(OnAddClientButton_Click);
+            get { return notes; }
+            set
+            {
+                notes = value;
+                OnPropertyChanged();
+            }
+        }
+        public Client SelectedClient
+        {
+            get { return selectedClient; }
+            set { selectedClient = value; OnPropertyChanged(); }
+        }
+        public Database Database
+        {
+            get { return database; }
+            set { database = value; OnPropertyChanged(); }
         }
 
-        public AddNewClientViewModel(MainViewModel mainViewModel)
+        //public AddNewClientViewModel()
+        //{
+        //    SelectedClient = new Client(1);
+        //    AddClientCommand = new RelayCommand(OnAddClientButtonClick);
+        //}
+
+        //public AddNewClientViewModel(MainViewModel mainViewModel)
+        //{
+        //    AddClientCommand = new RelayCommand(OnAddClientButtonClick);
+        //    EditClientCommand = new RelayCommand(OnClientMouseDoubleClick);
+        //    AddNewOrderCommand = new RelayCommand(OnAddNewOrderButtonClick);
+        //    this.mainViewModel = mainViewModel;
+        //}
+
+        public AddNewClientViewModel(Client selectedClient, Database database)
         {
-            AddClientCommand = new RelayCommand(OnAddClientButton_Click);
-            EditClientCommand = new RelayCommand(OnClientMouseDoubleClick);
-            AddNewOrderCommand = new RelayCommand(OnAddNewOrderButton_Click);
-            this.mainViewModel = mainViewModel;
+            //this.selectedClientClone = JsonConvert.DeserializeObject<Client>(selectedClient);
+            //AddClientCommand = new RelayCommand(OnAddClientButtonClick);
+            //EditClientCommand = new RelayCommand(OnClientMouseDoubleClick);
+            AddNewOrderCommand = new RelayCommand(OnAddNewOrderButtonClick);
+            SaveClientCommand = new RelayCommand(OnSaveClientButtonClick);
+            this.Database = database;
+            this.SelectedClient = selectedClient;
         }
 
-        public AddNewClientViewModel(string selectedClientClone, MainViewModel mainViewModel)
+        void OnSaveClientButtonClick(object _)
         {
-            this.selectedClientClone = JsonConvert.DeserializeObject<Client>(selectedClientClone);
-            AddClientCommand = new RelayCommand(OnAddClientButton_Click);
-            EditClientCommand = new RelayCommand(OnClientMouseDoubleClick);
-            AddNewOrderCommand = new RelayCommand(OnAddNewOrderButton_Click);
-            this.mainViewModel = mainViewModel;
+            if (SelectedClient != null)
+            {
+                selectedClient.Name = Name;
+                selectedClient.Nickname = Nickname;
+                selectedClient.Phone = Phone;
+                selectedClient.Email = Email;
+                selectedClient.Country = Country;
+                selectedClient.City = City;
+                selectedClient.Address = Address;
+                selectedClient.ShippingMethod = ShippingMethod;
+                selectedClient.PostalCode = PostalCode;
+                selectedClient.Notes = Notes;
+            }
+            //else
+            //{
+            //    var created = DateTime.Now;
+
+            //    var client = new Client(Id, created, Name, Nickname, Phone, Email, Country,
+            //        City, Address, ShippingMethod, PostalCode, Notes);
+
+
+            //}
         }
 
-        void OnAddClientButton_Click(object _)
-        {
-            // Close Window / Set Window Result (true)
-            //var client = new Client(Id, Name, Nickname, Phone, Email, Country, City, Address, ShippingMethod, Index);
-            //mainViewModel.Database.Clients.Add(client);
+        //void OnAddClientButtonClick(object _)
+        //{
+        //    // Close Window / Set Window Result (true)
+        //    //var client = new Client(Id, Name, Nickname, Phone, Email, Country, City, Address, ShippingMethod, Index);
+        //    //mainViewModel.Database.Clients.Add(client);
 
-            Name = null;
-            Nickname = null;
-            Phone = null;
-            Email = null;
-            Id = Id + 1;
-        }
+        //    //Name = null;
+        //    //Nickname = null;
+        //    //Phone = null;
+        //    //Email = null;
+        //    //Id = Id + 1;
+        //}
 
         void OnClientMouseDoubleClick(object _)
         {           
-            selectedClientClone.Name = Name;
-            selectedClientClone.Nickname = Nickname;
-            selectedClientClone.Phone = Phone;
-            selectedClientClone.Email = Email;
-            selectedClientClone.Country = Country;
-            selectedClientClone.City = City;
-            selectedClientClone.Address = Address;
-            selectedClientClone.ShippingMethod = ShippingMethod;
-            selectedClientClone.Index = Index;
+            selectedClient.Name = Name;
+            selectedClient.Nickname = Nickname;
+            selectedClient.Phone = Phone;
+            selectedClient.Email = Email;
+            selectedClient.Country = Country;
+            selectedClient.City = City;
+            selectedClient.Address = Address;
+            selectedClient.ShippingMethod = ShippingMethod;
+            selectedClient.PostalCode = PostalCode;
+            selectedClient.Notes = Notes;
         }
 
-        void OnAddNewOrderButton_Click(object _)
+        void OnAddNewOrderButtonClick(object _)
         {
             var order = new Order();
-            selectedClientClone.Orders.Add(order);
+            selectedClient.Orders.Add(order);
         }
     }
 }

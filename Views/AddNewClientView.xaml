@@ -56,10 +56,10 @@
         <TextBox Text="{Binding Path=ShippingMethod, Mode=TwoWay}" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
 
         <TextBlock Grid.Row="4" Grid.Column="2" VerticalAlignment="Center">Индекс</TextBlock>
-        <TextBox Text="{Binding Path=Index, Mode=TwoWay}" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding Path=PostalCode, Mode=TwoWay}" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
 
-        <Button x:Name="AddNewClientButton" Command="{Binding AddClientCommand}" Grid.Row="4" VerticalAlignment="Center">Добавить</Button>
-        <Button x:Name="SaveClientButton" Command="{Binding EditClientCommand}" Grid.Row="4" VerticalAlignment="Center">Сохранить</Button>
+        <!--<Button x:Name="AddNewClientButton" Command="{Binding AddClientCommand}" Grid.Row="4" VerticalAlignment="Center">Добавить</Button>-->
+        <Button x:Name="SaveClientButton" Command="{Binding SaveClientCommand}" Grid.Row="4" VerticalAlignment="Center">Сохранить</Button>
 
         <Button x:Name="AddNewOrderButton" Command="{Binding AddNewOrderCommand}" Grid.Row="7" VerticalAlignment="Center">Добавить заказ</Button>
 

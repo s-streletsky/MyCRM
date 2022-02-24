@@ -37,7 +37,7 @@ namespace CRM.ViewModels
         {
             //var selectedClientClone = JsonConvert.SerializeObject(SelectedClient, Formatting.Indented);
 
-            var vm = new AddNewClientViewModel(this);
+            var vm = new AddNewClientViewModel(SelectedClient, Database);
             AddNewClientView addNewClientView = new AddNewClientView();
 
             // if (vm.Result = true) { // add client }
@@ -51,24 +51,26 @@ namespace CRM.ViewModels
             //}          
 
             addNewClientView.DataContext = vm;
-            addNewClientView.SaveClientButton.Visibility = System.Windows.Visibility.Hidden;
+            //addNewClientView.SaveClientButton.Visibility = System.Windows.Visibility.Hidden;
             addNewClientView.Show();
         }
 
         public void OnClientDoubleClick(object _)
         {
-            var selectedClientClone = JsonConvert.SerializeObject(SelectedClient, Formatting.Indented);
+            //var selectedClientClone = JsonConvert.SerializeObject(SelectedClient, Formatting.Indented);
 
-            var vm = new AddNewClientViewModel(selectedClientClone, this);
+            var vm = new AddNewClientViewModel(SelectedClient, Database);
             AddNewClientView addNewClientView = new AddNewClientView();
 
             addNewClientView.DataContext = vm;
-            addNewClientView.AddNewClientButton.Visibility = System.Windows.Visibility.Hidden;
+            //addNewClientView.AddNewClientButton.Visibility = System.Windows.Visibility.Hidden;
 
             if (SelectedClient != null)
             {
                 //vm.ClientIndex = Database.Clients.IndexOf(client);
 
+                vm.Id = SelectedClient.Id;
+                vm.Created = (DateTime)SelectedClient.Created;
                 vm.Name = SelectedClient.Name;
                 vm.Nickname = SelectedClient.Nickname;
                 vm.Phone = SelectedClient.Phone;
@@ -77,7 +79,8 @@ namespace CRM.ViewModels
                 vm.City = SelectedClient.City;
                 vm.Address = SelectedClient.Address;
                 vm.ShippingMethod = SelectedClient.ShippingMethod;
-                vm.Index = SelectedClient.Index;
+                vm.PostalCode = SelectedClient.PostalCode;
+                vm.Notes = SelectedClient.Notes;
 
                 addNewClientView.Show();
             }
@@ -112,12 +115,12 @@ namespace CRM.ViewModels
 
         public void OnLoadDatabase_Click(object _)
         {
-            var db = repo.LoadSQLiteDb();
+            var db = repo.Load();
 
-            //foreach (var client in db.Clients)
-            //{
-            //    Database.Clients.Add(client);
-            //}
+            foreach (var client in db.Clients)
+            {
+                Database.Clients.Add(client);
+            }
 
             //foreach (var item in db.Stock)
             //{
