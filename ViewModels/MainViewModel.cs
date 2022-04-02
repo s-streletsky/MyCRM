@@ -15,18 +15,21 @@ namespace CRM.ViewModels
         public RelayCommand AddNewClientCommand { get; }
         public RelayCommand EditClientCommand { get; }
         public RelayCommand AddNewItemCommand { get; }
+        public RelayCommand DeleteClientCommand { get; }
         public RelayCommand SaveDatabaseCommand { get; }
         public RelayCommand LoadDatabaseCommand { get; }
         public Database Database { get; set; }
         public Client SelectedClient { get; set; }
 
         private Repository repo = new Repository();
+        private ClientRepository clientRepo = new ClientRepository();
 
         public MainViewModel()
         {
             AddNewClientCommand = new RelayCommand(OnAddNewClient_Click);
             EditClientCommand = new RelayCommand(OnClientDoubleClick);
             AddNewItemCommand = new RelayCommand(OnAddNewItem_Click);
+            DeleteClientCommand = new RelayCommand(OnDeleteItem_Click);
             SaveDatabaseCommand = new RelayCommand(OnSaveDatabase_Click);
             LoadDatabaseCommand = new RelayCommand(OnLoadDatabase_Click);
             this.Database = new Database();
@@ -106,6 +109,13 @@ namespace CRM.ViewModels
 
             addNewItemView.DataContext = vm;
             addNewItemView.Show();
+        }
+
+        public void OnDeleteItem_Click(object _)
+        {
+            clientRepo.Delete(SelectedClient);
+            var i = Database.Clients.IndexOf(SelectedClient);
+            Database.Clients.RemoveAt(i);
         }
 
         public void OnSaveDatabase_Click(object _)

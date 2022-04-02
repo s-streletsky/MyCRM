@@ -34,7 +34,7 @@ namespace CRM.ViewModels
 
         Client selectedClient;
         Database database;
-        Repository repo = new Repository();
+        ClientRepository clientRepo = new ClientRepository();
 
         public int? Id 
         { 
@@ -174,28 +174,24 @@ namespace CRM.ViewModels
 
         void OnSaveClientButtonClick(object _)
         {
-            if (SelectedClient != null)
+            if (SelectedClient == null)
             {
-                selectedClient.Name = Name;
-                selectedClient.Nickname = Nickname;
-                selectedClient.Phone = Phone;
-                selectedClient.Email = Email;
-                selectedClient.Country = Country;
-                selectedClient.City = City;
-                selectedClient.Address = Address;
-                selectedClient.ShippingMethod = ShippingMethod;
-                selectedClient.PostalCode = PostalCode;
-                selectedClient.Notes = Notes;
+                SelectedClient = new Client();
+                SelectedClient.Created = DateTime.Now;
+
+                SetClientProperties();
+
+                var client = clientRepo.Add(SelectedClient);
+                Database.Clients.Add(client);
             }
-            //else
-            //{
-            //    var created = DateTime.Now;
+            else
+            {
+                SetClientProperties();
 
-            //    var client = new Client(Id, created, Name, Nickname, Phone, Email, Country,
-            //        City, Address, ShippingMethod, PostalCode, Notes);
-
-
-            //}
+                var client = clientRepo.Update(SelectedClient);
+                var i = Database.Clients.IndexOf(SelectedClient);
+                Database.Clients[i] = client;
+            }
         }
 
         //void OnAddClientButtonClick(object _)
@@ -212,7 +208,18 @@ namespace CRM.ViewModels
         //}
 
         void OnClientMouseDoubleClick(object _)
-        {           
+        {
+            SetClientProperties();
+        }
+
+        void OnAddNewOrderButtonClick(object _)
+        {
+            var order = new Order();
+            selectedClient.Orders.Add(order);
+        }
+
+        private void SetClientProperties()
+        {
             selectedClient.Name = Name;
             selectedClient.Nickname = Nickname;
             selectedClient.Phone = Phone;
@@ -223,12 +230,6 @@ namespace CRM.ViewModels
             selectedClient.ShippingMethod = ShippingMethod;
             selectedClient.PostalCode = PostalCode;
             selectedClient.Notes = Notes;
-        }
-
-        void OnAddNewOrderButtonClick(object _)
-        {
-            var order = new Order();
-            selectedClient.Orders.Add(order);
         }
     }
 }

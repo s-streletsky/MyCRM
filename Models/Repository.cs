@@ -10,6 +10,32 @@ using System.Data.SQLite;
 
 namespace CRM.Models
 {
+    //abstract class Repo<T>
+    //{
+    //    public Repo()
+    //    {
+    //        //CRUD
+    //        //CREATE
+    //        //UPDATE
+    //        //DELETE
+    //    }
+
+    //    public abstract T Get(int id);
+    //    public abstract IEnumerable<T> GetAll();
+    //    public abstract T Add(T item);
+    //    public abstract int Add(T item);
+    //    public abstract T Update(T item);
+    //    public abstract void Delete(T item);
+    //}
+
+    //class ClientRepo : IRepository<Client>
+    //{
+    //    public Client Add(Client id)
+    //    {
+    //        throw new NotImplementedException();
+    //    }
+    //}
+
     class Repository
     {
         private const string DbPath = "D:\\Prog\\CRM\\Db.txt";
@@ -38,11 +64,18 @@ namespace CRM.Models
 
                 var cmd = new SQLiteCommand(connection);
 
-                cmd.CommandText = @"INSERT INTO clients (created, name, nickname, phone, email, country,
-                                                          city, address, shipping_method_id, postal_code, notes)
-                                    VALUES ()";
+                string commandText = "INSERT INTO clients (created, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes) VALUES " 
+                                                + $"('{client.Created}', '{client.Name}', '{client.Nickname}', '{client.Phone}', '{client.Email}', {(int)client.Country}, '{client.City}', '{client.Address}', {(int)client.ShippingMethod}, '{client.PostalCode}', '{client.Notes}')";
+
+                cmd.CommandText = commandText;                   
 
                 cmd.ExecuteNonQuery();
+
+                // prepared statemen
+
+                // UPSERT
+                // var id = db.insert
+                // client.id = id;
 
                 //while (sqlReader.Read())
                 //{
