@@ -107,7 +107,6 @@
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\StockItem.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
-    <Compile Include="Models\Repository.cs" />
     <Compile Include="ViewModels\AddNewItemViewModel.cs" />
     <Compile Include="ViewModels\AddNewClientViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />

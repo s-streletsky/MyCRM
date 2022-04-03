@@ -14,11 +14,9 @@
                 <Grid Background="#FFE5E5E5">
 
                     <Button Content="Добавить" Command="{Binding AddNewClientCommand}" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
-                    <Button Content="Обновить" HorizontalAlignment="Left" Margin="139,0,0,0" VerticalAlignment="Top"/>
                     <Button Content="Удалить"  Command="{Binding DeleteClientCommand}" HorizontalAlignment="Left" Margin="74,0,0,0" VerticalAlignment="Top"/>
 
-                    <Button Content="Сохранить" Command="{Binding SaveDatabaseCommand}" HorizontalAlignment="Left" Margin="557,0,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-                    <Button Content="Загрузить" Command="{Binding LoadDatabaseCommand}" HorizontalAlignment="Left" Margin="624,0,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+                    <Button Content="Загрузить" Command="{Binding LoadDatabaseCommand}" HorizontalAlignment="Left" Margin="716,0,0,0" VerticalAlignment="Top"/>
 
                     <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Clients, Mode=TwoWay}" Margin="0,24,0,0" Grid.ColumnSpan="2">
                         <DataGrid.InputBindings>

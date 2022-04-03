@@ -13,7 +13,6 @@ namespace CRM.ViewModels
         public RelayCommand AddItemCommand { get; }
 
         public MainViewModel mainViewModel;
-        private Repository repo = new Repository();
 
         string title;
         string currency;

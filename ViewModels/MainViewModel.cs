@@ -16,12 +16,10 @@ namespace CRM.ViewModels
         public RelayCommand EditClientCommand { get; }
         public RelayCommand AddNewItemCommand { get; }
         public RelayCommand DeleteClientCommand { get; }
-        public RelayCommand SaveDatabaseCommand { get; }
         public RelayCommand LoadDatabaseCommand { get; }
         public Database Database { get; set; }
         public Client SelectedClient { get; set; }
 
-        private Repository repo = new Repository();
         private ClientRepository clientRepo = new ClientRepository();
 
         public MainViewModel()
@@ -30,11 +28,10 @@ namespace CRM.ViewModels
             EditClientCommand = new RelayCommand(OnClientDoubleClick);
             AddNewItemCommand = new RelayCommand(OnAddNewItem_Click);
             DeleteClientCommand = new RelayCommand(OnDeleteItem_Click);
-            SaveDatabaseCommand = new RelayCommand(OnSaveDatabase_Click);
             LoadDatabaseCommand = new RelayCommand(OnLoadDatabase_Click);
             this.Database = new Database();
             this.SelectedClient = null;
-            Database.Currencies.Add(new Currency("UAH"));
+            //Database.Currencies.Add(new Currency("UAH"));
         }
         public void OnAddNewClient_Click(object _)
         {
@@ -118,24 +115,9 @@ namespace CRM.ViewModels
             Database.Clients.RemoveAt(i);
         }
 
-        public void OnSaveDatabase_Click(object _)
-        {
-           repo.Save(Database);
-        }
-
         public void OnLoadDatabase_Click(object _)
         {
-            var db = repo.Load();
-
-            foreach (var client in db.Clients)
-            {
-                Database.Clients.Add(client);
-            }
-
-            //foreach (var item in db.Stock)
-            //{
-            //    Database.Stock.Add(item);
-            //}
+            clientRepo.GetAll(Database);
         }
     }
 }
