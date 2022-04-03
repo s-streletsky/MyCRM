@@ -10,8 +10,8 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <TabControl>
-            <TabItem Header="Клиенты">
-                <Grid Background="#FFE5E5E5">
+            <TabItem Header="Клиенты" Background="#99FF99">
+                <Grid Background="#99FF99">
 
                     <Button Content="Добавить" Command="{Binding AddNewClientCommand}" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
                     <Button Content="Удалить"  Command="{Binding DeleteClientCommand}" HorizontalAlignment="Left" Margin="74,0,0,0" VerticalAlignment="Top"/>
@@ -34,8 +34,28 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Заказы">
-                <Grid Background="#FFE5E5E5">
+            <TabItem Header="Заказы" Background="#FFCC66">
+                <Grid Background="#FFCC66">
+
+                    <Button Content="Добавить" Command="{Binding AddNewClientCommand}" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                    <Button Content="Удалить"  Command="{Binding DeleteClientCommand}" HorizontalAlignment="Left" Margin="74,0,0,0" VerticalAlignment="Top"/>
+
+                    <Button Content="Загрузить" Command="{Binding LoadDatabaseCommand}" HorizontalAlignment="Left" Margin="716,0,0,0" VerticalAlignment="Top"/>
+
+                    <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Clients, Mode=TwoWay}" Margin="0,24,0,0" Grid.ColumnSpan="2">
+                        <DataGrid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
+                        </DataGrid.InputBindings>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
+                            <DataGridTextColumn Header="Nickname" Binding="{Binding Path=Nickname}" />
+                            <DataGridTextColumn Header="Phone Number" Binding="{Binding Path=Phone}" />
+                            <DataGridTextColumn Header="City" Binding="{Binding Path=City}" />
+                            <DataGridTextColumn Header="Shipping Method" Binding="{Binding Path=ShippingMethod}" />
+                            <DataGridTextColumn Header="Postal Code" Binding="{Binding Path=PostalCode}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
                 </Grid>
             </TabItem>
             <TabItem Header="Склад">

@@ -9,23 +9,26 @@ namespace CRM.Models
 {
     enum Status
     {
+        Ready = 1,
+        Awaiting_dispatch,
+        Fully_paid,
         NEW,
-        Paid,
+        Billed,
+        Partially_paid,
         Shipped
     }
     class Order
     {
         public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public ObservableCollection<Item> Items { get; set; }
+        public DateTime Created { get; set; }
+        public Client Client { get; set; }
         public Status Status { get; set; }
         public decimal Total { get; set; }
         public string Notes { get; set; }
 
         public Order()
         {
-            Date = DateTime.Today;
-            Items = new ObservableCollection<Item>();
+            Created = DateTime.Today;
         }
     }
 }

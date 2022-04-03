@@ -207,15 +207,15 @@ namespace CRM.ViewModels
         //    //Id = Id + 1;
         //}
 
-        void OnClientMouseDoubleClick(object _)
+        private void OnClientMouseDoubleClick(object _)
         {
             SetClientProperties();
         }
 
-        void OnAddNewOrderButtonClick(object _)
+        private void OnAddNewOrderButtonClick(object _)
         {
-            var order = new Order();
-            selectedClient.Orders.Add(order);
+            //var order = new Order();
+            //selectedClient.Orders.Add(order);
         }
 
         private void SetClientProperties()

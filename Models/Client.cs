@@ -28,7 +28,6 @@ namespace CRM.Models
         private string nickname;
         private string phone;
         private string email;
-        //private ObservableCollection<Order> orders;
         private Country country;
         private string city;
         private string address;
@@ -90,15 +89,6 @@ namespace CRM.Models
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<Order> Orders { get; set; }
-        //{
-        //    get { return orders; }
-        //    set
-        //    {
-        //        orders = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
         public Country Country
         {
             get { return country; }
@@ -163,7 +153,6 @@ namespace CRM.Models
         {
             this.Created = DateTime.Now;
             this.Id = id;
-            this.Orders = new ObservableCollection<Order>();
         }
 
         public Client(int id, string name)
@@ -171,7 +160,6 @@ namespace CRM.Models
             this.Created = DateTime.Now;
             this.Id = id;
             this.Name = name;
-            this.Orders = new ObservableCollection<Order>();
         }
 
         public Client(int? id, DateTime created, string name, string nickname, string phone, string email,
@@ -184,7 +172,6 @@ namespace CRM.Models
             this.Nickname = nickname;
             this.Phone = phone;
             this.Email = email;
-            this.Orders = new ObservableCollection<Order>();
             this.Country = country;
             this.City = city;
             this.Address = address;
