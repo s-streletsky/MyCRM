@@ -98,7 +98,6 @@
     </Compile>
     <Compile Include="Models\ClientRepository.cs" />
     <Compile Include="Models\Client.cs" />
-    <Compile Include="Models\Currency.cs" />
     <Compile Include="Models\Database.cs" />
     <Compile Include="Models\ExchangeRate.cs" />
     <Compile Include="Models\IRepository.cs" />
@@ -106,6 +105,7 @@
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\StockItem.cs" />
+    <Compile Include="Models\OrderRepository.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="ViewModels\AddNewItemViewModel.cs" />
     <Compile Include="ViewModels\AddNewClientViewModel.cs" />

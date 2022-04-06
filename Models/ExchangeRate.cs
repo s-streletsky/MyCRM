@@ -6,15 +6,22 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
+    enum Currency
+    {
+        EUR = 1,
+        USD,
+        UAH
+    }
     internal class ExchangeRate
     {
-        DateTime Date { get; set; }
-        decimal Value { get; set; }
+        public DateTime Date { get; set; }
+        public Currency Currency { get; set; }
+        public decimal Rate { get; set; }
 
-        public ExchangeRate(decimal value)
+        public ExchangeRate(decimal rate)
         {
             Date = DateTime.Now;
-            Value = Math.Round(value, 2);
+            Rate = Math.Round(rate, 2);
         }
     }
 }

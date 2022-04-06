@@ -7,17 +7,28 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:AddNewClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="AddClient" Height="380" Width="680">
-    <Grid ShowGridLines="False" Margin="10">
+        Title="AddNewClient" Height="400" Width="780">
+
+    <!--<Window.Resources>
+        <demo:EnumValueConverter x:Key="EnumValueConverter" />
+        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="Country">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="demo:Week" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>-->
+
+    <Grid Margin="10">
         <Grid.RowDefinitions>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.05*"></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="0.2*"></RowDefinition>
             <!--<RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
@@ -26,47 +37,49 @@
             <RowDefinition></RowDefinition>-->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="20"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            <ColumnDefinition Width="0.5*" Name="col1"></ColumnDefinition>
+            <ColumnDefinition Width="0.05*"></ColumnDefinition>
+            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            <ColumnDefinition Width="0.5*" Name="col4"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" VerticalAlignment="Center">ФИО</TextBlock>
-        <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Grid.Row="0" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">ФИО</TextBlock>
+        <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
 
         <TextBlock Grid.Row="1" VerticalAlignment="Center">Ник</TextBlock>
-        <TextBox Text="{Binding Path=Nickname, Mode=TwoWay}" Grid.Row="1" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding Path=Nickname, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
 
         <TextBlock Grid.Row="2" VerticalAlignment="Center">Телефон</TextBlock>
-        <TextBox Text="{Binding Path=Phone, Mode=TwoWay}" Grid.Row="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding Path=Phone, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
 
         <TextBlock Grid.Row="3" VerticalAlignment="Center">Email</TextBlock>
-        <TextBox Text="{Binding Path=Email, Mode=TwoWay}" Grid.Row="3" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding Path=Email, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">Страна</TextBlock>
-        <TextBox Text="{Binding Path=Country, Mode=TwoWay}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
-        <!--<ComboBox  ItemsSource="{Binding Path=Country, Mode=TwoWay}" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></ComboBox>-->
+        <TextBlock Grid.Row="0" Grid.Column="3" VerticalAlignment="Center">Страна</TextBlock>
+        <TextBox Text="{Binding Path=Country, Mode=TwoWay}" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">Город</TextBlock>
-        <TextBox Text="{Binding Path=City, Mode=TwoWay}" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="1" Grid.Column="3" VerticalAlignment="Center">Город</TextBlock>
+        <TextBox Text="{Binding Path=City, Mode=TwoWay}" Grid.Row="1" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center">Адрес</TextBlock>
-        <TextBox Text="{Binding Path=Address, Mode=TwoWay}" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="2" Grid.Column="3" VerticalAlignment="Center">Адрес</TextBlock>
+        <TextBox Text="{Binding Path=Address, Mode=TwoWay}" Grid.Row="2" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <TextBlock Grid.Row="3" Grid.Column="2" VerticalAlignment="Center">Доставка</TextBlock>
-        <TextBox Text="{Binding Path=ShippingMethod, Mode=TwoWay}" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="3" Grid.Column="3" VerticalAlignment="Center">Доставка</TextBlock>
+        <TextBox Text="{Binding Path=ShippingMethod, Mode=TwoWay}" Grid.Row="3" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <TextBlock Grid.Row="4" Grid.Column="2" VerticalAlignment="Center">Индекс</TextBlock>
-        <TextBox Text="{Binding Path=PostalCode, Mode=TwoWay}" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right" Width="240" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="4" Grid.Column="3" VerticalAlignment="Center">Индекс</TextBlock>
+        <TextBox Text="{Binding Path=PostalCode, Mode=TwoWay}" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
         <!--<Button x:Name="AddNewClientButton" Command="{Binding AddClientCommand}" Grid.Row="4" VerticalAlignment="Center">Добавить</Button>-->
-        <Button x:Name="SaveClientButton" Command="{Binding SaveClientCommand}" Grid.Row="4" VerticalAlignment="Center">Сохранить</Button>
+        <Button x:Name="SaveClientButton" Command="{Binding SaveClientCommand}" Grid.Row="8" Grid.Column="4" BorderThickness="1" Width="120" HorizontalAlignment="Right">Сохранить</Button>
 
-        <Button x:Name="AddNewOrderButton" Command="{Binding AddNewOrderCommand}" Grid.Row="7" VerticalAlignment="Center">Добавить заказ</Button>
+        <Button x:Name="AddNewOrderButton" Command="{Binding AddNewOrderCommand}" Grid.Row="6" BorderThickness="1">Добавить заказ</Button>
 
-        <DataGrid Grid.Row="5" Grid.RowSpan="2" Grid.ColumnSpan="3" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=SelectedClientClone.Orders, Mode=TwoWay}">
+        <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders, Mode=TwoWay}" Margin="0,5,0,5">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
-                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}" />
+                <DataGridTextColumn Header="Created" Binding="{Binding Path=Created}" />
                 <DataGridTextColumn Header="Status" Binding="{Binding Path=Status}" />
                 <DataGridTextColumn Header="Total" Binding="{Binding Path=Total}" />
                 <DataGridTextColumn Header="Notes" Binding="{Binding Path=Notes}" />

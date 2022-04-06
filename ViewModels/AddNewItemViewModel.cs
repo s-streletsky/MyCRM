@@ -86,10 +86,10 @@ namespace CRM.ViewModels
             this.mainViewModel = mainViewModel;
             AddItemCommand = new RelayCommand(OnAddItemButton_Click);
 
-            foreach (var currency in mainViewModel.Database.Currencies)
-            {
-                CurrenciesList.Add(currency.Code);
-            }
+            //foreach (var currency in mainViewModel.Database.Currencies)
+            //{
+            //    CurrenciesList.Add(currency.Code);
+            //}
         }
 
         void OnAddItemButton_Click(object _)

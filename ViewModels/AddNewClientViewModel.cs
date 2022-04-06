@@ -30,7 +30,7 @@ namespace CRM.ViewModels
         string postalCode;
         string notes;
 
-        ObservableCollection<Order> orders;
+        ObservableCollection<Order> orders = new ObservableCollection<Order>();
 
         Client selectedClient;
         Database database;
@@ -170,6 +170,8 @@ namespace CRM.ViewModels
             SaveClientCommand = new RelayCommand(OnSaveClientButtonClick);
             this.Database = database;
             this.SelectedClient = selectedClient;
+
+            //LoadClientOrders(database);
         }
 
         void OnSaveClientButtonClick(object _)
@@ -231,5 +233,16 @@ namespace CRM.ViewModels
             selectedClient.PostalCode = PostalCode;
             selectedClient.Notes = Notes;
         }
+
+        //private void LoadClientOrders(Database db)
+        //{
+        //    foreach (var order in db.Orders)
+        //    {
+        //        if (this.Id == order.Client.Id)
+        //        {
+        //            orders.Add(order);
+        //        }
+        //    }
+        //}
     }
 }

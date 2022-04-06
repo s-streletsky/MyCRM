@@ -16,11 +16,13 @@ namespace CRM.ViewModels
         public RelayCommand EditClientCommand { get; }
         public RelayCommand AddNewItemCommand { get; }
         public RelayCommand DeleteClientCommand { get; }
-        public RelayCommand LoadDatabaseCommand { get; }
+        public RelayCommand LoadClientsCommand { get; }
+        public RelayCommand LoadOrdersCommand { get; }
         public Database Database { get; set; }
         public Client SelectedClient { get; set; }
 
         private ClientRepository clientRepo = new ClientRepository();
+        private OrderRepository orderRepo = new OrderRepository();
 
         public MainViewModel()
         {
@@ -28,8 +30,14 @@ namespace CRM.ViewModels
             EditClientCommand = new RelayCommand(OnClientDoubleClick);
             AddNewItemCommand = new RelayCommand(OnAddNewItem_Click);
             DeleteClientCommand = new RelayCommand(OnDeleteItem_Click);
-            LoadDatabaseCommand = new RelayCommand(OnLoadDatabase_Click);
+            LoadClientsCommand = new RelayCommand(OnLoadClients_Click);
+            LoadOrdersCommand = new RelayCommand(OnLoadOrders_Click);
+
             this.Database = new Database();
+            clientRepo.GetAll(Database);
+
+            orderRepo.GetAll(Database);
+
             this.SelectedClient = null;
             //Database.Currencies.Add(new Currency("UAH"));
         }
@@ -57,8 +65,6 @@ namespace CRM.ViewModels
 
         public void OnClientDoubleClick(object _)
         {
-            //var selectedClientClone = JsonConvert.SerializeObject(SelectedClient, Formatting.Indented);
-
             var vm = new AddNewClientViewModel(SelectedClient, Database);
             AddNewClientView addNewClientView = new AddNewClientView();
 
@@ -81,6 +87,14 @@ namespace CRM.ViewModels
                 vm.ShippingMethod = SelectedClient.ShippingMethod;
                 vm.PostalCode = SelectedClient.PostalCode;
                 vm.Notes = SelectedClient.Notes;
+
+                foreach (var order in Database.Orders)
+                {
+                    if (SelectedClient.Id == order.Client.Id)
+                    {
+                        vm.Orders.Add(order);
+                    }
+                }
 
                 addNewClientView.Show();
             }
@@ -115,9 +129,14 @@ namespace CRM.ViewModels
             Database.Clients.RemoveAt(i);
         }
 
-        public void OnLoadDatabase_Click(object _)
+        public void OnLoadClients_Click(object _)
         {
             clientRepo.GetAll(Database);
+        }
+
+        public void OnLoadOrders_Click(object _)
+        {
+            orderRepo.GetAll(Database);
         }
     }
 }

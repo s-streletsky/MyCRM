@@ -19,8 +19,8 @@ namespace CRM.Models
     }
     class Order
     {
-        public int Id { get; set; }
-        public DateTime Created { get; set; }
+        public int? Id { get; set; }
+        public DateTime? Created { get; set; }
         public Client Client { get; set; }
         public Status Status { get; set; }
         public decimal Total { get; set; }
@@ -29,6 +29,17 @@ namespace CRM.Models
         public Order()
         {
             Created = DateTime.Today;
+        }
+
+        public Order(int? id, DateTime? created, Client client, Status status, decimal total, string notes)
+        {
+            this.Id = id;
+            this.Created = created;
+            this.Client = client;
+            this.Status = status;
+            this.Total = total;
+            this.Notes = notes;
+
         }
     }
 }
