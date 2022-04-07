@@ -26,7 +26,7 @@
             <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition Height="0.2*"></RowDefinition>
             <RowDefinition Height="0.05*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
+            <RowDefinition Height="0.15*"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="0.2*"></RowDefinition>
             <!--<RowDefinition></RowDefinition>
@@ -71,10 +71,11 @@
         <TextBlock Grid.Row="4" Grid.Column="3" VerticalAlignment="Center">Индекс</TextBlock>
         <TextBox Text="{Binding Path=PostalCode, Mode=TwoWay}" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <!--<Button x:Name="AddNewClientButton" Command="{Binding AddClientCommand}" Grid.Row="4" VerticalAlignment="Center">Добавить</Button>-->
-        <Button x:Name="SaveClientButton" Command="{Binding SaveClientCommand}" Grid.Row="8" Grid.Column="4" BorderThickness="1" Width="120" HorizontalAlignment="Right">Сохранить</Button>
-
-        <Button x:Name="AddNewOrderButton" Command="{Binding AddNewOrderCommand}" Grid.Row="6" BorderThickness="1">Добавить заказ</Button>
+        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal">
+            <Button x:Name="AddNewOrderButton" Command="{Binding AddNewOrderCommand}" BorderThickness="1" Width="80" Margin="0,0,5,0">Добавить</Button>
+            <Button x:Name="EditOrderButton" Command="{Binding AddNewOrderCommand}" BorderThickness="1" Width="80" Margin="0,0,5,0">Изменить</Button>
+            <Button x:Name="DeleteOrderButton" Command="{Binding AddNewOrderCommand}" BorderThickness="1" Width="80">Удалить</Button>
+        </StackPanel>
 
         <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders, Mode=TwoWay}" Margin="0,5,0,5">
             <DataGrid.Columns>
@@ -85,5 +86,10 @@
                 <DataGridTextColumn Header="Notes" Binding="{Binding Path=Notes}" />
             </DataGrid.Columns>
         </DataGrid>
+
+        <StackPanel Grid.Row="8" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="SaveClientButton" Command="{Binding SaveClientCommand}" BorderThickness="1" Width="120" HorizontalAlignment="Right" Margin="0,0,5,0">Сохранить</Button>
+            <Button x:Name="CancelButton" Command="{Binding SaveClientCommand}" BorderThickness="1" Width="120" HorizontalAlignment="Right">Отмена</Button>
+        </StackPanel>
     </Grid>
 </Window>

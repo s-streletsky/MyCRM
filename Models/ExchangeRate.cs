@@ -18,9 +18,22 @@ namespace CRM.Models
         public Currency Currency { get; set; }
         public decimal Rate { get; set; }
 
-        public ExchangeRate(decimal rate)
+        public ExchangeRate()
+        {
+
+        }
+
+        public ExchangeRate(Currency currency, decimal rate)
         {
             Date = DateTime.Now;
+            Currency = currency;
+            Rate = Math.Round(rate, 2);
+        }
+
+        public ExchangeRate(DateTime date, Currency currency, decimal rate)
+        {
+            Date = date;
+            Currency = currency;
             Rate = Math.Round(rate, 2);
         }
     }

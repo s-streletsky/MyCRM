@@ -126,21 +126,40 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.06*"></RowDefinition>
+                        <RowDefinition Height="0.06*"></RowDefinition>
+                        <RowDefinition Height="0.06*"></RowDefinition>
+                        <RowDefinition Height="0.06*"></RowDefinition>
+                        <RowDefinition Height="0.06*"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.20*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.20*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.20*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.20*" Name="col3"></ColumnDefinition>
                         <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="0.25*"></ColumnDefinition>
+                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    <Button Content="Добавить" Command="{Binding AddNewItemCommand}" Grid.Column="0" Margin="5" BorderThickness="1"/>
+                    
                     <Button Content="Удалить" HorizontalAlignment="Left" Margin="289,183,0,0" VerticalAlignment="Top" Grid.Column="1"/>
 
-                    <TextBox Grid.Column="1" Margin="367,24,172,362" Width="240"></TextBox>
+                    <!--<StackPanel Grid.Row="0" Grid.ColumnSpan="4" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Content="Добавить" Command="{Binding AddNewItemCommand}" BorderThickness="1" />
 
-                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.ExchangeRates, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="1">
+                        <TextBlock>Валюта:</TextBlock>
+                        <TextBox Grid.Column="1">gdhfhgf</TextBox>
+                    </StackPanel>-->
+
+                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Валюта: </TextBlock>
+                    <TextBox Text="{Binding Path=Currency, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
+
+                    <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Курс: </TextBlock>
+                    <TextBox Text="{Binding Path=Rate, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
+
+                    <Button Content="Добавить" Command="{Binding AddNewExchangeRateCommand}" BorderThickness="1" Grid.Row="3" Grid.Column="3"/>
+
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.ExchangeRates, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="6">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}" />
                             <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" />

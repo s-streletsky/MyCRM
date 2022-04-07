@@ -12,6 +12,10 @@ namespace CRM.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
+        private Currency currency;
+        private decimal rate;
+
+        public RelayCommand AddNewExchangeRateCommand { get; }
         public RelayCommand AddNewClientCommand { get; }
         public RelayCommand EditClientCommand { get; }
         public RelayCommand AddNewItemCommand { get; }
@@ -21,8 +25,12 @@ namespace CRM.ViewModels
         public Database Database { get; set; }
         public Client SelectedClient { get; set; }
 
+        public Currency Currency { get; set; }
+        public decimal Rate { get; set; }
+
         private ClientRepository clientRepo = new ClientRepository();
         private OrderRepository orderRepo = new OrderRepository();
+        private ExchangeRateRepository exRateRepo = new ExchangeRateRepository();
 
         public MainViewModel()
         {
@@ -32,11 +40,14 @@ namespace CRM.ViewModels
             DeleteClientCommand = new RelayCommand(OnDeleteItem_Click);
             LoadClientsCommand = new RelayCommand(OnLoadClients_Click);
             LoadOrdersCommand = new RelayCommand(OnLoadOrders_Click);
+            AddNewExchangeRateCommand = new RelayCommand(OnAddNewExchangeRate_Click);
 
             this.Database = new Database();
             clientRepo.GetAll(Database);
 
             orderRepo.GetAll(Database);
+
+            exRateRepo.GetAll(Database);
 
             this.SelectedClient = null;
             //Database.Currencies.Add(new Currency("UAH"));
@@ -137,6 +148,12 @@ namespace CRM.ViewModels
         public void OnLoadOrders_Click(object _)
         {
             orderRepo.GetAll(Database);
+        }
+
+        public void OnAddNewExchangeRate_Click(object _)
+        {
+            var newExRate = exRateRepo.Add(new ExchangeRate(Currency, Rate));
+            Database.ExchangeRates.Insert(0, newExRate);
         }
     }
 }
