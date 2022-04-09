@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.WPF;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,18 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    abstract class Item
+    abstract class Item : ViewModelBase
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public decimal PurchasePrice { get; set; }
-        public decimal RetailPrice { get; set; }
-        public double Quantity { get; set; }
+        private int id;
+        private string name;
+        private float purchasePrice;
+        private float retailPrice;
+        private float quantity;
+
+        public int Id { get { return id; } set { id = value; OnPropertyChanged(); } }
+        public string Name { get { return name; } set { name = value; OnPropertyChanged(); } }
+        public float PurchasePrice { get { return purchasePrice; } set { purchasePrice = value; OnPropertyChanged(); } }
+        public float RetailPrice { get { return retailPrice; } set { retailPrice = value; OnPropertyChanged(); } }
+        public float Quantity { get { return quantity; } set { quantity = value; OnPropertyChanged(); } }
     }
 }

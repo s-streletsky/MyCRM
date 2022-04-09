@@ -3,12 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM"
+        xmlns:models="clr-namespace:CRM.Models"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1200">
-        
+
     <Grid Margin="10">
 
         <!--<Grid.RowDefinitions>
@@ -109,11 +111,13 @@
                     <Button Content="Обновить" Grid.Column="1" Margin="5" BorderThickness="1"/>
                     <Button Content="Удалить" Grid.Column="3" Margin="5" BorderThickness="1"/>
 
-                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Stock}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.StockItems}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
-                            <DataGridTextColumn Header="Title" Binding="{Binding Path=Title}" />
-                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=Manufacturer}" />
+                            <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
+                            <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=ManufacturerId}" />
+                            <DataGridTextColumn Header="Description" Binding="{Binding Path=Description}" />
+                            <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" />
                             <DataGridTextColumn Header="Purchase Price" Binding="{Binding Path=PurchasePrice}" />
                             <DataGridTextColumn Header="Retail Price" Binding="{Binding Path=RetailPrice}" />
                             <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}" />
@@ -123,6 +127,13 @@
             </TabItem>
             <TabItem Header="Курс валют">
                 <Grid Background="#FFE5E5E5">
+                    <Grid.Resources>
+                        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="currencyDataProvider">
+                            <ObjectDataProvider.MethodParameters>
+                                <x:Type TypeName="models:Currency" />
+                            </ObjectDataProvider.MethodParameters>
+                        </ObjectDataProvider>
+                    </Grid.Resources>
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="0.06*"></RowDefinition>
@@ -152,10 +163,10 @@
                     </StackPanel>-->
 
                     <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Валюта: </TextBlock>
-                    <TextBox Text="{Binding Path=Currency, Mode=TwoWay}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
+                    <ComboBox ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedItem="{Binding Path=SelectedCurrency}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></ComboBox>
 
                     <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Курс: </TextBlock>
-                    <TextBox Text="{Binding Path=Rate, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
+                    <TextBox Text="{Binding Path=CurrencyExchangeRate, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
 
                     <Button Content="Добавить" Command="{Binding AddNewExchangeRateCommand}" BorderThickness="1" Grid.Row="3" Grid.Column="3"/>
 

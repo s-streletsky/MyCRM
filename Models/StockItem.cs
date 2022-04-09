@@ -8,17 +8,17 @@ namespace CRM.Models
 {
     internal class StockItem : Item
     {
-        public string Manufacturer { get; set; }
-        public string Notes { get; set; }
-        public string Currency { get; set; }
+        public int ManufacturerId { get; set; }
+        public string Description { get; set; }
+        public Currency Currency { get; set; }
 
-        public StockItem()
+        public StockItem() { }
+        public StockItem(int id, string name, int mfid, string desc, Currency currency, float purchasePrice, float retailPrice, float quantity)        
         {
-        }
-
-        public StockItem(int id, string title, string currency, decimal purchasePrice, decimal retailPrice, double quantity)        {
             this.Id = id;
-            this.Title = title;
+            this.Name = name;
+            this.ManufacturerId = mfid;
+            this.Description = desc;
             this.Currency = currency;
             this.PurchasePrice = purchasePrice;
             this.RetailPrice = retailPrice;

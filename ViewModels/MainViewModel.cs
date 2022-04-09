@@ -12,8 +12,7 @@ namespace CRM.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
-        private Currency currency;
-        private decimal rate;
+        private decimal currencyExchangeRate;
 
         public RelayCommand AddNewExchangeRateCommand { get; }
         public RelayCommand AddNewClientCommand { get; }
@@ -24,13 +23,14 @@ namespace CRM.ViewModels
         public RelayCommand LoadOrdersCommand { get; }
         public Database Database { get; set; }
         public Client SelectedClient { get; set; }
+        public Currency SelectedCurrency { get; set; }
 
-        public Currency Currency { get; set; }
-        public decimal Rate { get; set; }
+        public decimal CurrencyExchangeRate { get; set; }
 
         private ClientRepository clientRepo = new ClientRepository();
         private OrderRepository orderRepo = new OrderRepository();
         private ExchangeRateRepository exRateRepo = new ExchangeRateRepository();
+        private StockRepository stockRepo = new StockRepository();
 
         public MainViewModel()
         {
@@ -48,6 +48,8 @@ namespace CRM.ViewModels
             orderRepo.GetAll(Database);
 
             exRateRepo.GetAll(Database);
+
+            stockRepo.GetAll(Database);
 
             this.SelectedClient = null;
             //Database.Currencies.Add(new Currency("UAH"));
@@ -120,13 +122,13 @@ namespace CRM.ViewModels
             var vm = new AddNewItemViewModel(this);
             AddNewItemView addNewItemView = new AddNewItemView();
 
-            if (Database.Stock.Count == 0)
+            if (Database.StockItems.Count == 0)
             {
                 vm.Id = 1;
             }
             else
             {
-                vm.Id = Database.Stock[Database.Stock.Count - 1].Id + 1;
+                vm.Id = Database.StockItems[Database.StockItems.Count - 1].Id + 1;
             }
 
             addNewItemView.DataContext = vm;
@@ -152,7 +154,7 @@ namespace CRM.ViewModels
 
         public void OnAddNewExchangeRate_Click(object _)
         {
-            var newExRate = exRateRepo.Add(new ExchangeRate(Currency, Rate));
+            var newExRate = exRateRepo.Add(new ExchangeRate(SelectedCurrency, CurrencyExchangeRate));
             Database.ExchangeRates.Insert(0, newExRate);
         }
     }

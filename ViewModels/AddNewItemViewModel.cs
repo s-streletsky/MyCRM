@@ -94,14 +94,14 @@ namespace CRM.ViewModels
 
         void OnAddItemButton_Click(object _)
         {
-            var item = new StockItem(Id, Title, Currency, PurchasePrice, RetailPrice, Quantity);
-            mainViewModel.Database.Stock.Add(item);
+            //var item = new StockItem(Id, Title, Currency, PurchasePrice, RetailPrice, Quantity);
+            //mainViewModel.Database.StockItems.Add(item);
 
-            Title = null;
-            Currency = Currency;
-            PurchasePrice = 0;
-            Quantity = 0;
-            Id = Id + 1;
+            //Title = null;
+            //Currency = Currency;
+            //PurchasePrice = 0;
+            //Quantity = 0;
+            //Id = Id + 1;
         }
     }
 }
