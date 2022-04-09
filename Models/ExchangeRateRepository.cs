@@ -9,27 +9,17 @@ namespace CRM.Models
 {
     internal class ExchangeRateRepository : IRepository<ExchangeRate>
     {
-        private const string connectionString = @"Data Source=C:\SQLiteStudio\crm_db;Version=3;";
-
         public ExchangeRate Add(ExchangeRate item)
         {
             var newExRate = item;
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
                 string addNewExRate = "INSERT INTO exchange_rates (date, currency_id, exchange_rate) VALUES "
                                      + $"('{newExRate.Date}', '{(int)newExRate.Currency}', '{newExRate.Rate}')";
 
                 cmd.CommandText = addNewExRate;
                 cmd.ExecuteNonQuery();
-
-                //string getClientId = "SELECT id FROM clients WHERE created=" + $"'{newExRate.Created}'";
-                //cmd.CommandText = getClientId;
-                //newExRate.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return newExRate;
             }
@@ -46,12 +36,8 @@ namespace CRM.Models
         }
         public void GetAll(Database db)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
                 cmd.CommandText = @"SELECT * FROM exchange_rates ORDER BY date DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();

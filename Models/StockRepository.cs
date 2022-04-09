@@ -9,8 +9,6 @@ namespace CRM.Models
 {
     internal class StockRepository : IRepository<StockItem>
     {
-        private const string connectionString = @"Data Source=C:\SQLiteStudio\crm_db;Version=3;";
-
         public StockItem Add(StockItem item)
         {
             throw new NotImplementedException();
@@ -28,12 +26,8 @@ namespace CRM.Models
 
         public void GetAll(Database db)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
                 cmd.CommandText = "SELECT * FROM products";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();

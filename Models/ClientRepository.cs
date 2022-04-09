@@ -9,18 +9,12 @@ namespace CRM.Models
 {
     internal class ClientRepository : IRepository<Client>
     {
-        private const string connectionString = @"Data Source=C:\SQLiteStudio\crm_db;Version=3;";
-
         public Client Add(Client item)
         {
             var client = item;
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
                 string addNewClient = "INSERT INTO clients (created, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes) VALUES "
                                      + $"('{client.Created}', '{client.Name}', '{client.Nickname}', '{client.Phone}', '{client.Email}', {(int)client.Country}, '{client.City}', '{client.Address}', {(int)client.ShippingMethod}, '{client.PostalCode}', '{client.Notes}')";
 
@@ -39,12 +33,8 @@ namespace CRM.Models
         {
             var client = item;
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
                 string deleteClient = "DELETE FROM clients WHERE id=" + $"{client.Id}";
 
                 cmd.CommandText = deleteClient;
@@ -59,14 +49,9 @@ namespace CRM.Models
 
         public void GetAll(Database db)
         {
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())    
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
-                cmd.CommandText = @"SELECT * 
-                                    FROM clients";
+                cmd.CommandText = "SELECT * FROM clients";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
@@ -94,12 +79,8 @@ namespace CRM.Models
         {
             var client = item;
 
-            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            using (var cmd = DbConnection.Open())
             {
-                connection.Open();
-
-                var cmd = new SQLiteCommand(connection);
-
                 string updateClient = "UPDATE clients SET name=" + $"'{client.Name}'," +
                                                          "nickname=" + $"'{client.Nickname}', " +
                                                          "phone=" + $"'{client.Phone}', " +

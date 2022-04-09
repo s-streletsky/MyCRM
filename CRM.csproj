@@ -99,6 +99,7 @@
     <Compile Include="Models\ClientRepository.cs" />
     <Compile Include="Models\Client.cs" />
     <Compile Include="Models\Database.cs" />
+    <Compile Include="Models\DbConnection.cs" />
     <Compile Include="Models\ExchangeRate.cs" />
     <Compile Include="Models\ExchangeRateRepository.cs" />
     <Compile Include="Models\IRepository.cs" />
