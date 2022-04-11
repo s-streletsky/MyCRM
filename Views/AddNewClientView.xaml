@@ -19,16 +19,24 @@
             <Setter Property="Button.Width" Value="120" />
             <Setter Property="Button.Margin" Value="5,10,0,0" />
         </Style>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="TextBox.VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!--<Style TargetType="ComboBox">
+            <Setter Property="ComboBox.Height" Value="20"/>
+        </Style>-->
     </Window.Resources>
 
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="0.1*"></RowDefinition>
             <RowDefinition Height="26"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="42"></RowDefinition>
@@ -42,7 +50,7 @@
         </Grid.ColumnDefinitions>
         
         <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">ФИО</TextBlock>
-        <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center" TextAlignment="Left"></TextBox>
 
         <TextBlock Grid.Row="1" VerticalAlignment="Center">Ник</TextBlock>
         <TextBox Text="{Binding Path=Nickname, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
@@ -51,7 +59,7 @@
         <TextBox Text="{Binding Path=Phone, Mode=TwoWay}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
 
         <TextBlock Grid.Row="3" VerticalAlignment="Center">Email</TextBlock>
-        <TextBox Text="{Binding Path=Email, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center"></TextBox>
+        <TextBox Text="{Binding Path=Email, Mode=TwoWay}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Width="{Binding ElementName=col1, Path=Width}" VerticalAlignment="Center" TextAlignment="Left"></TextBox>
 
         <TextBlock Grid.Row="0" Grid.Column="3" VerticalAlignment="Center">Страна</TextBlock>
         <TextBox Text="{Binding Path=Country, Mode=TwoWay}" Grid.Row="0" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>

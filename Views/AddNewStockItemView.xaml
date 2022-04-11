@@ -7,38 +7,71 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:AddNewStockItemViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="AddNewItemView" Height="300" Width="450">
-    
-    <Grid Margin="10">
+        Title="AddNewItemView" Height="360" Width="450">
+
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="TextBox.VerticalAlignment" Value="Center" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="TextBox.Height" Value="20" />
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="ComboBox.Height" Value="20"/>
+        </Style>
+
+        <Style x:Key="WindowButton">
+            <Setter Property="Button.Width" Value="120" />
+            <Setter Property="Button.Margin" Value="5,0,0,0" />
+        </Style>
+    </Window.Resources>
+
+            <Grid Margin="15">
+        
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="96"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="24"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="32"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="120"></ColumnDefinition>
+            <ColumnDefinition Width="0.3*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Наименование</TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Title, Mode=TwoWay}" Name="titleInput" VerticalAlignment="Center"></TextBox>
+        
+        <TextBlock Grid.Row="0" Grid.Column="0">Наименование</TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Title, Mode=TwoWay}"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Валюта</TextBlock>
-        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding CurrenciesList}" SelectedValue="{Binding Currency, Mode=TwoWay}" Name="currenciesList" VerticalAlignment="Center"></ComboBox>
+        <TextBlock Grid.Row="1" Grid.Column="0">Производитель</TextBlock>
+        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding CurrenciesList}" SelectedValue="{Binding Currency, Mode=TwoWay}"></ComboBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Цена закупки</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PurchasePrice, Mode=TwoWay}" Name="purchasePriceInput" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="2" Grid.Column="0">Описание</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Title, Mode=TwoWay}" Height="92" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
 
-        <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Цена продажи</TextBlock>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding RetailPrice, Mode=TwoWay}" Name="retailPriceInput" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="3" Grid.Column="0">Валюта</TextBlock>
+        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding CurrenciesList}" SelectedValue="{Binding Currency, Mode=TwoWay}"></ComboBox>
 
-        <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Количество</TextBlock>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Quantity, Mode=TwoWay}" Name="quantityInput" VerticalAlignment="Center"></TextBox>
+        <TextBlock Grid.Row="4" Grid.Column="0">Цена закупки</TextBlock>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PurchasePrice, Mode=TwoWay}"></TextBox>
 
-        <Button Grid.Row="5" Grid.Column="3" Command="{Binding AddItemCommand}" Margin="0,10,0,10" >Добавить</Button>
+        <TextBlock Grid.Row="5" Grid.Column="0">Цена продажи</TextBlock>
+        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding RetailPrice, Mode=TwoWay}"></TextBox>
+
+        <TextBlock Grid.Row="6" Grid.Column="0">Количество</TextBlock>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Quantity, Mode=TwoWay}"></TextBox>
+
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource WindowButton}" Command="{Binding AddItemCommand}">Сохранить</Button>
+            <Button Style="{StaticResource WindowButton}" Command="{Binding SaveClientCommand}">Отмена</Button>
+        </StackPanel>
+                
     </Grid>
 </Window>
