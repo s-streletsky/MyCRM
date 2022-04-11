@@ -17,7 +17,7 @@ namespace CRM.ViewModels
         public RelayCommand AddNewExchangeRateCommand { get; }
         public RelayCommand AddNewClientCommand { get; }
         public RelayCommand EditClientCommand { get; }
-        public RelayCommand AddNewItemCommand { get; }
+        public RelayCommand AddNewStockItemCommand { get; }
         public RelayCommand DeleteClientCommand { get; }
         public RelayCommand LoadClientsCommand { get; }
         public RelayCommand LoadOrdersCommand { get; }
@@ -36,8 +36,10 @@ namespace CRM.ViewModels
         {
             AddNewClientCommand = new RelayCommand(OnAddNewClient_Click);
             EditClientCommand = new RelayCommand(OnClientDoubleClick);
-            AddNewItemCommand = new RelayCommand(OnAddNewItem_Click);
             DeleteClientCommand = new RelayCommand(OnDeleteItem_Click);
+
+            AddNewStockItemCommand = new RelayCommand(OnAddNewStockItem_Click);
+            
             LoadClientsCommand = new RelayCommand(OnLoadClients_Click);
             LoadOrdersCommand = new RelayCommand(OnLoadOrders_Click);
             AddNewExchangeRateCommand = new RelayCommand(OnAddNewExchangeRate_Click);
@@ -117,9 +119,9 @@ namespace CRM.ViewModels
             //addNewClientView.Show();
         }
 
-        public void OnAddNewItem_Click(object _)
+        public void OnAddNewStockItem_Click(object _)
         {
-            var vm = new AddNewItemViewModel(this);
+            var vm = new AddNewStockItemViewModel(this);
             AddNewItemView addNewItemView = new AddNewItemView();
 
             if (Database.StockItems.Count == 0)

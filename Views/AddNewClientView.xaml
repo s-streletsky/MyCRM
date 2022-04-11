@@ -7,40 +7,37 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:AddNewClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="AddNewClient" Height="400" Width="780">
+        Title="Редактирование карточки клиента" Height="500" Width="780">
 
-    <!--<Window.Resources>
-        <demo:EnumValueConverter x:Key="EnumValueConverter" />
-        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="Country">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="demo:Week" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-    </Window.Resources>-->
+    <Window.Resources>
+        <Style x:Key="OrderButton">
+            <Setter Property="Button.Width" Value="80" />
+            <Setter Property="Button.Margin" Value="0,0,5,5" />
+        </Style>
 
-    <Grid Margin="10">
+        <Style x:Key="WindowButton">
+            <Setter Property="Button.Width" Value="120" />
+            <Setter Property="Button.Margin" Value="5,10,0,0" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <RowDefinition Height="0.05*"></RowDefinition>
-            <RowDefinition Height="0.15*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="26"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition Height="0.2*"></RowDefinition>
-            <!--<RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>-->
+            <RowDefinition Height="42"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            <ColumnDefinition Width="0.15*"></ColumnDefinition>
             <ColumnDefinition Width="0.5*" Name="col1"></ColumnDefinition>
-            <ColumnDefinition Width="0.05*"></ColumnDefinition>
-            <ColumnDefinition Width="0.2*"></ColumnDefinition>
+            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+            <ColumnDefinition Width="0.15*"></ColumnDefinition>
             <ColumnDefinition Width="0.5*" Name="col4"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         
@@ -72,12 +69,12 @@
         <TextBox Text="{Binding Path=PostalCode, Mode=TwoWay}" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
         <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal">
-            <Button x:Name="AddNewOrderButton" Command="{Binding AddNewOrderCommand}" BorderThickness="1" Width="80" Margin="0,0,5,0">Добавить</Button>
-            <Button x:Name="EditOrderButton" Command="{Binding AddNewOrderCommand}" BorderThickness="1" Width="80" Margin="0,0,5,0">Изменить</Button>
-            <Button x:Name="DeleteOrderButton" Command="{Binding AddNewOrderCommand}" BorderThickness="1" Width="80">Удалить</Button>
+            <Button Style="{StaticResource OrderButton}" Command="{Binding AddNewOrderCommand}">Добавить</Button>
+            <Button Style="{StaticResource OrderButton}" Command="{Binding AddNewOrderCommand}">Изменить</Button>
+            <Button Style="{StaticResource OrderButton}" Command="{Binding AddNewOrderCommand}">Удалить</Button>
         </StackPanel>
 
-        <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders, Mode=TwoWay}" Margin="0,5,0,5">
+        <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders, Mode=TwoWay}" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                 <DataGridTextColumn Header="Created" Binding="{Binding Path=Created}" />
@@ -88,8 +85,8 @@
         </DataGrid>
 
         <StackPanel Grid.Row="8" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="SaveClientButton" Command="{Binding SaveClientCommand}" BorderThickness="1" Width="120" HorizontalAlignment="Right" Margin="0,0,5,0">Сохранить</Button>
-            <Button x:Name="CancelButton" Command="{Binding SaveClientCommand}" BorderThickness="1" Width="120" HorizontalAlignment="Right">Отмена</Button>
+            <Button Style="{StaticResource WindowButton}" Command="{Binding SaveClientCommand}">Сохранить</Button>
+            <Button Style="{StaticResource WindowButton}" Command="{Binding SaveClientCommand}">Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>

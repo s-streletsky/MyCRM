@@ -1,0 +1,44 @@
+﻿<Window x:Class="CRM.AddNewItemView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CRM"
+        xmlns:vm="clr-namespace:CRM.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:AddNewStockItemViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        Title="AddNewItemView" Height="300" Width="450">
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">Наименование</TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Title, Mode=TwoWay}" Name="titleInput" VerticalAlignment="Center"></TextBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">Валюта</TextBlock>
+        <ComboBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding CurrenciesList}" SelectedValue="{Binding Currency, Mode=TwoWay}" Name="currenciesList" VerticalAlignment="Center"></ComboBox>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">Цена закупки</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding PurchasePrice, Mode=TwoWay}" Name="purchasePriceInput" VerticalAlignment="Center"></TextBox>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">Цена продажи</TextBlock>
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding RetailPrice, Mode=TwoWay}" Name="retailPriceInput" VerticalAlignment="Center"></TextBox>
+
+        <TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">Количество</TextBlock>
+        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Quantity, Mode=TwoWay}" Name="quantityInput" VerticalAlignment="Center"></TextBox>
+
+        <Button Grid.Row="5" Grid.Column="3" Command="{Binding AddItemCommand}" Margin="0,10,0,10" >Добавить</Button>
+    </Grid>
+</Window>

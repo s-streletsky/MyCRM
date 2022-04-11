@@ -80,7 +80,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\AddNewItemView.xaml">
+    <Page Include="Views\AddNewStockItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -111,12 +111,12 @@
     <Compile Include="Models\OrderRepository.cs" />
     <Compile Include="Models\StockRepository.cs" />
     <Compile Include="WPF\RelayCommand.cs" />
-    <Compile Include="ViewModels\AddNewItemViewModel.cs" />
+    <Compile Include="ViewModels\AddNewStockItemViewModel.cs" />
     <Compile Include="ViewModels\AddNewClientViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="WPF\ViewModelBase.cs" />
-    <Compile Include="Views\AddNewItemView.xaml.cs">
-      <DependentUpon>AddNewItemView.xaml</DependentUpon>
+    <Compile Include="Views\AddNewStockItemView.xaml.cs">
+      <DependentUpon>AddNewStockItemView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AddNewClientView.xaml.cs">
       <DependentUpon>AddNewClientView.xaml</DependentUpon>

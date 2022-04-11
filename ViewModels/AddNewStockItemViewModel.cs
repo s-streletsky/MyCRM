@@ -8,9 +8,9 @@ using CRM.WPF;
 
 namespace CRM.ViewModels
 {
-    class AddNewItemViewModel : ViewModelBase
+    class AddNewStockItemViewModel : ViewModelBase
     {
-        public RelayCommand AddItemCommand { get; }
+        public RelayCommand AddNewItemCommand { get; }
 
         public MainViewModel mainViewModel;
 
@@ -76,15 +76,15 @@ namespace CRM.ViewModels
             } 
         }
 
-        public AddNewItemViewModel()
+        public AddNewStockItemViewModel()
         {
 
         }
 
-        public AddNewItemViewModel(MainViewModel mainViewModel)
+        public AddNewStockItemViewModel(MainViewModel mainViewModel)
         {
             this.mainViewModel = mainViewModel;
-            AddItemCommand = new RelayCommand(OnAddItemButton_Click);
+            AddNewItemCommand = new RelayCommand(OnAddNewItemButton_Click);
 
             //foreach (var currency in mainViewModel.Database.Currencies)
             //{
@@ -92,7 +92,7 @@ namespace CRM.ViewModels
             //}
         }
 
-        void OnAddItemButton_Click(object _)
+        void OnAddNewItemButton_Click(object _)
         {
             //var item = new StockItem(Id, Title, Currency, PurchasePrice, RetailPrice, Quantity);
             //mainViewModel.Database.StockItems.Add(item);

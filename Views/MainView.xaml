@@ -11,42 +11,57 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="650" Width="1200">
 
+    <Window.Resources>
+        <Style x:Key="TopRowButton">
+            <Setter Property="Button.Width" Value="80" />
+            <Setter Property="Button.Margin" Value="0,0,5,5" />
+        </Style>
+
+        <Style x:Key="InnerGrid">
+            <Setter Property="Grid.Margin" Value="5" />
+        </Style>
+
+        <Style TargetType="TextBlock" x:Key="HeaderTextBlockStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsSelected,
+                          RelativeSource={RelativeSource AncestorType=TabItem}}"
+                         Value="True">
+                    <Setter Property="FontWeight" Value="Bold"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
     <Grid Margin="10">
 
-        <!--<Grid.RowDefinitions>
-            <RowDefinition Height="0.16*"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.30*"></ColumnDefinition>
-            <ColumnDefinition Width="0.30*"></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="0.30*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>-->
-
         <TabControl>
-            <TabItem Header="Клиенты" Background="#99FF99">
-                <Grid Background="#99FF99">
+            <TabItem>
+                
+                <TabItem.Header>
+                    <TextBlock Text="Клиенты"
+                     Style="{StaticResource HeaderTextBlockStyle}"/>
+                </TabItem.Header>
+
+                <Grid Style="{StaticResource InnerGrid}">
+                    
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="0.06*"></RowDefinition>
+                        <RowDefinition Height="26"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
 
-                    <Button Content="Добавить" Command="{Binding AddNewClientCommand}" Grid.Column="0" Margin="5" BorderThickness="1"/>
-                    <Button Content="Удалить"  Command="{Binding DeleteClientCommand}" Grid.Column="1" Margin="5" BorderThickness="1"/>
-
-                    <Button Content="Загрузить" Command="{Binding LoadDatabaseCommand}" Grid.Column="3" Margin="5" BorderThickness="1"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewClientCommand}" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Удалить"  Command="{Binding DeleteClientCommand}" />
+                        <!--<Button Style="{StaticResource TopRowButton}" Content="Загрузить" Command="{Binding LoadDatabaseCommand}" />-->
+                    </StackPanel>
 
                     <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Clients, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                        
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
                         </DataGrid.InputBindings>
+                        
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
@@ -56,28 +71,32 @@
                             <DataGridTextColumn Header="Shipping Method" Binding="{Binding Path=ShippingMethod}" />
                             <DataGridTextColumn Header="Postal Code" Binding="{Binding Path=PostalCode}" />
                         </DataGrid.Columns>
+                        
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Заказы" Background="#FFCC66">
-                <Grid Background="#FFCC66">
+            
+            <TabItem>
+
+                <TabItem.Header>
+                    <TextBlock Text="Заказы"
+                     Style="{StaticResource HeaderTextBlockStyle}"/>
+                </TabItem.Header>
+                
+                <Grid Style="{StaticResource InnerGrid}">
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="0.06*"></RowDefinition>
+                        <RowDefinition Height="26"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
 
-                    <Button Content="Добавить" Command="{Binding AddNewOrderCommand}" Grid.Column="0" Margin="5" BorderThickness="1"/>
-                    <Button Content="Удалить"  Command="{Binding DeleteOrderCommand}" Grid.Column="1" Margin="5" BorderThickness="1"/>
-
-                    <Button Content="Загрузить" Command="{Binding LoadOrdersCommand}" Grid.Column="3" Margin="5" BorderThickness="1"/>
-
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewOrderCommand}" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Удалить"  Command="{Binding DeleteOrderCommand}" />
+                        <!--<Button Style="{StaticResource TopRowButton}" Content="Загрузить" Command="{Binding LoadOrdersCommand}" />-->
+                    </StackPanel>
+                                        
                     <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Orders, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
@@ -93,25 +112,28 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Склад">
-                <Grid Background="#FFE5E5E5">
+
+            <TabItem>
+
+                <TabItem.Header>
+                    <TextBlock Text="Склад"
+                     Style="{StaticResource HeaderTextBlockStyle}"/>
+                </TabItem.Header>
+                
+                <Grid Style="{StaticResource InnerGrid}">
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="0.06*"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="26"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
 
-                    <Button Content="Добавить" Command="{Binding AddNewItemCommand}" Grid.Column="0" Margin="5" BorderThickness="1"/>
-                    <Button Content="Обновить" Grid.Column="1" Margin="5" BorderThickness="1"/>
-                    <Button Content="Удалить" Grid.Column="3" Margin="5" BorderThickness="1"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewStockItemCommand}" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Удалить" />
+                    </StackPanel>
 
-                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.StockItems}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.StockItems}" Grid.Row="1">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
@@ -125,8 +147,14 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="Курс валют">
-                <Grid Background="#FFE5E5E5">
+            <TabItem>
+
+                <TabItem.Header>
+                    <TextBlock Text="Курс валют"
+                     Style="{StaticResource HeaderTextBlockStyle}"/>
+                </TabItem.Header>
+
+                <Grid>
                     <Grid.Resources>
                         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="currencyDataProvider">
                             <ObjectDataProvider.MethodParameters>
@@ -152,7 +180,7 @@
                         <ColumnDefinition Width="0.15*"></ColumnDefinition>
                     </Grid.ColumnDefinitions>
 
-                    
+
                     <Button Content="Удалить" HorizontalAlignment="Left" Margin="289,183,0,0" VerticalAlignment="Top" Grid.Column="1"/>
 
                     <!--<StackPanel Grid.Row="0" Grid.ColumnSpan="4" Orientation="Horizontal" VerticalAlignment="Center">
@@ -162,10 +190,10 @@
                         <TextBox Grid.Column="1">gdhfhgf</TextBox>
                     </StackPanel>-->
 
-                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Валюта: </TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Валюта:</TextBlock>
                     <ComboBox ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedItem="{Binding Path=SelectedCurrency}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></ComboBox>
 
-                    <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Курс: </TextBlock>
+                    <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Курс:</TextBlock>
                     <TextBox Text="{Binding Path=CurrencyExchangeRate, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
 
                     <Button Content="Добавить" Command="{Binding AddNewExchangeRateCommand}" BorderThickness="1" Grid.Row="3" Grid.Column="3"/>
@@ -180,8 +208,6 @@
                 </Grid>
             </TabItem>
         </TabControl>
-
-
-        <!--<ListView x:Name="OrdersList" Margin="0,22,-0.4,0" Grid.Column="12" HorizontalAlignment="Left"/>-->
+        
     </Grid>
 </Window>
