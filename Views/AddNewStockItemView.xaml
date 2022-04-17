@@ -51,7 +51,8 @@
         <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Title, Mode=TwoWay}"></TextBox>
 
         <TextBlock Grid.Row="1" Grid.Column="0">Производитель</TextBlock>
-        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" ItemsSource="{Binding CurrenciesList}" SelectedValue="{Binding Currency, Mode=TwoWay}"></ComboBox>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False"></TextBox>
+        <Button Grid.Row="1" Grid.Column="2" Width="16" Height="16" Margin="0,0,2,0" HorizontalAlignment="Right" FontWeight="Heavy">...</Button>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Описание</TextBlock>
         <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Title, Mode=TwoWay}" Height="92" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
@@ -65,8 +66,8 @@
         <TextBlock Grid.Row="5" Grid.Column="0">Цена продажи</TextBlock>
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding RetailPrice, Mode=TwoWay}"></TextBox>
 
-        <TextBlock Grid.Row="6" Grid.Column="0">Количество</TextBlock>
-        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Quantity, Mode=TwoWay}"></TextBox>
+        <TextBlock Grid.Row="6" Grid.Column="0">Остаток</TextBlock>
+        <TextBox Grid.Row="6" Grid.Column="1" IsEnabled="False"></TextBox>
 
         <StackPanel Grid.Row="8" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource WindowButton}" Command="{Binding AddItemCommand}">Сохранить</Button>

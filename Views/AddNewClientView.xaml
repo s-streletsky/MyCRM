@@ -94,7 +94,7 @@
 
         <StackPanel Grid.Row="8" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource WindowButton}" Command="{Binding SaveClientCommand}">Сохранить</Button>
-            <Button Style="{StaticResource WindowButton}" Command="{Binding SaveClientCommand}">Отмена</Button>
+            <Button Style="{StaticResource WindowButton}" >Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>

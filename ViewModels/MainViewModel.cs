@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CRM.Models;
+using CRM.Views;
 using CRM.WPF;
 using Newtonsoft.Json;
 
@@ -17,6 +18,7 @@ namespace CRM.ViewModels
         public RelayCommand AddNewExchangeRateCommand { get; }
         public RelayCommand AddNewClientCommand { get; }
         public RelayCommand EditClientCommand { get; }
+        public RelayCommand EditManufacturerCommand { get; }
         public RelayCommand AddNewStockItemCommand { get; }
         public RelayCommand DeleteClientCommand { get; }
         public RelayCommand LoadClientsCommand { get; }
@@ -31,6 +33,7 @@ namespace CRM.ViewModels
         private OrderRepository orderRepo = new OrderRepository();
         private ExchangeRateRepository exRateRepo = new ExchangeRateRepository();
         private StockRepository stockRepo = new StockRepository();
+        private ManufacturerRepository mfRepo = new ManufacturerRepository();
 
         public MainViewModel()
         {
@@ -39,6 +42,8 @@ namespace CRM.ViewModels
             DeleteClientCommand = new RelayCommand(OnDeleteItem_Click);
 
             AddNewStockItemCommand = new RelayCommand(OnAddNewStockItem_Click);
+
+            EditManufacturerCommand = new RelayCommand(OnManufacturersButton_Click);
             
             LoadClientsCommand = new RelayCommand(OnLoadClients_Click);
             LoadOrdersCommand = new RelayCommand(OnLoadOrders_Click);
@@ -52,6 +57,8 @@ namespace CRM.ViewModels
             exRateRepo.GetAll(Database);
 
             stockRepo.GetAll(Database);
+
+            mfRepo.GetAll(Database);
 
             this.SelectedClient = null;
             //Database.Currencies.Add(new Currency("UAH"));
@@ -158,6 +165,15 @@ namespace CRM.ViewModels
         {
             var newExRate = exRateRepo.Add(new ExchangeRate(SelectedCurrency, CurrencyExchangeRate));
             Database.ExchangeRates.Insert(0, newExRate);
+        }
+
+        public void OnManufacturersButton_Click(object _)
+        {
+            var vm = new ManufacturerViewModel(Database, mfRepo);
+            ManufacturerView ManufacturerView = new ManufacturerView();
+
+            ManufacturerView.DataContext = vm;
+            ManufacturerView.Show();
         }
     }
 }

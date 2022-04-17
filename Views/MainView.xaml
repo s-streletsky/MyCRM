@@ -13,11 +13,20 @@
 
     <Window.Resources>
         <Style x:Key="TopRowButton">
-            <Setter Property="Button.Width" Value="80" />
+            <Setter Property="Button.Width" Value="100" />
             <Setter Property="Button.Margin" Value="0,0,5,5" />
         </Style>
 
-        <Style x:Key="InnerGrid">
+        <Style TargetType="DataGrid">
+            <Setter Property="HorizontalGridLinesBrush" Value="LightGray"></Setter>
+            <Setter Property="VerticalGridLinesBrush" Value="LightGray" />
+        </Style>
+
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="FontWeight" Value="Bold"></Setter>
+        </Style>    
+
+            <Style x:Key="InnerGrid">
             <Setter Property="Grid.Margin" Value="5" />
         </Style>
 
@@ -131,6 +140,7 @@
                         <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewStockItemCommand}" />
                         <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
                         <Button Style="{StaticResource TopRowButton}" Content="Удалить" />
+                        <Button Style="{StaticResource TopRowButton}" Content="Производители"  Command="{Binding EditManufacturerCommand}" />
                     </StackPanel>
 
                     <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.StockItems}" Grid.Row="1">
@@ -154,7 +164,7 @@
                      Style="{StaticResource HeaderTextBlockStyle}"/>
                 </TabItem.Header>
 
-                <Grid>
+                <Grid Style="{StaticResource InnerGrid}">
                     <Grid.Resources>
                         <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="currencyDataProvider">
                             <ObjectDataProvider.MethodParameters>

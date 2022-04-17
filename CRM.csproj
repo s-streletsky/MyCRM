@@ -88,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ManufacturerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -105,11 +109,16 @@
     <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Manufacturer.cs" />
+    <Compile Include="Models\ManufacturerRepository.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\StockItem.cs" />
     <Compile Include="Models\OrderRepository.cs" />
     <Compile Include="Models\StockRepository.cs" />
+    <Compile Include="ViewModels\ManufacturerViewModel.cs" />
+    <Compile Include="Views\ManufacturerView.xaml.cs">
+      <DependentUpon>ManufacturerView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="ViewModels\AddNewStockItemViewModel.cs" />
     <Compile Include="ViewModels\AddNewClientViewModel.cs" />
