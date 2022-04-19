@@ -4,95 +4,50 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CRM.Models;
+using CRM.Views;
 using CRM.WPF;
 
 namespace CRM.ViewModels
 {
     class AddNewStockItemViewModel : ViewModelBase
     {
+        private int id;
+        private string name;
+        private int manufacturerId;
+        private string description;
+        private Currency currency;
+        private string notes;
+        private float purchasePrice;
+        private float retailPrice;
+        private float quantity;
+
         public RelayCommand AddNewItemCommand { get; }
+        public RelayCommand AddManufacturerCommand { get; }
 
-        public MainViewModel mainViewModel;
+        public int Id { get { return id; } set { id = value; OnPropertyChanged(); } }
+        public string Name { get { return name; } set { name = value; OnPropertyChanged(); } }
+        public int ManufacturerId { get { return manufacturerId; } set { manufacturerId = value; OnPropertyChanged(); } }
+        public string Description { get { return description; } set { description = value; OnPropertyChanged(); } }
+        public Currency Currency { get { return currency; } set { currency = value; OnPropertyChanged(); } }
+        public string Notes { get { return notes; } set { notes = value; OnPropertyChanged(); } }
+        public float PurchasePrice { get { return purchasePrice; } set { purchasePrice = value; OnPropertyChanged(); } }
+        public float RetailPrice { get { return retailPrice; } set { retailPrice = value; OnPropertyChanged(); } }
+        public float Quantity { get { return quantity; } set { quantity = value; OnPropertyChanged(); } }
+        public Database Database { get; set; }
+        public StockRepository StockRepo { get; set; }
+        public ManufacturerRepository ManufacturerRepo { get; set; }
 
-        string title;
-        string currency;
-        string notes;
-        decimal purchasePrice;
-        decimal retailPrice;
-        double quantity;
-
-        public List<string> CurrenciesList { get; set; } = new List<string>();
-        public int Id { get; set; }
-        public string Title
+        public AddNewStockItemViewModel() { }
+        public AddNewStockItemViewModel(Database db, StockRepository sr, ManufacturerRepository mfr)
         {
-            get { return title; }
-            set
-            {
-                title = value;
-                OnPropertyChanged();
-
-            }
+            Database = db;
+            StockRepo = sr;
+            ManufacturerRepo = mfr;
+            AddNewItemCommand = new RelayCommand(OnAddNewItemButtonClick);
+            AddManufacturerCommand = new RelayCommand(OnAddManufacturerButtonClick);
         }
 
-        public string Currency { 
-            get { return currency; }
-            set { 
-                currency = value;
-                OnPropertyChanged();
-            } 
-        }
-        public string Notes
-        {
-            get { return notes; }
-            set
-            {
-                notes = value;
-                OnPropertyChanged();
-            }
-        }
-        public decimal PurchasePrice
-        {
-            get { return purchasePrice; }
-            set {
-                purchasePrice = value;
-                OnPropertyChanged();
-            }
-        }
-        public decimal RetailPrice
-        {
-            get { return retailPrice; }
-            set
-            {
-                retailPrice = value;
-                OnPropertyChanged();
-            }
-        }
-        public double Quantity
-        {
-            get { return quantity; }
-            set {
-                quantity = value;
-                OnPropertyChanged();
-            } 
-        }
-
-        public AddNewStockItemViewModel()
-        {
-
-        }
-
-        public AddNewStockItemViewModel(MainViewModel mainViewModel)
-        {
-            this.mainViewModel = mainViewModel;
-            AddNewItemCommand = new RelayCommand(OnAddNewItemButton_Click);
-
-            //foreach (var currency in mainViewModel.Database.Currencies)
-            //{
-            //    CurrenciesList.Add(currency.Code);
-            //}
-        }
-
-        void OnAddNewItemButton_Click(object _)
+        void OnAddNewItemButtonClick(object _)
         {
             //var item = new StockItem(Id, Title, Currency, PurchasePrice, RetailPrice, Quantity);
             //mainViewModel.Database.StockItems.Add(item);
@@ -102,6 +57,15 @@ namespace CRM.ViewModels
             //PurchasePrice = 0;
             //Quantity = 0;
             //Id = Id + 1;
+        }
+
+        private void OnAddManufacturerButtonClick(object _)
+        {
+            var vm = new ManufacturerViewModel(Database, ManufacturerRepo);
+            ManufacturerView ManufacturerView = new ManufacturerView();
+
+            ManufacturerView.DataContext = vm;
+            ManufacturerView.Show();
         }
     }
 }

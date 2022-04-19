@@ -21,13 +21,13 @@ namespace CRM.ViewModels
         public RelayCommand AddManufacturerCommand { get; }
         public RelayCommand EditManufacturerCommand { get; }
         public RelayCommand DeleteManufacturerCommand { get; }
-        public RelayCommand AddOkCommand { get; }
+        public RelayCommand AddOKCommand { get; }
         public RelayCommand AddCancelCommand { get; }
-        public RelayCommand EditOkCommand { get; }
+        public RelayCommand EditOKCommand { get; }
         public RelayCommand EditCancelCommand { get; }
         public Manufacturer SelectedManufacturer { get { return selectedManufacturer; } set { selectedManufacturer = value; OnPropertyChanged(); } }
         public Database Database { get; set; }
-        public ManufacturerRepository MfRepo { get; set; }
+        public ManufacturerRepository ManufacturerRepo { get; set; }
         public bool IsListBoxEnabled { get { return isListBoxEnabled; } set { isListBoxEnabled = value; OnPropertyChanged(); } }
         public string IsAddStackPanelVisible { get { return isAddStackPanelVisible; } set { isAddStackPanelVisible = value; OnPropertyChanged(); } }
         public bool IsAddStackPanelEnabled { get { return isAddStackPanelEnabled; } set { isAddStackPanelEnabled = value; OnPropertyChanged(); } }
@@ -35,51 +35,58 @@ namespace CRM.ViewModels
         public string Name { get { return name; } set { name = value; OnPropertyChanged(); } }
         private List<string> Visibility { get; set; } = new List<string>() { "Hidden", "Visible" };
 
-        public ManufacturerViewModel(Database db, ManufacturerRepository mfRepo)
-        { 
-            MfRepo = mfRepo;
+        public ManufacturerViewModel(Database db, ManufacturerRepository mfr)
+        {
+            Database = db;
+            ManufacturerRepo = mfr;
+
             IsListBoxEnabled = true;
             IsAddStackPanelEnabled = false;
             IsAddStackPanelVisible = Visibility[1];
             IsEditStackPanelVisible = Visibility[0];
+
             AddManufacturerCommand = new RelayCommand(OnAddMenuButtonClick);
             EditManufacturerCommand = new RelayCommand(OnEditMenuButtonClick);
             DeleteManufacturerCommand = new RelayCommand(OnDeleteMenuButtonClick);
-            AddOkCommand = new RelayCommand(OnAddOkButtonClick);
+            AddOKCommand = new RelayCommand(OnAddOKButtonClick);
             AddCancelCommand = new RelayCommand(OnAddCancelButtonClick);
-            EditOkCommand = new RelayCommand(OnEditOkButtonClick);
-            EditCancelCommand = new RelayCommand(OnEditCancelButtonClick);
-
-            this.Database = db;
+            EditOKCommand = new RelayCommand(OnEditOKButtonClick);
+            EditCancelCommand = new RelayCommand(OnEditCancelButtonClick);           
         }
 
         public void OnAddMenuButtonClick(object _)
         {
             DisableListBox();
-
-            Name = "-- Новый производитель --";
+            Name = "Новый производитель";
         }
 
         public void OnEditMenuButtonClick(object _)
         {
-            IsAddStackPanelVisible = Visibility[0];
-            IsEditStackPanelVisible = Visibility[1];
-            DisableListBox();
-            Name = SelectedManufacturer.Name;
+            if (SelectedManufacturer != null)
+            {
+                IsAddStackPanelVisible = Visibility[0];
+                IsEditStackPanelVisible = Visibility[1];
+
+                DisableListBox();
+                Name = SelectedManufacturer.Name;
+            }
+            else
+            {
+                Name = "Выберите запись из списка ниже!";
+            }           
         }
 
         public void OnDeleteMenuButtonClick(object _)
         {
-            
+            ManufacturerRepo.Delete(SelectedManufacturer);
+            var i = Database.Manufacturers.IndexOf(SelectedManufacturer);
+            Database.Manufacturers.RemoveAt(i);
         }
 
-        public void OnAddOkButtonClick(object _)
+        public void OnAddOKButtonClick(object _)
         {
-            var newManufacturer = MfRepo.Add(new Manufacturer(-1, Name));
+            var newManufacturer = ManufacturerRepo.Add(new Manufacturer(-1, Name));
             Database.Manufacturers.Add(newManufacturer);
-
-            Name = "";
-
             EnableListBox();
         }
 
@@ -88,14 +95,19 @@ namespace CRM.ViewModels
             EnableListBox();
         }
 
-        public void OnEditOkButtonClick(object _)
+        public void OnEditOKButtonClick(object _)
         {
+            SelectedManufacturer.Name = Name;
+            ManufacturerRepo.Update(SelectedManufacturer);
 
+            HideEditStackPanel();
+            EnableListBox();
         }
 
         public void OnEditCancelButtonClick(object _)
         {
-
+            HideEditStackPanel();
+            EnableListBox();
         }
 
         private void EnableListBox()
@@ -109,6 +121,12 @@ namespace CRM.ViewModels
         {
             IsListBoxEnabled = false;
             IsAddStackPanelEnabled = true;            
+        }
+
+        private void HideEditStackPanel()
+        {
+            IsAddStackPanelVisible = Visibility[1];
+            IsEditStackPanelVisible = Visibility[0];
         }
     }
 }

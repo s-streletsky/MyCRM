@@ -26,7 +26,15 @@ namespace CRM.Models
 
         public void Delete(Manufacturer item)
         {
-            throw new NotImplementedException();
+            var manufacturer = item;
+
+            using (var cmd = DbConnection.Open())
+            {
+                string deleteManufacturer = "DELETE FROM manufacturers WHERE id=" + $"{manufacturer.Id}";
+
+                cmd.CommandText = deleteManufacturer;
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public Manufacturer Get(Manufacturer item)
@@ -54,7 +62,18 @@ namespace CRM.Models
 
         public Manufacturer Update(Manufacturer item)
         {
-            throw new NotImplementedException();
+            var manufacturer = item;
+
+            using (var cmd = DbConnection.Open())
+            {
+                string updateManufacturer = "UPDATE manufacturers SET name=" + $"'{manufacturer.Name}' " +
+                                            "WHERE id=" + $"'{manufacturer.Id}'";
+
+                cmd.CommandText = updateManufacturer;
+                cmd.ExecuteNonQuery();
+
+                return manufacturer;
+            }
         }
     }
 }

@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM"
+        xmlns:models="clr-namespace:CRM.Models"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:AddNewStockItemViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
@@ -28,8 +30,15 @@
         </Style>
     </Window.Resources>
 
-            <Grid Margin="15">
-        
+    <Grid Margin="15">
+        <Grid.Resources>
+            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="currencyDataProvider">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:Currency" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </Grid.Resources>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="24"></RowDefinition>
             <RowDefinition Height="24"></RowDefinition>
@@ -45,20 +54,21 @@
             <ColumnDefinition Width="120"></ColumnDefinition>
             <ColumnDefinition Width="0.3*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="20"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         
         <TextBlock Grid.Row="0" Grid.Column="0">Наименование</TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Title, Mode=TwoWay}"></TextBox>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
 
         <TextBlock Grid.Row="1" Grid.Column="0">Производитель</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsEnabled="False"></TextBox>
-        <Button Grid.Row="1" Grid.Column="2" Width="16" Height="16" Margin="0,0,2,0" HorizontalAlignment="Right" FontWeight="Heavy">...</Button>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" IsReadOnly="True" Margin="0,2,2,2"></TextBox>
+        <Button Grid.Row="1" Grid.Column="3" Command="{Binding Path=AddManufacturerCommand}" Margin="0,2,0,2" FontWeight="Heavy">...</Button>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Описание</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Title, Mode=TwoWay}" Height="92" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Title, Mode=TwoWay}" Height="92" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap" AcceptsReturn="True"></TextBox>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Валюта</TextBlock>
-        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding CurrenciesList}" SelectedValue="{Binding Currency, Mode=TwoWay}"></ComboBox>
+        <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedValue="{Binding Currency, Mode=TwoWay}"></ComboBox>
 
         <TextBlock Grid.Row="4" Grid.Column="0">Цена закупки</TextBlock>
         <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding PurchasePrice, Mode=TwoWay}"></TextBox>
@@ -67,9 +77,9 @@
         <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding RetailPrice, Mode=TwoWay}"></TextBox>
 
         <TextBlock Grid.Row="6" Grid.Column="0">Остаток</TextBlock>
-        <TextBox Grid.Row="6" Grid.Column="1" IsEnabled="False"></TextBox>
+        <TextBox Grid.Row="6" Grid.Column="1" IsReadOnly="True" Text="{Binding Path=Quantity}"></TextBox>
 
-        <StackPanel Grid.Row="8" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource WindowButton}" Command="{Binding AddItemCommand}">Сохранить</Button>
             <Button Style="{StaticResource WindowButton}" Command="{Binding SaveClientCommand}">Отмена</Button>
         </StackPanel>

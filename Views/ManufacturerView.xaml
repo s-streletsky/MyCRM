@@ -11,7 +11,7 @@
         Title="Производители" Height="450" Width="380">
     
     <Window.Resources>
-        <Style x:Key="TopRowButton">
+        <Style x:Key="ActionButton">
             <Setter Property="Button.Width" Value="60" />
             <Setter Property="Button.Margin" Value="5,0,0,10" />
         </Style>
@@ -24,23 +24,19 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <!--<StackPanel Grid.Row="0" Orientation="Horizontal">
-            <TextBox Width="260" HorizontalAlignment="Left" Margin="0,0,0,5" Height="20" ></TextBox>
-        </StackPanel>-->
-
         <!--Add new manufacturer Start-->
         <StackPanel Grid.Row="0" Orientation="Horizontal" IsEnabled="{Binding Path=IsAddStackPanelEnabled}" Visibility="{Binding Path=IsAddStackPanelVisible}">
             <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}" Margin="0,0,0,10"></TextBox>
-            <Button Style="{StaticResource TopRowButton}" Content="OK" Command="{Binding Path=AddOkCommand}" />
-            <Button Style="{StaticResource TopRowButton}" Content="Отмена" Command="{Binding Path=AddCancelCommand}"/>
+            <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=AddOKCommand}" />
+            <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=AddCancelCommand}"/>
         </StackPanel>
         <!--Add new manufacturer End-->
 
         <!--Edit manufacturer Start-->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding Path=IsEditStackPanelVisible}">
             <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}" Margin="0,0,0,10"></TextBox>
-            <Button Style="{StaticResource TopRowButton}" Content="OK" Command="{Binding Path=EditOkCommand}" />
-            <Button Style="{StaticResource TopRowButton}" Content="Отмена" Command="{Binding Path=EditCancelCommand}"/>
+            <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=EditOKCommand}" />
+            <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=EditCancelCommand}"/>
         </StackPanel>
         <!--Edit manufacturer End-->
 

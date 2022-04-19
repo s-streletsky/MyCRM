@@ -128,7 +128,7 @@ namespace CRM.ViewModels
 
         public void OnAddNewStockItem_Click(object _)
         {
-            var vm = new AddNewStockItemViewModel(this);
+            var vm = new AddNewStockItemViewModel(Database, stockRepo, mfRepo);
             AddNewItemView addNewItemView = new AddNewItemView();
 
             if (Database.StockItems.Count == 0)
