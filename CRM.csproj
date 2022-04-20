@@ -112,12 +112,18 @@
     <Compile Include="Models\ManufacturerRepository.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\StockArrival.cs" />
+    <Compile Include="Models\StockArrivalRepository.cs" />
     <Compile Include="Models\StockItem.cs" />
     <Compile Include="Models\OrderRepository.cs" />
     <Compile Include="Models\StockRepository.cs" />
     <Compile Include="ViewModels\ManufacturerViewModel.cs" />
+    <Compile Include="ViewModels\StockArrivalViewModel.cs" />
     <Compile Include="Views\ManufacturerView.xaml.cs">
       <DependentUpon>ManufacturerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StockArrivalView.xaml.cs">
+      <DependentUpon>StockArrivalView.xaml</DependentUpon>
     </Compile>
     <Compile Include="WPF\RelayCommand.cs" />
     <Compile Include="ViewModels\AddNewStockItemViewModel.cs" />
@@ -134,6 +140,10 @@
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\StockArrivalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

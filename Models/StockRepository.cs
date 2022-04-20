@@ -11,12 +11,31 @@ namespace CRM.Models
     {
         public StockItem Add(StockItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                string addItem = "INSERT INTO stock_items (name, manufacturer_id, description, currency_id, purchase_price, retail_price, quantity) VALUES "
+                    + $"('{item.Name}', '{item.Manufacturer.Id}', '{item.Description}', '{(int)item.Currency}', '{item.PurchasePrice}', '{item.RetailPrice}', '{item.Quantity}')";
+
+                cmd.CommandText = addItem;
+                cmd.ExecuteNonQuery();
+
+                string getItemId = "SELECT id FROM stock_items WHERE name=" + $"'{item.Name}'";
+                cmd.CommandText = getItemId;
+                item.Id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return item;
+            }
         }
 
         public void Delete(StockItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                string deleteItem = "DELETE FROM stock_items WHERE id=" + $"{item.Id}";
+
+                cmd.CommandText = deleteItem;
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public StockItem Get(StockItem item)
@@ -28,7 +47,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM products";
+                cmd.CommandText = "SELECT * FROM stock_items";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
@@ -36,7 +55,7 @@ namespace CRM.Models
                 {
                     var id = sqlReader.GetInt32(0);
                     var name = sqlReader.GetString(1);
-                    var manufacturer = sqlReader.GetInt32(2);
+                    var manufacturer = db.Manufacturers.First(x => x.Id == sqlReader.GetInt32(2));
                     var description = sqlReader.GetString(3);
                     var currency = (Currency)sqlReader.GetInt32(4);
                     var purchasePrice = sqlReader.GetFloat(5);
@@ -50,7 +69,21 @@ namespace CRM.Models
 
         public StockItem Update(StockItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                string updateItem = "UPDATE stock_items SET name=" + $"'{item.Name}', " +
+                                                         "manufacturer_id=" + $"{item.Manufacturer.Id}, " +
+                                                         "description=" + $"'{item.Description}', " +
+                                                         "currency_id=" + $"{(int)item.Currency}, " +
+                                                         "purchase_price=" + $"{item.PurchasePrice}, " +
+                                                         "retail_price=" + $"'{item.RetailPrice}' " +
+                                     "WHERE id=" + $"{item.Id}";
+
+                cmd.CommandText = updateItem;
+                cmd.ExecuteNonQuery();
+
+                return item;
+            }
         }
     }
 }

@@ -12,8 +12,6 @@ namespace CRM.ViewModels
 {
     class AddNewClientViewModel : ViewModelBase
     {
-        //public RelayCommand AddClientCommand { get; }
-        //public RelayCommand EditClientCommand { get; }
         public RelayCommand SaveClientCommand { get; }
         public RelayCommand AddNewOrderCommand { get; }
 
@@ -147,31 +145,13 @@ namespace CRM.ViewModels
             set { database = value; OnPropertyChanged(); }
         }
 
-        //public AddNewClientViewModel()
-        //{
-        //    SelectedClient = new Client(1);
-        //    AddClientCommand = new RelayCommand(OnAddClientButtonClick);
-        //}
-
-        //public AddNewClientViewModel(MainViewModel mainViewModel)
-        //{
-        //    AddClientCommand = new RelayCommand(OnAddClientButtonClick);
-        //    EditClientCommand = new RelayCommand(OnClientMouseDoubleClick);
-        //    AddNewOrderCommand = new RelayCommand(OnAddNewOrderButtonClick);
-        //    this.mainViewModel = mainViewModel;
-        //}
-
         public AddNewClientViewModel(Client selectedClient, Database database)
         {
-            //this.selectedClientClone = JsonConvert.DeserializeObject<Client>(selectedClient);
-            //AddClientCommand = new RelayCommand(OnAddClientButtonClick);
-            //EditClientCommand = new RelayCommand(OnClientMouseDoubleClick);
-            AddNewOrderCommand = new RelayCommand(OnAddNewOrderButtonClick);
-            SaveClientCommand = new RelayCommand(OnSaveClientButtonClick);
             this.Database = database;
             this.SelectedClient = selectedClient;
 
-            //LoadClientOrders(database);
+            AddNewOrderCommand = new RelayCommand(OnAddNewOrderButtonClick);
+            SaveClientCommand = new RelayCommand(OnSaveClientButtonClick);
         }
 
         void OnSaveClientButtonClick(object _)
@@ -189,25 +169,9 @@ namespace CRM.ViewModels
             else
             {
                 SetClientProperties();
-
-                var client = clientRepo.Update(SelectedClient);
-                var i = Database.Clients.IndexOf(SelectedClient);
-                Database.Clients[i] = client;
+                clientRepo.Update(SelectedClient);
             }
         }
-
-        //void OnAddClientButtonClick(object _)
-        //{
-        //    // Close Window / Set Window Result (true)
-        //    //var client = new Client(Id, Name, Nickname, Phone, Email, Country, City, Address, ShippingMethod, Index);
-        //    //mainViewModel.Database.Clients.Add(client);
-
-        //    //Name = null;
-        //    //Nickname = null;
-        //    //Phone = null;
-        //    //Email = null;
-        //    //Id = Id + 1;
-        //}
 
         private void OnClientMouseDoubleClick(object _)
         {
@@ -233,16 +197,5 @@ namespace CRM.ViewModels
             selectedClient.PostalCode = PostalCode;
             selectedClient.Notes = Notes;
         }
-
-        //private void LoadClientOrders(Database db)
-        //{
-        //    foreach (var order in db.Orders)
-        //    {
-        //        if (this.Id == order.Client.Id)
-        //        {
-        //            orders.Add(order);
-        //        }
-        //    }
-        //}
     }
 }

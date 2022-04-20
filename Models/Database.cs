@@ -14,6 +14,7 @@ namespace CRM.Models
         public ObservableCollection<Order> Orders { get; set; } = new ObservableCollection<Order>();
         public ObservableCollection<Item> OrdersItems { get; set; } = new ObservableCollection<Item>();
         public ObservableCollection<StockItem> StockItems { get; set; } = new ObservableCollection<StockItem>();
+        public ObservableCollection<StockArrival> StockArrivals { get; set; } = new ObservableCollection<StockArrival>();
         public ObservableCollection<ExchangeRate> ExchangeRates { get; set; } = new ObservableCollection<ExchangeRate>();
         public ObservableCollection<Manufacturer> Manufacturers { get; set; } = new ObservableCollection<Manufacturer>();
     }

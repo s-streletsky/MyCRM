@@ -54,6 +54,7 @@ namespace CRM.ViewModels
             EditCancelCommand = new RelayCommand(OnEditCancelButtonClick);           
         }
 
+        // Кнопки "Добавить/Изменить/Удалить"
         public void OnAddMenuButtonClick(object _)
         {
             DisableListBox();
@@ -83,6 +84,7 @@ namespace CRM.ViewModels
             Database.Manufacturers.RemoveAt(i);
         }
 
+        // Кнопки добавления новой записи
         public void OnAddOKButtonClick(object _)
         {
             var newManufacturer = ManufacturerRepo.Add(new Manufacturer(-1, Name));
@@ -95,6 +97,7 @@ namespace CRM.ViewModels
             EnableListBox();
         }
 
+        // Кнопки редактирования записи
         public void OnEditOKButtonClick(object _)
         {
             SelectedManufacturer.Name = Name;
@@ -110,6 +113,7 @@ namespace CRM.ViewModels
             EnableListBox();
         }
 
+        // Вспомогательные методы
         private void EnableListBox()
         {
             IsListBoxEnabled = true;

@@ -38,7 +38,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = @"SELECT * FROM exchange_rates ORDER BY date DESC";
+                cmd.CommandText = "SELECT * FROM exchange_rates ORDER BY date DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 

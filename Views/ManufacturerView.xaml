@@ -13,20 +13,23 @@
     <Window.Resources>
         <Style x:Key="ActionButton">
             <Setter Property="Button.Width" Value="60" />
-            <Setter Property="Button.Margin" Value="5,0,0,10" />
+            <Setter Property="Button.Margin" Value="5,0,0,0" />
+        </Style>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="0,0,0,15"></Setter>
         </Style>
     </Window.Resources>
     
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="35"></RowDefinition>
             <RowDefinition Height="19"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
         <!--Add new manufacturer Start-->
         <StackPanel Grid.Row="0" Orientation="Horizontal" IsEnabled="{Binding Path=IsAddStackPanelEnabled}" Visibility="{Binding Path=IsAddStackPanelVisible}">
-            <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}" Margin="0,0,0,10"></TextBox>
+            <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
             <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=AddOKCommand}" />
             <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=AddCancelCommand}"/>
         </StackPanel>
@@ -34,7 +37,7 @@
 
         <!--Edit manufacturer Start-->
         <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding Path=IsEditStackPanelVisible}">
-            <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}" Margin="0,0,0,10"></TextBox>
+            <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
             <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=EditOKCommand}" />
             <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=EditCancelCommand}"/>
         </StackPanel>

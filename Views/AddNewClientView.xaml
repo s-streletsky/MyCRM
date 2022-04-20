@@ -37,7 +37,7 @@
             <RowDefinition Height="24"></RowDefinition>
             <RowDefinition Height="24"></RowDefinition>
             <RowDefinition Height="0.1*"></RowDefinition>
-            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="19"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="42"></RowDefinition>
         </Grid.RowDefinitions>
@@ -76,11 +76,17 @@
         <TextBlock Grid.Row="4" Grid.Column="3" VerticalAlignment="Center">Индекс</TextBlock>
         <TextBox Text="{Binding Path=PostalCode, Mode=TwoWay}" Grid.Row="4" Grid.Column="4" HorizontalAlignment="Stretch" Width="{Binding ElementName=col4, Path=Width}" VerticalAlignment="Center"></TextBox>
 
-        <StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal">
+        <!--<StackPanel Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="5" Orientation="Horizontal">
             <Button Style="{StaticResource OrderButton}" Command="{Binding AddNewOrderCommand}">Добавить</Button>
             <Button Style="{StaticResource OrderButton}" Command="{Binding AddNewOrderCommand}">Изменить</Button>
             <Button Style="{StaticResource OrderButton}" Command="{Binding AddNewOrderCommand}">Удалить</Button>
-        </StackPanel>
+        </StackPanel>-->
+
+        <Menu Grid.Row="6" Grid.ColumnSpan="5">
+            <MenuItem Header="Добавить"></MenuItem>
+            <MenuItem Header="Изменить"></MenuItem>
+            <MenuItem Header="Удалить"></MenuItem>
+        </Menu>
 
         <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders, Mode=TwoWay}" >
             <DataGrid.Columns>

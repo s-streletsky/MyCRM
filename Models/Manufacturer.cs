@@ -9,9 +9,10 @@ namespace CRM.Models
 {
     internal class Manufacturer : ViewModelBase
     {
+        private int? id;
         private string name;
 
-        public int? Id { get; set; }
+        public int? Id { get { return id; } set { id = value; OnPropertyChanged(); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged(); } }
 
         public Manufacturer() { }
