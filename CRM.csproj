@@ -88,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\ExchangeRatesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\ManufacturerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -117,8 +121,12 @@
     <Compile Include="Models\StockItem.cs" />
     <Compile Include="Models\OrderRepository.cs" />
     <Compile Include="Models\StockRepository.cs" />
+    <Compile Include="ViewModels\ExchangeRatesViewModel.cs" />
     <Compile Include="ViewModels\ManufacturerViewModel.cs" />
     <Compile Include="ViewModels\StockArrivalViewModel.cs" />
+    <Compile Include="Views\ExchangeRatesView.xaml.cs">
+      <DependentUpon>ExchangeRatesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ManufacturerView.xaml.cs">
       <DependentUpon>ManufacturerView.xaml</DependentUpon>
     </Compile>

@@ -9,28 +9,32 @@ namespace CRM.Models
 {
     internal class ExchangeRateRepository : IRepository<ExchangeRate>
     {
-        public ExchangeRate Add(ExchangeRate item)
+        public ExchangeRate Add(ExchangeRate rate)
         {
-            var newExRate = item;
-
             using (var cmd = DbConnection.Open())
             {
-                string addNewExRate = "INSERT INTO exchange_rates (date, currency_id, exchange_rate) VALUES "
-                                     + $"('{newExRate.Date}', '{(int)newExRate.Currency}', '{newExRate.Rate}')";
+                string addNewExRate = "INSERT INTO exchange_rates (date, currency_id, value) VALUES "
+                                     + $"('{rate.Date}', {(int)rate.Currency}, {rate.Value})";
 
                 cmd.CommandText = addNewExRate;
                 cmd.ExecuteNonQuery();
 
-                return newExRate;
+                return rate;
             }
         }
 
-        public void Delete(ExchangeRate item)
+        public void Delete(ExchangeRate rate)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                string deleteRate = "DELETE FROM exchange_rates WHERE date=" + $"'{rate.Date}'";
+
+                cmd.CommandText = deleteRate;
+                cmd.ExecuteNonQuery();
+            }
         }
 
-        public ExchangeRate Get(ExchangeRate item)
+        public ExchangeRate Get(ExchangeRate rate)
         {
             throw new NotImplementedException();
         }
@@ -46,14 +50,14 @@ namespace CRM.Models
                 {
                     var date = DateTime.Parse(sqlReader.GetString(0));
                     var currency = (Currency)sqlReader.GetInt32(1);
-                    var rate = sqlReader.GetDecimal(2);
+                    var value = sqlReader.GetFloat(2);
 
-                    db.ExchangeRates.Add(new ExchangeRate(date, currency, rate));
+                    db.ExchangeRates.Add(new ExchangeRate(date, currency, value));
                 }
             }
         }
 
-        public ExchangeRate Update(ExchangeRate item)
+        public ExchangeRate Update(ExchangeRate rate)
         {
             throw new NotImplementedException();
         }

@@ -24,6 +24,7 @@ namespace CRM.ViewModels
         public RelayCommand DeleteStockItemCommand { get; }
         public RelayCommand EditManufacturerCommand { get; }
         public RelayCommand EditStockArrivalCommand { get; }
+        public RelayCommand EditExchangeRatesCommand { get; }
         public RelayCommand LoadClientsCommand { get; }
         public RelayCommand LoadOrdersCommand { get; }
         public Database Database { get; set; }
@@ -31,7 +32,7 @@ namespace CRM.ViewModels
         public StockItem SelectedStockItem { get; set; }
         public Currency SelectedCurrency { get; set; }
 
-        public decimal CurrencyExchangeRate { get; set; }
+        public float CurrencyExchangeRate { get; set; }
 
         private ClientRepository clientRepo = new ClientRepository();
         private OrderRepository orderRepo = new OrderRepository();
@@ -52,6 +53,7 @@ namespace CRM.ViewModels
 
             EditManufacturerCommand = new RelayCommand(OnManufacturersClick);
             EditStockArrivalCommand = new RelayCommand(OnStockArrivalClick);
+            EditExchangeRatesCommand = new RelayCommand(OnExchangeRatesClick);
             
             LoadClientsCommand = new RelayCommand(OnLoadClients_Click);
             LoadOrdersCommand = new RelayCommand(OnLoadOrders_Click);
@@ -163,6 +165,15 @@ namespace CRM.ViewModels
 
             manufacturerView.DataContext = vm;
             manufacturerView.Show();
+        }
+
+        private void OnExchangeRatesClick(object _)
+        {
+            var vm = new ExchangeRatesViewModel(Database, exRateRepo);
+            ExchangeRatesView exchangeRatesView = new ExchangeRatesView();
+
+            exchangeRatesView.DataContext = vm;
+            exchangeRatesView.Show();
         }
 
         public void OnStockArrivalClick(object _)

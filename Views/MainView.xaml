@@ -45,14 +45,14 @@
 
         <TabControl>
             <TabItem>
-                
+
                 <TabItem.Header>
                     <TextBlock Text="Клиенты"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
                 </TabItem.Header>
 
                 <Grid Style="{StaticResource InnerGrid}">
-                    
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="19"></RowDefinition>
                         <RowDefinition></RowDefinition>
@@ -62,7 +62,9 @@
                         <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewClientCommand}" />
                         <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
                         <Button Style="{StaticResource TopRowButton}" Content="Удалить"  Command="{Binding DeleteClientCommand}" />
-                        --><!--<Button Style="{StaticResource TopRowButton}" Content="Загрузить" Command="{Binding LoadDatabaseCommand}" />--><!--
+                        -->
+                    <!--<Button Style="{StaticResource TopRowButton}" Content="Загрузить" Command="{Binding LoadDatabaseCommand}" />-->
+                    <!--
                     </StackPanel>-->
 
                     <Menu Grid.Row="0">
@@ -72,11 +74,11 @@
                     </Menu>
 
                     <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Clients, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
-                        
+
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
                         </DataGrid.InputBindings>
-                        
+
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />
@@ -86,18 +88,18 @@
                             <DataGridTextColumn Header="Shipping Method" Binding="{Binding Path=ShippingMethod}" />
                             <DataGridTextColumn Header="Postal Code" Binding="{Binding Path=PostalCode}" />
                         </DataGrid.Columns>
-                        
+
                     </DataGrid>
                 </Grid>
             </TabItem>
-            
+
             <TabItem>
 
                 <TabItem.Header>
                     <TextBlock Text="Заказы"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
                 </TabItem.Header>
-                
+
                 <Grid Style="{StaticResource InnerGrid}">
 
                     <Grid.RowDefinitions>
@@ -111,7 +113,7 @@
                         <Button Style="{StaticResource TopRowButton}" Content="Удалить"  Command="{Binding DeleteOrderCommand}" />
                         <!--<Button Style="{StaticResource TopRowButton}" Content="Загрузить" Command="{Binding LoadOrdersCommand}" />-->
                     </StackPanel>
-                                        
+
                     <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Orders, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
@@ -134,7 +136,7 @@
                     <TextBlock Text="Склад"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
                 </TabItem.Header>
-                
+
                 <Grid Style="{StaticResource InnerGrid}">
 
                     <Grid.RowDefinitions>
@@ -154,7 +156,7 @@
                         <MenuItem Header="Изменить" Command="{Binding Path=EditStockItemCommand}"></MenuItem>
                         <MenuItem Header="Удалить" Command="{Binding Path=DeleteStockItemCommand}"></MenuItem>
                         <MenuItem Header="Производители" Command="{Binding Path=EditManufacturerCommand}"></MenuItem>
-                        <MenuItem Header="Курс валют"></MenuItem>
+                        <MenuItem Header="Курс валют" Command="{Binding Path=EditExchangeRatesCommand}"></MenuItem>
                         <MenuItem Header="Приход товара" Command="{Binding Path=EditStockArrivalCommand}"></MenuItem>
                     </Menu>
 
@@ -172,67 +174,6 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem>
-
-                <TabItem.Header>
-                    <TextBlock Text="Курс валют"
-                     Style="{StaticResource HeaderTextBlockStyle}"/>
-                </TabItem.Header>
-
-                <Grid Style="{StaticResource InnerGrid}">
-                    <Grid.Resources>
-                        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="currencyDataProvider">
-                            <ObjectDataProvider.MethodParameters>
-                                <x:Type TypeName="models:Currency" />
-                            </ObjectDataProvider.MethodParameters>
-                        </ObjectDataProvider>
-                    </Grid.Resources>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="0.06*"></RowDefinition>
-                        <RowDefinition Height="0.06*"></RowDefinition>
-                        <RowDefinition Height="0.06*"></RowDefinition>
-                        <RowDefinition Height="0.06*"></RowDefinition>
-                        <RowDefinition Height="0.06*"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.20*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.20*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.20*"></ColumnDefinition>
-                        <ColumnDefinition Width="0.20*" Name="col3"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                        <ColumnDefinition Width="0.15*"></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-
-
-                    <Button Content="Удалить" HorizontalAlignment="Left" Margin="289,183,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-
-                    <!--<StackPanel Grid.Row="0" Grid.ColumnSpan="4" Orientation="Horizontal" VerticalAlignment="Center">
-                        <Button Content="Добавить" Command="{Binding AddNewItemCommand}" BorderThickness="1" />
-
-                        <TextBlock>Валюта:</TextBlock>
-                        <TextBox Grid.Column="1">gdhfhgf</TextBox>
-                    </StackPanel>-->
-
-                    <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Валюта:</TextBlock>
-                    <ComboBox ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedItem="{Binding Path=SelectedCurrency}" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></ComboBox>
-
-                    <TextBlock Grid.Row="2" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,5,0">Курс:</TextBlock>
-                    <TextBox Text="{Binding Path=CurrencyExchangeRate, Mode=TwoWay}" Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" Width="{Binding ElementName=col3, Path=Width}" VerticalAlignment="Center"></TextBox>
-
-                    <Button Content="Добавить" Command="{Binding AddNewExchangeRateCommand}" BorderThickness="1" Grid.Row="3" Grid.Column="3"/>
-
-                    <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.ExchangeRates, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Grid.RowSpan="6">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Date" Binding="{Binding Path=Date}" />
-                            <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" />
-                            <DataGridTextColumn Header="Rate" Binding="{Binding Path=Rate}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
-            </TabItem>
         </TabControl>
-        
     </Grid>
 </Window>
