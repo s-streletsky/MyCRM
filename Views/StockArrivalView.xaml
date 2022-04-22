@@ -29,7 +29,8 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.ColumnSpan="2" IsEnabled="True" Margin="0,0,0,15">
+        <!--Add new arrival Start-->
+        <Grid Grid.ColumnSpan="2" IsEnabled="{Binding Path=IsAddGridEnabled}" Visibility="{Binding Path=IsAddGridVisible}" Margin="0,0,0,15">
             <Grid.RowDefinitions>
                 <RowDefinition Height="25"></RowDefinition>
                 <RowDefinition Height="20"></RowDefinition>
@@ -46,22 +47,44 @@
             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
                 <TextBox Width="100" Text="{Binding Path=Quantity}"></TextBox>
                 <Button Command="{Binding Path=AddOKCommand}">ОК</Button>
-                <Button>Отмена</Button>
+                <Button Command="{Binding Path=AddCancelCommand}">Отмена</Button>
             </StackPanel>
         </Grid>
+        <!--Add new arrival End-->
 
-        
+        <!--Edit arrival Start-->
+        <Grid Grid.ColumnSpan="2" Visibility="{Binding Path=IsEditGridVisible}" Margin="0,0,0,15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition  Width="0.35*"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-        <Menu Grid.Row="1" Grid.ColumnSpan="2">
-            <MenuItem Header="Добавить"></MenuItem>
-            <MenuItem Header="Изменить"></MenuItem>
-            <MenuItem Header="Удалить"></MenuItem>
+            <TextBlock Grid.Row="0" Grid.Column="0">Наименование</TextBlock>
+            <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Database.StockItems}" DisplayMemberPath="Name" IsEditable="True" IsTextSearchEnabled="True" SelectedItem="{Binding Path=StockItem}" IsEnabled="False"></ComboBox>
+
+            <TextBlock Grid.Row="1">Количество</TextBlock>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
+                <TextBox Width="100" Text="{Binding Path=Quantity}"></TextBox>
+                <Button Command="{Binding Path=EditOKCommand}">ОК</Button>
+                <Button Command="{Binding Path=EditCancelCommand}">Отмена</Button>
+            </StackPanel>
+        </Grid>
+        <!--Edit arrival End-->
+
+        <Menu Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding Path=IsDataGridEnabled}">
+            <MenuItem Header="Добавить" Command="{Binding Path=AddStockArrivalCommand}"></MenuItem>
+            <MenuItem Header="Изменить" Command="{Binding Path=EditStockArrivalCommand}"></MenuItem>
+            <MenuItem Header="Удалить" Command="{Binding Path=DeleteStockArrivalCommand}"></MenuItem>
         </Menu>
 
-        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Database.StockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}">
+        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Database.StockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
-                <DataGridTextColumn Header="Item" Binding="{Binding Path=StockItem.Name}"/>
+                <DataGridTextColumn Header="Item" Binding="{Binding Path=StockItem.Name}" MinWidth="200"/>
                 <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}"/>
             </DataGrid.Columns>
         </DataGrid>

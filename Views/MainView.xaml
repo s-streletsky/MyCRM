@@ -158,7 +158,7 @@
                         <MenuItem Header="Приход товара" Command="{Binding Path=EditStockArrivalCommand}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedStockItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.StockItems}" Grid.Row="1">
+                    <DataGrid SelectedItem="{Binding Path=SelectedStockItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.StockItems}" Grid.Row="1">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Name" Binding="{Binding Path=Name}" />

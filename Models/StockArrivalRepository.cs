@@ -9,27 +9,33 @@ namespace CRM.Models
 {
     internal class StockArrivalRepository : IRepository<StockArrival>
     {
-        public StockArrival Add(StockArrival item)
+        public StockArrival Add(StockArrival stockArrival)
         {
             using (var cmd = DbConnection.Open())
             {
-                string addArrival = "INSERT INTO stock_arrivals (date, stock_item_id, quantity) VALUES "
-                    + $"('{item.Date}', {item.StockItem.Id}, {item.Quantity})";
+                string addStockArrival = "INSERT INTO stock_arrivals (date, stock_item_id, quantity) VALUES "
+                    + $"('{stockArrival.Date}', {stockArrival.StockItem.Id}, {stockArrival.Quantity})";
 
-                cmd.CommandText = addArrival;
+                cmd.CommandText = addStockArrival;
                 cmd.ExecuteNonQuery();
 
-                string getItemId = "SELECT id FROM stock_arrivals WHERE date=" + $"'{item.Date}'";
+                string getItemId = "SELECT id FROM stock_arrivals WHERE date=" + $"'{stockArrival.Date}'";
                 cmd.CommandText = getItemId;
-                item.Id = Convert.ToInt32(cmd.ExecuteScalar());
+                stockArrival.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
-                return item;
+                return stockArrival;
             }
         }
 
-        public void Delete(StockArrival item)
+        public void Delete(StockArrival stockArrival)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                string deleteStockArrival = "DELETE FROM stock_arrivals WHERE id=" + $"{stockArrival.Id}";
+
+                cmd.CommandText = deleteStockArrival;
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public StockArrival Get(StockArrival item)
@@ -57,9 +63,18 @@ namespace CRM.Models
             }
         }
 
-        public StockArrival Update(StockArrival item)
+        public StockArrival Update(StockArrival stockArrival)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                string updateStockArrival = "UPDATE stock_arrivals SET quantity=" + $"'{stockArrival.Quantity}' " +
+                                            "WHERE id=" + $"'{stockArrival.Id}'";
+
+                cmd.CommandText = updateStockArrival;
+                cmd.ExecuteNonQuery();
+
+                return stockArrival;
+            }
         }
     }
 }

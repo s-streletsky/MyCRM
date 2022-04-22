@@ -64,6 +64,11 @@ namespace CRM.Models
 
                     db.StockItems.Add(new StockItem(id, name, manufacturer, description, currency, purchasePrice, retailPrice, quantity));
                 }
+
+                foreach (var item in db.StockItems)
+                {
+                    UpdateQuantity(item);
+                }
             }
         }
 
@@ -83,6 +88,36 @@ namespace CRM.Models
                 cmd.ExecuteNonQuery();
 
                 return item;
+            }
+        }
+
+        public void UpdateQuantity(StockItem item)
+        {
+            var quantityList = new List<float>();
+
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = "SELECT * FROM stock_arrivals WHERE stock_item_id=" + $"{item.Id}";
+
+                SQLiteDataReader sqlReader = cmd.ExecuteReader();
+
+                while (sqlReader.Read())
+                {
+                    var quantity = sqlReader.GetFloat(3);
+
+                    quantityList.Add(quantity);
+                }
+
+                sqlReader.Close();
+
+                var sum = quantityList.Sum();
+                
+                item.Quantity = sum;
+
+                string updateQuantity = "UPDATE stock_items SET quantity=" + $"{sum} " + "WHERE id=" + $"{item.Id}";
+
+                cmd.CommandText = updateQuantity;
+                cmd.ExecuteNonQuery();
             }
         }
     }

@@ -167,7 +167,7 @@ namespace CRM.ViewModels
 
         public void OnStockArrivalClick(object _)
         {
-            var vm = new StockArrivalViewModel(Database, stockArrivalRepo);
+            var vm = new StockArrivalViewModel(Database, stockArrivalRepo, stockRepo);
             StockArrivalView stockArrivalView = new StockArrivalView();
 
             stockArrivalView.DataContext = vm;
