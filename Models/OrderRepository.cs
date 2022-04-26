@@ -37,7 +37,7 @@ namespace CRM.Models
                     var id = sqlReader.GetInt32(0);
                     var created = DateTime.Parse(sqlReader.GetString(1));
                     var client = db.Clients.First(x => x.Id == sqlReader.GetInt32(2));
-                    var status = (Status)sqlReader.GetInt32(3);
+                    var status = (OrderStatus)sqlReader.GetInt32(3);
                     var total = sqlReader.GetDecimal(4);
                     var notes = sqlReader.GetString(5);
 

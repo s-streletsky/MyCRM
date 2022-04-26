@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CRM"
         xmlns:vm="clr-namespace:CRM.ViewModels"
-        d:DataContext="{d:DesignInstance Type=vm:AddNewClientViewModel, IsDesignTimeCreatable=True}"
+        d:DataContext="{d:DesignInstance Type=vm:ClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="Редактирование карточки клиента" Height="500" Width="780">
 

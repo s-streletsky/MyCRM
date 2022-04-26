@@ -1,0 +1,103 @@
+﻿<Window x:Class="CRM.Views.OrderView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        xmlns:local="clr-namespace:CRM.Views"
+        xmlns:models="clr-namespace:CRM.Models"
+        xmlns:vm="clr-namespace:CRM.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:OrderViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        Title="Заказ" Height="450" Width="700">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="IsReadOnly" Value="True"></Setter>
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+            <Setter Property="Height" Value="24"></Setter>
+            <Setter Property="Margin" Value="0,0,0,2"></Setter>
+        </Style>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"></Setter>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="0,0,0,2"></Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="15">
+        <Grid.Resources>
+            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="orderStatusDataProvider">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:OrderStatus" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
+        </Grid.Resources>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+            <ColumnDefinition Width="0.6*"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition Height="26"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="0.5*"></RowDefinition>
+            <RowDefinition Height="19"></RowDefinition>
+            <RowDefinition Height="2*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0">Клиент</TextBlock>
+        <Grid Grid.Column="1" Grid.ColumnSpan="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <TextBox Text="{Binding Path=Client.Name, Mode=TwoWay}"></TextBox>
+            <Button Grid.Column="1" Width="60" Command="{Binding Path=ChooseClientCommand}">Выбрать</Button>
+        </Grid>
+        
+        <TextBlock Grid.Row="1">Дата</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Date, Mode=OneWay, StringFormat=\{0:dd.MM.yy HH:mm\}}" VerticalContentAlignment="Center"></TextBox>
+        
+        <TextBlock Grid.Row="2">Статус</TextBlock>
+        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource orderStatusDataProvider}}" SelectedItem="{Binding Path=OrderStatus}"></ComboBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="3">К оплате</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="4"></TextBox>
+        
+        <TextBlock Grid.Row="2" Grid.Column="3">Оплачено</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="4"></TextBox>
+        
+        <TextBlock Grid.Row="3" Grid.Column="3">Долг</TextBlock>
+        <TextBox Grid.Row="3" Grid.Column="4"></TextBox>
+        
+        <TextBlock Grid.Row="5" Grid.Column="3">Расходы</TextBlock>
+        <TextBox Grid.Row="5" Grid.Column="4"></TextBox>
+        
+        <TextBlock Grid.Row="6" Grid.Column="3">Прибыль</TextBlock>
+        <TextBox Grid.Row="6" Grid.Column="4"></TextBox>
+
+        <TextBlock Grid.Row="7">Примечания</TextBlock>
+        <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Stretch" Height="48"></TextBox>
+
+        <Menu Grid.Row="9" Grid.ColumnSpan="5">
+            <MenuItem Header="Добавить" Command="{Binding AddManufacturerCommand}"></MenuItem>
+            <MenuItem Header="Изменить" Command="{Binding EditManufacturerCommand}"></MenuItem>
+            <MenuItem Header="Удалить" Command="{Binding DeleteManufacturerCommand}"></MenuItem>
+        </Menu>
+
+        <DataGrid Grid.Row="10" Grid.ColumnSpan="5" AutoGenerateColumns="False" IsReadOnly="True">
+            
+        </DataGrid>
+    </Grid>
+</Window>

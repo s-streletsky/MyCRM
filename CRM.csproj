@@ -47,10 +47,22 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Toolkit.Mvvm, Version=7.1.0.0, Culture=neutral, PublicKeyToken=4aff67a105548ee2, processorArchitecture=MSIL">
+      <HintPath>packages\Microsoft.Toolkit.Mvvm.7.1.2\lib\netstandard2.0\Microsoft.Toolkit.Mvvm.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite, Version=1.0.115.5, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -61,6 +73,19 @@
     </Reference>
     <Reference Include="System.Data.SQLite.Linq, Version=1.0.115.5, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>packages\System.Data.SQLite.Linq.1.0.115.5\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -80,11 +105,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\AddNewStockItemView.xaml">
+    <Page Include="Views\ChooseClientView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AddNewClientView.xaml">
+    <Page Include="Views\OrderItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StockItemView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ClientView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -110,19 +143,30 @@
     <Compile Include="Models\DbConnection.cs" />
     <Compile Include="Models\ExchangeRate.cs" />
     <Compile Include="Models\ExchangeRateRepository.cs" />
+    <Compile Include="Models\ICloseable.cs" />
     <Compile Include="Models\IRepository.cs" />
     <Compile Include="Models\Item.cs" />
     <Compile Include="Models\Manufacturer.cs" />
     <Compile Include="Models\ManufacturerRepository.cs" />
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
+    <Compile Include="Models\OrderItemRepository.cs" />
     <Compile Include="Models\StockArrival.cs" />
     <Compile Include="Models\StockArrivalRepository.cs" />
     <Compile Include="Models\StockItem.cs" />
     <Compile Include="Models\OrderRepository.cs" />
-    <Compile Include="Models\StockRepository.cs" />
+    <Compile Include="Models\StockItemRepository.cs" />
+    <Compile Include="ViewModels\ChooseClientViewModel.cs" />
     <Compile Include="ViewModels\ExchangeRatesViewModel.cs" />
     <Compile Include="ViewModels\ManufacturerViewModel.cs" />
+    <Compile Include="ViewModels\OrderItemViewModel.cs" />
+    <Compile Include="Views\ChooseClientView.xaml.cs">
+      <DependentUpon>ChooseClientView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OrderItemView.xaml.cs">
+      <DependentUpon>OrderItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\OrderViewModel.cs" />
     <Compile Include="ViewModels\StockArrivalViewModel.cs" />
     <Compile Include="Views\ExchangeRatesView.xaml.cs">
       <DependentUpon>ExchangeRatesView.xaml</DependentUpon>
@@ -130,24 +174,30 @@
     <Compile Include="Views\ManufacturerView.xaml.cs">
       <DependentUpon>ManufacturerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\OrderView.xaml.cs">
+      <DependentUpon>OrderView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StockArrivalView.xaml.cs">
       <DependentUpon>StockArrivalView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WPF\RelayCommand.cs" />
-    <Compile Include="ViewModels\AddNewStockItemViewModel.cs" />
-    <Compile Include="ViewModels\AddNewClientViewModel.cs" />
+    <Compile Include="ViewModels\StockItemViewModel.cs" />
+    <Compile Include="ViewModels\ClientViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="WPF\ViewModelBase.cs" />
-    <Compile Include="Views\AddNewStockItemView.xaml.cs">
-      <DependentUpon>AddNewStockItemView.xaml</DependentUpon>
+    <Compile Include="Views\StockItemView.xaml.cs">
+      <DependentUpon>StockItemView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AddNewClientView.xaml.cs">
-      <DependentUpon>AddNewClientView.xaml</DependentUpon>
+    <Compile Include="Views\ClientView.xaml.cs">
+      <DependentUpon>ClientView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainView.xaml.cs">
       <DependentUpon>MainView.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Views\OrderView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\StockArrivalView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    enum Status
+    enum OrderStatus
     {
         Ready = 1,
         Awaiting_dispatch,
@@ -22,7 +22,7 @@ namespace CRM.Models
         public int? Id { get; set; }
         public DateTime? Created { get; set; }
         public Client Client { get; set; }
-        public Status Status { get; set; }
+        public OrderStatus Status { get; set; }
         public decimal Total { get; set; }
         public string Notes { get; set; }
 
@@ -31,7 +31,7 @@ namespace CRM.Models
             Created = DateTime.Today;
         }
 
-        public Order(int? id, DateTime? created, Client client, Status status, decimal total, string notes)
+        public Order(int? id, DateTime? created, Client client, OrderStatus status, decimal total, string notes)
         {
             this.Id = id;
             this.Created = created;

@@ -6,21 +6,19 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    internal class OrderItem : Item
+    internal class OrderItem
     {
-        public int OrderId { get; set; }
-        public int ProductId { get; set; }
-        public double Discount { get; set; }
-        public double Total { get; set; }
-        public double Profit { get; set; }
+        public int Id { get; set; }
+        public Order Order { get; set; }
+        public StockItem StockItem { get; set; }
+        public float Quantity { get; set; }
+        public float Price { get; set; }
+        public float Discount { get; set; }
+        public float Total { get; set; }
 
-        public OrderItem(int id, string title, decimal purchasePrice, decimal retailPrice, double quantity)
+        public OrderItem()
         {
-            //this.Id = id;
-            //this.Title = title;
-            //this.PurchasePrice = purchasePrice;
-            //this.RetailPrice = retailPrice;
-            //this.Quantity = quantity;
+
         }
     }
 }

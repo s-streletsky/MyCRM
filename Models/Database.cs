@@ -12,7 +12,7 @@ namespace CRM.Models
     {
         public ObservableCollection<Client> Clients { get; set; } = new ObservableCollection<Client>();
         public ObservableCollection<Order> Orders { get; set; } = new ObservableCollection<Order>();
-        public ObservableCollection<Item> OrdersItems { get; set; } = new ObservableCollection<Item>();
+        public ObservableCollection<OrderItem> OrdersItems { get; set; } = new ObservableCollection<OrderItem>();
         public ObservableCollection<StockItem> StockItems { get; set; } = new ObservableCollection<StockItem>();
         public ObservableCollection<StockArrival> StockArrivals { get; set; } = new ObservableCollection<StockArrival>();
         public ObservableCollection<ExchangeRate> ExchangeRates { get; set; } = new ObservableCollection<ExchangeRate>();

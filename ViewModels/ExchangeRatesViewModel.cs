@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CRM.Models;
 using CRM.WPF;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace CRM.ViewModels
 {
@@ -34,14 +35,14 @@ namespace CRM.ViewModels
         }
 
         // Кнопка "Добавить"
-        private void OnAddExchangeRateClick(object _)
+        private void OnAddExchangeRateClick()
         {
             var newExRate = ExchangeRateRepo.Add(new ExchangeRate(SelectedCurrency, ExchangeRate));
             Database.ExchangeRates.Insert(0, newExRate);
         }
 
         // Кнопка "Удалить"
-        private void OnDeleteExchangeRateClick(object _)
+        private void OnDeleteExchangeRateClick()
         {
             ExchangeRateRepo.Delete(SelectedExchangeRate);
             var i = Database.ExchangeRates.IndexOf(SelectedExchangeRate);

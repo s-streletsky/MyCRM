@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CRM.WPF;
 using CRM.Models;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace CRM.ViewModels
 {
@@ -26,7 +27,7 @@ namespace CRM.ViewModels
         public RelayCommand EditCancelCommand { get; }
         public Database Database { get; set; }
         public StockArrivalRepository StockArrivalRepo { get; set;}
-        public StockRepository StockItemRepo { get; set; }
+        public StockItemRepository StockItemRepo { get; set; }
         public StockItem StockItem { get { return stockItem; } set { stockItem = value; OnPropertyChanged(); } }
         public float Quantity { get { return quantity; } set { quantity = value; OnPropertyChanged(); } }
         public StockArrival SelectedArrival { get; set; }
@@ -35,7 +36,7 @@ namespace CRM.ViewModels
         public string IsEditGridVisible { get { return isEditGridVisible; } set { isEditGridVisible = value; OnPropertyChanged(); } }
         public bool IsDataGridEnabled { get { return isDataGridEnabled; } set { isDataGridEnabled = value; OnPropertyChanged(); } }
 
-        public StockArrivalViewModel(Database db, StockArrivalRepository sar, StockRepository sir)
+        public StockArrivalViewModel(Database db, StockArrivalRepository sar, StockItemRepository sir)
         {
             Database = db;
             StockArrivalRepo = sar;
@@ -46,23 +47,23 @@ namespace CRM.ViewModels
             IsEditGridVisible = "Hidden";
             IsDataGridEnabled = true;
 
-            AddStockArrivalCommand = new RelayCommand(OnAddStockArrivalClick);
-            EditStockArrivalCommand = new RelayCommand(OnEditStockArrivalClick);
-            DeleteStockArrivalCommand = new RelayCommand(OnDeleteStockArrivalClick);
+            AddStockArrivalCommand = new RelayCommand(OnAddStockArrival);
+            EditStockArrivalCommand = new RelayCommand(OnEditStockArrival);
+            DeleteStockArrivalCommand = new RelayCommand(OnDeleteStockArrival);
 
-            AddOKCommand = new RelayCommand(OnAddOKButtonClick);
-            AddCancelCommand = new RelayCommand(OnAddCancelButtonClick);
-            EditOKCommand = new RelayCommand(OnEditOKButtonClick);
-            EditCancelCommand = new RelayCommand(OnEditCancelButtonClick);
+            AddOKCommand = new RelayCommand(OnAddOK);
+            AddCancelCommand = new RelayCommand(OnAddCancel);
+            EditOKCommand = new RelayCommand(OnEditOK);
+            EditCancelCommand = new RelayCommand(OnEditCancel);
         }
 
         // Кнопки "Добавить/Изменить/Удалить"
-        private void OnAddStockArrivalClick(object _)
+        private void OnAddStockArrival()
         {
             DisableDataGrid();
         }
 
-        private void OnEditStockArrivalClick(object _)
+        private void OnEditStockArrival()
         {
             Quantity = SelectedArrival.Quantity;
             StockItem = SelectedArrival.StockItem;
@@ -72,7 +73,7 @@ namespace CRM.ViewModels
             IsEditGridVisible = "Visible";
         }
 
-        private void OnDeleteStockArrivalClick(object _)
+        private void OnDeleteStockArrival()
         {
             StockArrivalRepo.Delete(SelectedArrival);
             StockItemRepo.UpdateQuantity(SelectedArrival.StockItem);
@@ -82,7 +83,7 @@ namespace CRM.ViewModels
         }
 
         // Кнопки добавления новой записи
-        private void OnAddOKButtonClick(object _)
+        private void OnAddOK()
         {
             var newArrival = StockArrivalRepo.Add(new StockArrival(StockItem, Quantity));
             Database.StockArrivals.Insert(0, newArrival);
@@ -92,14 +93,14 @@ namespace CRM.ViewModels
             EnableDataGrid();                        
         }
 
-        private void OnAddCancelButtonClick(object _)
+        private void OnAddCancel()
         {
             ClearEnteredData();
             EnableDataGrid();
         }
 
         // Кнопки редактирования записи
-        private void OnEditOKButtonClick(object _)
+        private void OnEditOK()
         {
             SelectedArrival.Quantity = Quantity;
             StockArrivalRepo.Update(SelectedArrival);
@@ -110,7 +111,7 @@ namespace CRM.ViewModels
             EnableDataGrid();
         }
 
-        private void OnEditCancelButtonClick(object _)
+        private void OnEditCancel()
         {
             ClearEnteredData();
             HideEditGrid();

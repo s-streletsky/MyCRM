@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using CRM.Models;
 using CRM.Views;
 using CRM.WPF;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace CRM.ViewModels
 {
-    class AddNewStockItemViewModel : ViewModelBase
+    class StockItemViewModel : ViewModelBase
     {
         private int id;
         private string name;
@@ -36,11 +37,11 @@ namespace CRM.ViewModels
         public string IsSaveNewButtonVisible { get; set; }
         public string IsSaveEditButtonVisible { get; set; }
         public Database Database { get; set; }
-        public StockRepository StockRepo { get; set; }
+        public StockItemRepository StockRepo { get; set; }
         public ManufacturerRepository ManufacturerRepo { get; set; }
 
-        public AddNewStockItemViewModel() { }
-        public AddNewStockItemViewModel(Database db, StockRepository sr, ManufacturerRepository mfr, StockItem si, string saveNewVis, string saveEditVis)
+        public StockItemViewModel() { }
+        public StockItemViewModel(Database db, StockItemRepository sr, ManufacturerRepository mfr, StockItem si, string saveNewVis, string saveEditVis)
         {
             Database = db;
             StockRepo = sr;
@@ -49,18 +50,18 @@ namespace CRM.ViewModels
             IsSaveNewButtonVisible = saveNewVis;
             IsSaveEditButtonVisible = saveEditVis;
 
-            SaveNewCommand = new RelayCommand(OnSaveNewButtonClick);
-            SaveEditCommand = new RelayCommand(OnSaveEditButtonClick);
+            SaveNewCommand = new RelayCommand(OnSaveNew);
+            SaveEditCommand = new RelayCommand(OnSaveEdit);
         }
 
-        private void OnSaveNewButtonClick(object _)
+        private void OnSaveNew()
         {
             var newItem = new StockItem(Name, Manufacturer, Description, Currency, PurchasePrice, RetailPrice);
             var i = StockRepo.Add(newItem);
             Database.StockItems.Add(i);
         }
 
-        private void OnSaveEditButtonClick(object _)
+        private void OnSaveEdit()
         {
             SelectedStockItem.Name = Name;
             SelectedStockItem.Manufacturer = Manufacturer;

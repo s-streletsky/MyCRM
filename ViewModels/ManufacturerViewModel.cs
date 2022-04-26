@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CRM.Models;
 using CRM.Views;
 using CRM.WPF;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace CRM.ViewModels
 {
@@ -55,13 +56,13 @@ namespace CRM.ViewModels
         }
 
         // Кнопки "Добавить/Изменить/Удалить"
-        public void OnAddMenuButtonClick(object _)
+        public void OnAddMenuButtonClick()
         {
             DisableListBox();
             Name = "Новый производитель";
         }
 
-        public void OnEditMenuButtonClick(object _)
+        public void OnEditMenuButtonClick()
         {
             if (SelectedManufacturer != null)
             {
@@ -77,7 +78,7 @@ namespace CRM.ViewModels
             }           
         }
 
-        public void OnDeleteMenuButtonClick(object _)
+        public void OnDeleteMenuButtonClick()
         {
             ManufacturerRepo.Delete(SelectedManufacturer);
             var i = Database.Manufacturers.IndexOf(SelectedManufacturer);
@@ -85,20 +86,20 @@ namespace CRM.ViewModels
         }
 
         // Кнопки добавления новой записи
-        public void OnAddOKButtonClick(object _)
+        public void OnAddOKButtonClick()
         {
             var newManufacturer = ManufacturerRepo.Add(new Manufacturer(-1, Name));
             Database.Manufacturers.Add(newManufacturer);
             EnableListBox();
         }
 
-        public void OnAddCancelButtonClick(object _)
+        public void OnAddCancelButtonClick()
         {
             EnableListBox();
         }
 
         // Кнопки редактирования записи
-        public void OnEditOKButtonClick(object _)
+        public void OnEditOKButtonClick()
         {
             SelectedManufacturer.Name = Name;
             ManufacturerRepo.Update(SelectedManufacturer);
@@ -107,7 +108,7 @@ namespace CRM.ViewModels
             EnableListBox();
         }
 
-        public void OnEditCancelButtonClick(object _)
+        public void OnEditCancelButtonClick()
         {
             HideEditStackPanel();
             EnableListBox();

@@ -103,20 +103,19 @@
                 <Grid Style="{StaticResource InnerGrid}">
 
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="26"></RowDefinition>
+                        <RowDefinition Height="19"></RowDefinition>
                         <RowDefinition></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewOrderCommand}" />
-                        <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
-                        <Button Style="{StaticResource TopRowButton}" Content="Удалить"  Command="{Binding DeleteOrderCommand}" />
-                        <!--<Button Style="{StaticResource TopRowButton}" Content="Загрузить" Command="{Binding LoadOrdersCommand}" />-->
-                    </StackPanel>
+                    <Menu Grid.Row="0">
+                        <MenuItem Header="Добавить" Command="{Binding Path=AddOrderCommand}"></MenuItem>
+                        <MenuItem Header="Изменить" Command="{Binding Path=EditOrderCommand}"></MenuItem>
+                        <MenuItem Header="Удалить" Command=""></MenuItem>
+                    </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Orders, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                    <DataGrid SelectedItem="{Binding Path=SelectedOrder, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Orders, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
                         <DataGrid.InputBindings>
-                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=EditOrderCommand}" />
                         </DataGrid.InputBindings>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
@@ -144,13 +143,6 @@
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
 
-                    <!--<StackPanel Orientation="Horizontal">
-                        <Button Style="{StaticResource TopRowButton}" Content="Добавить" Command="{Binding AddNewStockItemCommand}" />
-                        <Button Style="{StaticResource TopRowButton}" Content="Изменить" />
-                        <Button Style="{StaticResource TopRowButton}" Content="Удалить" />
-                        <Button Style="{StaticResource TopRowButton}" Content="Производители"  Command="{Binding EditManufacturerCommand}" />
-                    </StackPanel>-->
-
                     <Menu Grid.Row="0">
                         <MenuItem Header="Добавить" Command="{Binding Path=AddStockItemCommand}"></MenuItem>
                         <MenuItem Header="Изменить" Command="{Binding Path=EditStockItemCommand}"></MenuItem>
@@ -169,6 +161,37 @@
                             <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" />
                             <DataGridTextColumn Header="Purchase Price" Binding="{Binding Path=PurchasePrice}" />
                             <DataGridTextColumn Header="Retail Price" Binding="{Binding Path=RetailPrice}" />
+                            <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+
+                <TabItem.Header>
+                    <TextBlock Text="Позиции"
+                     Style="{StaticResource HeaderTextBlockStyle}"/>
+                </TabItem.Header>
+
+                <Grid Style="{StaticResource InnerGrid}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="19"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
+
+                    <Menu Grid.Row="0">
+                        <MenuItem Header="Добавить" Command=""></MenuItem>
+                        <MenuItem Header="Изменить" Command=""></MenuItem>
+                        <MenuItem Header="Удалить" Command=""></MenuItem>
+                    </Menu>
+
+                    <DataGrid SelectedItem="" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.OrdersItems}" Grid.Row="1">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Order Number" Binding="{Binding Path=OrderId}" />
+                            <!--<DataGridTextColumn Header="Client" />-->
+                            <DataGridTextColumn Header="Stock Item" Binding="{Binding Path=StockItemId}" />
                             <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}" />
                         </DataGrid.Columns>
                     </DataGrid>

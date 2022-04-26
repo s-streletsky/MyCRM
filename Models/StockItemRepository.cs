@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CRM.Models
 {
-    internal class StockRepository : IRepository<StockItem>
+    internal class StockItemRepository : IRepository<StockItem>
     {
         public StockItem Add(StockItem item)
         {
