@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,16 +12,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using CRM.Models;
 
 namespace CRM.Views
 {
     /// <summary>
-    /// Interaction logic for OrderView.xaml
+    /// Interaction logic for ChooseStockItemView.xaml
     /// </summary>
-    public partial class OrderView : Window, ICloseable
+    public partial class ChooseStockItemView : Window, ICloseable
     {
-        public OrderView()
+        public ChooseStockItemView()
         {
             InitializeComponent();
         }

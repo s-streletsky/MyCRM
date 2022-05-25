@@ -11,7 +11,34 @@ namespace CRM.Models
     {
         public OrderItem Add(OrderItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                //string addOrderItem = "INSERT INTO OrdersItems (order_id, stock_item_id, quantity, price, discount, total, profit, expenses, exchange_rate) VALUES "
+                //                + $"({item.Order.Id}, {item.StockItem.Id}, {item.Quantity}, {item.Price}, {item.Discount}, {item.Total}, {item.Profit}, {item.Expenses}, {item.ExchangeRate})";
+
+                //cmd.CommandText = addOrderItem;
+                //cmd.ExecuteNonQuery();
+
+                cmd.CommandText = "INSERT INTO OrdersItems (order_id, stock_item_id, quantity, price, discount, total, profit, expenses, exchange_rate) VALUES "
+                                + $"(@order_id, @stock_item_id, @quantity, @price, @discount, @total, @profit, @expenses, @exchange_rate)";
+                cmd.Parameters.AddWithValue("@order_id", item.Order.Id);
+                cmd.Parameters.AddWithValue("@stock_item_id", item.StockItem.Id);
+                cmd.Parameters.AddWithValue("@quantity", item.Quantity);
+                cmd.Parameters.AddWithValue("@price", item.Price);
+                cmd.Parameters.AddWithValue("@discount", item.Discount);
+                cmd.Parameters.AddWithValue("@total", item.Total);
+                cmd.Parameters.AddWithValue("@profit", item.Profit);
+                cmd.Parameters.AddWithValue("@expenses", item.Expenses);
+                cmd.Parameters.AddWithValue("@exchange_rate", item.ExchangeRate);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+                string getOrderId = "SELECT id FROM OrdersItems WHERE id = (SELECT MAX(id) FROM OrdersItems)";
+                cmd.CommandText = getOrderId;
+                item.Id = Convert.ToInt32(cmd.ExecuteScalar());
+
+                return item;
+            }
         }
 
         public void Delete(OrderItem item)
@@ -52,28 +79,54 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM clients";
+                cmd.CommandText = "SELECT * FROM OrdersItems";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
                 while (sqlReader.Read())
                 {
                     var id = sqlReader.GetInt32(0);
-                    var created = DateTime.Parse(sqlReader.GetString(1));
-                    var name = sqlReader.GetString(2);
-                    var nickname = sqlReader.GetString(3);
-                    var phone = sqlReader.GetString(4);
-                    var email = sqlReader.GetString(5);
-                    var country = (Country)sqlReader.GetInt32(6);
-                    var city = sqlReader.GetString(7);
-                    var address = sqlReader.GetString(8);
-                    var shippingMethod = (ShippingMethod)sqlReader.GetInt32(9);
-                    var postalCode = sqlReader.GetString(10);
-                    var notes = sqlReader.GetString(11);
 
-                    db.Clients.Add(new Client(id, created, name, nickname, phone, email, country, city, address, shippingMethod, postalCode, notes));
+                    var orderId = sqlReader.GetInt32(1);
+                    Order order = null;
+
+                    foreach (var item in db.Orders)
+                    {
+                        if (item.Id == orderId)
+                        {
+                            order = item;
+                            break;
+                        }
+                    }
+
+                    var stockItemId = sqlReader.GetInt32(2);
+                    StockItem stockItem = null;
+
+                    foreach (var item in db.StockItems)
+                    {
+                        if (item.Id == stockItemId)
+                        {
+                            stockItem = item;
+                            break;
+                        }
+                    }
+
+                    var quantity = sqlReader.GetFloat(3);
+                    var price = sqlReader.GetFloat(4);
+                    var discount = sqlReader.GetFloat(5);
+                    var total = sqlReader.GetFloat(6);
+                    var profit = sqlReader.GetFloat(7);
+                    var expenses = sqlReader.GetFloat(8);
+                    var exchange_rate = sqlReader.GetFloat(9);
+
+                    db.OrdersItems.Add(new OrderItem(id, order, stockItem, quantity, price, discount, total, profit, expenses, exchange_rate));
                 }
             }
+        }
+
+        public bool TryDelete(OrderItem item)
+        {
+            throw new NotImplementedException();
         }
 
         public OrderItem Update(OrderItem item)

@@ -50,7 +50,10 @@ namespace CRM.ViewModels
             Clients.Filter = new Predicate<object>(o => Filter(o as Client));
             Clients.Refresh();
         }
-
+        private bool Filter(Client client)
+        {
+            return Search == null || client.Name.IndexOf(Search, StringComparison.OrdinalIgnoreCase) != -1;
+        }
         private void CloseWindow(ICloseable window)
         {
             if (window != null)
@@ -59,11 +62,5 @@ namespace CRM.ViewModels
                 window.Close();
             }
         }
-
-        private bool Filter(Client client)
-        {
-            return Search == null || client.Name.IndexOf(Search, StringComparison.OrdinalIgnoreCase) != -1;
-        }
-
     }
 }

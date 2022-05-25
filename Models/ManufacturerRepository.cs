@@ -60,6 +60,11 @@ namespace CRM.Models
             }
         }
 
+        public bool TryDelete(Manufacturer item)
+        {
+            throw new NotImplementedException();
+        }
+
         public Manufacturer Update(Manufacturer item)
         {
             var manufacturer = item;

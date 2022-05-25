@@ -1,8 +1,10 @@
 ﻿<Window x:Class="CRM.Views.OrderView"
+        x:Name="OrderWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM.Views"
         xmlns:models="clr-namespace:CRM.Models"
@@ -54,6 +56,7 @@
             <RowDefinition Height="0.5*"></RowDefinition>
             <RowDefinition Height="19"></RowDefinition>
             <RowDefinition Height="2*"></RowDefinition>
+            <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
         <TextBlock Grid.Row="0">Клиент</TextBlock>
@@ -70,10 +73,10 @@
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Date, Mode=OneWay, StringFormat=\{0:dd.MM.yy HH:mm\}}" VerticalContentAlignment="Center"></TextBox>
         
         <TextBlock Grid.Row="2">Статус</TextBlock>
-        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource orderStatusDataProvider}}" SelectedItem="{Binding Path=OrderStatus}"></ComboBox>
+        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource orderStatusDataProvider}}" SelectedItem="{Binding Path=Status, Mode=TwoWay}"></ComboBox>
 
         <TextBlock Grid.Row="1" Grid.Column="3">К оплате</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="4"></TextBox>
+        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding Path=Total, Mode=OneWay}"></TextBox>
         
         <TextBlock Grid.Row="2" Grid.Column="3">Оплачено</TextBlock>
         <TextBox Grid.Row="2" Grid.Column="4"></TextBox>
@@ -82,22 +85,38 @@
         <TextBox Grid.Row="3" Grid.Column="4"></TextBox>
         
         <TextBlock Grid.Row="5" Grid.Column="3">Расходы</TextBlock>
-        <TextBox Grid.Row="5" Grid.Column="4"></TextBox>
+        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=Expenses, Mode=OneWay}"></TextBox>
         
         <TextBlock Grid.Row="6" Grid.Column="3">Прибыль</TextBlock>
-        <TextBox Grid.Row="6" Grid.Column="4"></TextBox>
+        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=Profit, Mode=OneWay}"></TextBox>
 
         <TextBlock Grid.Row="7">Примечания</TextBlock>
         <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" VerticalAlignment="Stretch" Height="48"></TextBox>
 
-        <Menu Grid.Row="9" Grid.ColumnSpan="5">
-            <MenuItem Header="Добавить" Command="{Binding AddManufacturerCommand}"></MenuItem>
-            <MenuItem Header="Изменить" Command="{Binding EditManufacturerCommand}"></MenuItem>
-            <MenuItem Header="Удалить" Command="{Binding DeleteManufacturerCommand}"></MenuItem>
+        <Menu Grid.Row="9" Grid.ColumnSpan="5" IsEnabled="{Binding Path=IsDataGridEnabled}">
+            <MenuItem Header="Добавить" Command="{Binding Path=AddStockItemCommand}"></MenuItem>
+            <MenuItem Header="Изменить" Command=""></MenuItem>
+            <MenuItem Header="Удалить" Command=""></MenuItem>
         </Menu>
 
-        <DataGrid Grid.Row="10" Grid.ColumnSpan="5" AutoGenerateColumns="False" IsReadOnly="True">
-            
+        <DataGrid Grid.Row="10" Grid.ColumnSpan="5" AutoGenerateColumns="False" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}" ItemsSource="{Binding Path=OrderItems}">
+            <!--<i:Interaction.Triggers>
+                <i:EventTrigger EventName="CollectionChanged">
+                    <i:InvokeCommandAction Command="{Binding Path=OrderItemsListChangedCommand}" />
+                </i:EventTrigger>
+            </i:Interaction.Triggers>-->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Product" Binding="{Binding Path=StockItem.Name}" />
+                <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Path=Price}"/>
+                <DataGridTextColumn Header="Discount" Binding="{Binding Path=Discount}"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding Path=Total}"/>
+            </DataGrid.Columns>
         </DataGrid>
+
+        <StackPanel Grid.Row="11" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Width="80" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=OrderWindow}">OK</Button>
+            <Button IsCancel="True">Отмена</Button>
+        </StackPanel>
     </Grid>
 </Window>

@@ -69,7 +69,7 @@
 
                     <Menu Grid.Row="0">
                         <MenuItem Header="Добавить" Command="{Binding AddClientCommand}"></MenuItem>
-                        <MenuItem Header="Изменить" Command="{Binding EditClientCommand}"></MenuItem>
+                        <MenuItem Header="Изменить" Command="{Binding EditClientCommand}" IsEnabled="{Binding Path=IsClientEditButtonEnabled}"></MenuItem>
                         <MenuItem Header="Удалить" Command="{Binding DeleteClientCommand}"></MenuItem>
                     </Menu>
 

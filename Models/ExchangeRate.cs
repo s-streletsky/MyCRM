@@ -14,6 +14,7 @@ namespace CRM.Models
     }
     internal class ExchangeRate
     {
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public Currency Currency { get; set; }
         public float Value { get; set; }
@@ -25,8 +26,9 @@ namespace CRM.Models
             Currency = currency;
             Value = value;
         }
-        public ExchangeRate(DateTime date, Currency currency, float value)
+        public ExchangeRate(int id, DateTime date, Currency currency, float value)
         {
+            Id = id;
             Date = date;
             Currency = currency;
             Value = value;

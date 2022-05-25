@@ -72,6 +72,11 @@ namespace CRM.Models
             }
         }
 
+        public bool TryDelete(StockItem item)
+        {
+            throw new NotImplementedException();
+        }
+
         public StockItem Update(StockItem item)
         {
             using (var cmd = DbConnection.Open())

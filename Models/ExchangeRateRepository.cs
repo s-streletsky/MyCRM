@@ -13,7 +13,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addNewExRate = "INSERT INTO exchange_rates (date, currency_id, value) VALUES "
+                string addNewExRate = "INSERT INTO ExchangeRates (date, currency_id, value) VALUES "
                                      + $"('{rate.Date}', {(int)rate.Currency}, {rate.Value})";
 
                 cmd.CommandText = addNewExRate;
@@ -27,7 +27,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string deleteRate = "DELETE FROM exchange_rates WHERE date=" + $"'{rate.Date}'";
+                string deleteRate = "DELETE FROM ExchangeRates WHERE date=" + $"'{rate.Date}'";
 
                 cmd.CommandText = deleteRate;
                 cmd.ExecuteNonQuery();
@@ -42,19 +42,25 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM exchange_rates ORDER BY date DESC";
+                cmd.CommandText = "SELECT * FROM ExchangeRates ORDER BY id DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
                 while (sqlReader.Read())
                 {
-                    var date = DateTime.Parse(sqlReader.GetString(0));
-                    var currency = (Currency)sqlReader.GetInt32(1);
-                    var value = sqlReader.GetFloat(2);
+                    var id = sqlReader.GetInt32(0);
+                    var date = DateTime.Parse(sqlReader.GetString(1));
+                    var currency = (Currency)sqlReader.GetInt32(2);
+                    var value = sqlReader.GetFloat(3);
 
-                    db.ExchangeRates.Add(new ExchangeRate(date, currency, value));
+                    db.ExchangeRates.Add(new ExchangeRate(id, date, currency, value));
                 }
             }
+        }
+
+        public bool TryDelete(ExchangeRate item)
+        {
+            throw new NotImplementedException();
         }
 
         public ExchangeRate Update(ExchangeRate rate)

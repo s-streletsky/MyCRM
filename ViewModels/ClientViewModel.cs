@@ -8,6 +8,8 @@ using CRM.Models;
 using CRM.WPF;
 using CRM.Views;
 using Microsoft.Toolkit.Mvvm.Input;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace CRM.ViewModels
 {
@@ -29,7 +31,7 @@ namespace CRM.ViewModels
         private string postalCode;
         private string notes;
 
-        private ObservableCollection<Order> orders = new ObservableCollection<Order>();
+        private ObservableCollection<Order> orders;
 
         private Client selectedClient;
         private Database database;
@@ -64,8 +66,7 @@ namespace CRM.ViewModels
             get { return email; } 
             set { email = value; 
                 OnPropertyChanged(); } 
-        }
-        public ObservableCollection<Order> Orders { get { return orders; } set { orders = value; OnPropertyChanged(); } }
+        }        
         public Country Country { 
             get { return country; } 
             set { country = value; 
@@ -101,7 +102,15 @@ namespace CRM.ViewModels
             set { selectedClient = value; 
                 OnPropertyChanged(); } 
         }
-        public Database Database { get { return database; } set { database = value; OnPropertyChanged(); } }
+        public Database Database {
+            get { return database; }
+            set { database = value;
+                OnPropertyChanged(); }
+        }
+        public ObservableCollection<Order> Orders {
+            get { return orders; }
+            set { orders = value; }
+        }
 
         public ClientViewModel() { }
         public ClientViewModel(Database db, Client sc, ClientRepository cr)
@@ -109,12 +118,13 @@ namespace CRM.ViewModels
             Database = db;
             SelectedClient = sc;
             clientRepo = cr;
+            Orders = new ObservableCollection<Order>();
 
-            AddOrderCommand = new RelayCommand(OnAddOrderClick);
-            SaveClientCommand = new RelayCommand(OnSaveClientClick);
+            AddOrderCommand = new RelayCommand(OnAddOrder);
+            SaveClientCommand = new RelayCommand(OnSaveClient);
         }
 
-        void OnSaveClientClick()
+        void OnSaveClient()
         {
             if (SelectedClient == null)
             {
@@ -138,7 +148,7 @@ namespace CRM.ViewModels
             SetClientProperties();
         }
 
-        private void OnAddOrderClick()
+        private void OnAddOrder()
         {
             //var order = new Order();
             //selectedClient.Orders.Add(order);

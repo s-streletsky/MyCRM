@@ -5,10 +5,8 @@ namespace CRM.Models
 {
     internal class ClientRepository : IRepository<Client>
     {
-        public Client Add(Client item)
+        public Client Add(Client client)
         {
-            var client = item;
-
             using (var cmd = DbConnection.Open())
             {
                 string addNewClient = "INSERT INTO clients (created, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes) VALUES "
@@ -25,10 +23,8 @@ namespace CRM.Models
             }
         }
 
-        public void Delete(Client item)
+        public void Delete(Client client)
         {
-            var client = item;
-
             using (var cmd = DbConnection.Open())
             {
                 string deleteClient = "DELETE FROM clients WHERE id=" + $"{client.Id}";
@@ -38,7 +34,7 @@ namespace CRM.Models
             }
         }
 
-        public Client Get(Client item)
+        public Client Get(Client client)
         {
             throw new NotImplementedException();
         }
@@ -71,10 +67,28 @@ namespace CRM.Models
             }
         }
 
-        public Client Update(Client item)
+        public bool TryDelete(Client client)
         {
-            var client = item;
+            using (var cmd = DbConnection.Open())
+            {
+                string exists = "SELECT 1 FROM orders WHERE client_id=" + $"{client.Id} LIMIT 1";
 
+                cmd.CommandText = exists;
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
+        public Client Update(Client client)
+        {
             using (var cmd = DbConnection.Open())
             {
                 string updateClient = "UPDATE clients SET name=" + $"'{client.Name}'," +

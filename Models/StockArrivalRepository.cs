@@ -63,6 +63,11 @@ namespace CRM.Models
             }
         }
 
+        public bool TryDelete(StockArrival item)
+        {
+            throw new NotImplementedException();
+        }
+
         public StockArrival Update(StockArrival stockArrival)
         {
             using (var cmd = DbConnection.Open())

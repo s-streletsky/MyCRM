@@ -11,6 +11,7 @@ namespace CRM.Models
         T Add(T item);
         T Get(T item);
         T Update(T item);
+        bool TryDelete(T item);
         void Delete(T item);
     }
 }

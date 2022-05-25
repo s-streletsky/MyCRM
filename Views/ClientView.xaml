@@ -88,7 +88,7 @@
             <MenuItem Header="Удалить"></MenuItem>
         </Menu>
 
-        <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders, Mode=TwoWay}" >
+        <DataGrid Grid.Row="7" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders}" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                 <DataGridTextColumn Header="Created" Binding="{Binding Path=Created}" />

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace CRM.ViewModels
     /// <summary>
     /// Interaction logic for OrderItemView.xaml
     /// </summary>
-    public partial class OrderItemView : Window
+    public partial class OrderItemView : Window, ICloseable
     {
         public OrderItemView()
         {

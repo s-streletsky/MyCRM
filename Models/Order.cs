@@ -19,22 +19,37 @@ namespace CRM.Models
     }
     class Order
     {
-        public int? Id { get; set; }
-        public DateTime? Created { get; set; }
+        private int id;
+        private DateTime? created;
+
+        public int Id { 
+            get { return id; }
+            set { id = value; }
+        }
+        public DateTime? Created { 
+            get { return created; }
+        }
         public Client Client { get; set; }
         public OrderStatus Status { get; set; }
-        public decimal Total { get; set; }
+        public float Total { get; set; }
         public string Notes { get; set; }
 
         public Order()
         {
-            Created = DateTime.Today;
+            created = DateTime.Now;
         }
 
-        public Order(int? id, DateTime? created, Client client, OrderStatus status, decimal total, string notes)
+        public Order(DateTime? created, Client client, OrderStatus status)
         {
-            this.Id = id;
-            this.Created = created;
+            this.created = created;
+            this.Client = client;
+            this.Status = status;
+        }
+
+        public Order(int id, DateTime? created, Client client, OrderStatus status, float total, string notes)
+        {
+            this.id = id;
+            this.created = created;
             this.Client = client;
             this.Status = status;
             this.Total = total;
