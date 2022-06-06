@@ -36,12 +36,12 @@ namespace CRM.ViewModels
         }
         public float RetailPrice {
             get { return retailPrice; } 
-            private set { retailPrice = value; 
+            set { retailPrice = value; 
                 OnPropertyChanged(); } 
         }
         public float PurchasePrice { 
             get { return purchasePrice; } 
-            private set { purchasePrice = value; 
+            set { purchasePrice = value; 
                 OnPropertyChanged(); } 
         }
         public float Quantity { 
@@ -69,14 +69,19 @@ namespace CRM.ViewModels
             private set { profit = value; 
                 OnPropertyChanged(); } 
         }
-        public float ExchangeRate { get { return exchangeRate; } }
+        public float ExchangeRate { 
+            get { return exchangeRate; } 
+            set { exchangeRate = value; 
+                OnPropertyChanged(); } 
+        }
+        public bool IsChooseStockItemButtonEnabled { get; set; }
 
         public RelayCommand ChooseStockItemCommand { get; }
         public RelayCommand TextChangedCommand { get; }
         public RelayCommand<ICloseable> CloseWindowCommand { get; private set; }
         public StockItem SelectedItem {
             get { return selectedItem; }
-            private set { selectedItem = value;
+            set { selectedItem = value;
                 OnPropertyChanged(); }          
         }
 
@@ -87,8 +92,10 @@ namespace CRM.ViewModels
             exchangeRates = er;
             exchangeRateRepo = err;
 
+            IsChooseStockItemButtonEnabled = true;
+
             ChooseStockItemCommand = new RelayCommand(OnChooseStockItem);
-            TextChangedCommand = new RelayCommand(OnTextChanged);
+            TextChangedCommand = new RelayCommand(CalculateBillingInfo);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
 
@@ -110,7 +117,7 @@ namespace CRM.ViewModels
             }
         }
 
-        private void OnTextChanged()
+        internal void CalculateBillingInfo()
         {
             Total = Quantity * (RetailPrice - (RetailPrice * discount));
 

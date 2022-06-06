@@ -13,12 +13,6 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                //string addOrderItem = "INSERT INTO OrdersItems (order_id, stock_item_id, quantity, price, discount, total, profit, expenses, exchange_rate) VALUES "
-                //                + $"({item.Order.Id}, {item.StockItem.Id}, {item.Quantity}, {item.Price}, {item.Discount}, {item.Total}, {item.Profit}, {item.Expenses}, {item.ExchangeRate})";
-
-                //cmd.CommandText = addOrderItem;
-                //cmd.ExecuteNonQuery();
-
                 cmd.CommandText = "INSERT INTO OrdersItems (order_id, stock_item_id, quantity, price, discount, total, profit, expenses, exchange_rate) VALUES "
                                 + $"(@order_id, @stock_item_id, @quantity, @price, @discount, @total, @profit, @expenses, @exchange_rate)";
                 cmd.Parameters.AddWithValue("@order_id", item.Order.Id);
@@ -43,7 +37,13 @@ namespace CRM.Models
 
         public void Delete(OrderItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = "DELETE FROM OrdersItems WHERE id=@id";
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public OrderItem Get(OrderItem item)
@@ -79,7 +79,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM OrdersItems";
+                cmd.CommandText = "SELECT * FROM OrdersItems ORDER BY id DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
@@ -126,12 +126,49 @@ namespace CRM.Models
 
         public bool TryDelete(OrderItem item)
         {
-            throw new NotImplementedException();
+            //using (var cmd = DbConnection.Open())
+            //{
+            //    string exists = "SELECT 1 FROM OrdersItems WHERE id=" + $"{item.Id} LIMIT 1";
+
+            //    cmd.CommandText = exists;
+            //    var result = cmd.ExecuteScalar();
+
+            //    if (result != null) return false;
+            //    //{
+            //    //    return false;
+            //    //}
+            //    //else
+            //    //{
+            //    //    return true;
+            //    //}
+            //    else return true;
+            //}
+            return false;
         }
 
         public OrderItem Update(OrderItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = "UPDATE OrdersItems SET quantity=@quantity, " +
+                                                         "discount=@discount, " +
+                                                         "total=@total, " +
+                                                         "discount=@discount, " +
+                                                         "expenses=@expenses, " +
+                                                         "profit=@profit " +
+                                                   "WHERE id=@id";
+
+                cmd.Parameters.AddWithValue("@quantity", item.Quantity);
+                cmd.Parameters.AddWithValue("@discount", item.Discount);
+                cmd.Parameters.AddWithValue("@total", item.Total);
+                cmd.Parameters.AddWithValue("@expenses", item.Expenses);
+                cmd.Parameters.AddWithValue("@profit", item.Profit);
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+                return item;
+            }
         }
     }
 }

@@ -40,7 +40,7 @@
             </Grid.ColumnDefinitions>
             
             <TextBox Grid.Column="0" Text="{Binding Path=SelectedItem.Name, Mode=OneWay}" IsReadOnly="True"></TextBox>
-            <Button Grid.Column="1" Width="80" Command="{Binding Path=ChooseStockItemCommand}">Выбрать</Button>
+            <Button Grid.Column="1" Width="80" Command="{Binding Path=ChooseStockItemCommand}" IsEnabled="{Binding Path=IsChooseStockItemButtonEnabled}">Выбрать</Button>
         </Grid>
 
         <TextBlock Grid.Row="1" Grid.Column="0">Цена, розница</TextBlock>
@@ -74,7 +74,7 @@
         <TextBox Grid.Row="4" Grid.Column="1" IsReadOnly="True" Text="{Binding Path=Total, Mode=OneWay}"></TextBox>
 
         <TextBlock Grid.Row="6" Grid.Column="0">Заказ</TextBlock>
-        <TextBox Grid.Row="6" Grid.Column="1"></TextBox>
+        <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=OrderId}"></TextBox>
 
 
         <TextBlock Grid.Row="1" Grid.Column="3">Цена, закупка</TextBlock>

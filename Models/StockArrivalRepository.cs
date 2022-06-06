@@ -13,13 +13,13 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addStockArrival = "INSERT INTO stock_arrivals (date, stock_item_id, quantity) VALUES "
+                string addStockArrival = "INSERT INTO StockArrivals (date, stock_item_id, quantity) VALUES "
                     + $"('{stockArrival.Date}', {stockArrival.StockItem.Id}, {stockArrival.Quantity})";
 
                 cmd.CommandText = addStockArrival;
                 cmd.ExecuteNonQuery();
 
-                string getItemId = "SELECT id FROM stock_arrivals WHERE date=" + $"'{stockArrival.Date}'";
+                string getItemId = "SELECT id FROM StockArrivals WHERE date=" + $"'{stockArrival.Date}'";
                 cmd.CommandText = getItemId;
                 stockArrival.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
@@ -31,7 +31,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string deleteStockArrival = "DELETE FROM stock_arrivals WHERE id=" + $"{stockArrival.Id}";
+                string deleteStockArrival = "DELETE FROM StockArrivals WHERE id=" + $"{stockArrival.Id}";
 
                 cmd.CommandText = deleteStockArrival;
                 cmd.ExecuteNonQuery();
@@ -47,7 +47,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM stock_arrivals ORDER BY date DESC";
+                cmd.CommandText = "SELECT * FROM StockArrivals ORDER BY date DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
@@ -72,7 +72,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string updateStockArrival = "UPDATE stock_arrivals SET quantity=" + $"'{stockArrival.Quantity}' " +
+                string updateStockArrival = "UPDATE StockArrivals SET quantity=" + $"'{stockArrival.Quantity}' " +
                                             "WHERE id=" + $"'{stockArrival.Id}'";
 
                 cmd.CommandText = updateStockArrival;

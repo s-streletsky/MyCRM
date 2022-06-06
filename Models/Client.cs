@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,20 +11,24 @@ namespace CRM.Models
 {
     enum Country
     {
+        [Description("Украина")]
         Ukraine,
+        [Description("США")]
         USA
     }
 
     enum ShippingMethod
     {
+        [Description("Новая почта")]
         NovaPoshta = 1,
+        [Description("Укрпочта")]
         Ukrposhta
     }
     
     class Client : ViewModelBase
     {
         private int? id;
-        private DateTime? created;
+        private DateTime? date;
         private string name;
         private string nickname;
         private string phone;
@@ -44,14 +49,10 @@ namespace CRM.Models
                 OnPropertyChanged();
             }
         }
-        public DateTime? Created
-        {
-            get { return created; }
-            set
-            {
-                created = value;
-                OnPropertyChanged();
-            }
+        public DateTime? Date {
+            get { return date; }
+            set { date = value;
+                OnPropertyChanged(); }
         }
         public string Name
         {
@@ -146,27 +147,14 @@ namespace CRM.Models
 
         public Client()
         {
-
+            this.Id = -1;
+            this.Date = DateTime.Now;
         }
-
-        public Client(int id)
-        {
-            this.Created = DateTime.Now;
-            this.Id = id;
-        }
-
-        public Client(int id, string name)
-        {
-            this.Created = DateTime.Now;
-            this.Id = id;
-            this.Name = name;
-        }
-
-        public Client(int? id, DateTime created, string name, string nickname, string phone, string email,
+        public Client(int? id, DateTime date, string name, string nickname, string phone, string email,
             Country country, string city, string address, ShippingMethod shippingMethod, 
             string postalCode, string notes)
         {
-            this.Created = created;
+            this.Date = date;
             this.Id = id;
             this.Name = name;
             this.Nickname = nickname;

@@ -83,9 +83,9 @@
 
         <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Database.StockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
-                <DataGridTextColumn Header="Item" Binding="{Binding Path=StockItem.Name}" MinWidth="200"/>
-                <DataGridTextColumn Header="Quantity" Binding="{Binding Path=Quantity}"/>
+                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
+                <DataGridTextColumn Header="Наименование" Binding="{Binding Path=StockItem.Name}" MinWidth="200"/>
+                <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

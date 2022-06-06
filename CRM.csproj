@@ -120,6 +120,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\OrderPaymentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PaymentsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\StatsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\StockItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -158,6 +170,8 @@
     <Compile Include="Models\Order.cs" />
     <Compile Include="Models\OrderItem.cs" />
     <Compile Include="Models\OrderItemRepository.cs" />
+    <Compile Include="Models\Payment.cs" />
+    <Compile Include="Models\PaymentRepository.cs" />
     <Compile Include="Models\StockArrival.cs" />
     <Compile Include="Models\StockArrivalRepository.cs" />
     <Compile Include="Models\StockItem.cs" />
@@ -168,6 +182,9 @@
     <Compile Include="ViewModels\ExchangeRatesViewModel.cs" />
     <Compile Include="ViewModels\ManufacturerViewModel.cs" />
     <Compile Include="ViewModels\OrderItemViewModel.cs" />
+    <Compile Include="ViewModels\OrderPaymentViewModel.cs" />
+    <Compile Include="ViewModels\PaymentsViewModel.cs" />
+    <Compile Include="ViewModels\StatsViewModel.cs" />
     <Compile Include="Views\ChooseClientView.xaml.cs">
       <DependentUpon>ChooseClientView.xaml</DependentUpon>
     </Compile>
@@ -188,12 +205,22 @@
     <Compile Include="Views\OrderView.xaml.cs">
       <DependentUpon>OrderView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\OrderPaymentView.xaml.cs">
+      <DependentUpon>OrderPaymentView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PaymentsView.xaml.cs">
+      <DependentUpon>PaymentsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\StatsView.xaml.cs">
+      <DependentUpon>StatsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\StockArrivalView.xaml.cs">
       <DependentUpon>StockArrivalView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\StockItemViewModel.cs" />
     <Compile Include="ViewModels\ClientViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="WPF\EnumDescriptionConverter.cs" />
     <Compile Include="WPF\ViewModelBase.cs" />
     <Compile Include="Views\StockItemView.xaml.cs">
       <DependentUpon>StockItemView.xaml</DependentUpon>
@@ -210,6 +237,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\StockArrivalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WPF\FormStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

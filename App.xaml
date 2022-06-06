@@ -2,8 +2,69 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:CRM"
+             xmlns:core="clr-namespace:System;assembly=mscorlib"
              StartupUri="Views/MainView.xaml">
     <Application.Resources>
-         
+        <ResourceDictionary>
+            <GridLength x:Key="defaultRowHeight">24</GridLength>
+
+            <!--<core:Double x:Key="fieldHeight">16</core:Double>-->
+
+            <!--<Style TargetType="{x:Type FrameworkElement}" x:Key="fieldBase">
+                <Setter Property="Height" Value="{StaticResource fieldHeight}" />
+            </Style>-->
+
+            <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,1,0,1"/>
+            </Style>
+
+            <Style TargetType="{x:Type ComboBox}" BasedOn="{StaticResource {x:Type ComboBox}}">
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="0,1,0,1"/>
+            </Style>
+
+            <!--<Style TargetType="{x:Type StackPanel}" BasedOn="{StaticResource {x:Type StackPanel}}">
+                <Setter Property="Orientation" Value="Horizontal"/>
+            </Style>-->
+
+            <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                <Setter Property="FontWeight" Value="Bold"></Setter>
+            </Style>
+
+            <Style TargetType="{x:Type DataGrid}" BasedOn="{StaticResource {x:Type DataGrid}}">
+                <Setter Property="HorizontalGridLinesBrush" Value="LightGray"/>
+                <Setter Property="VerticalGridLinesBrush" Value="LightGray"/>
+            </Style>
+            
+            <Style TargetType="{x:Type Button}">
+                <!--<Setter Property="Background" Value="Red" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type Button}">
+                            <Grid Background="{TemplateBinding Background}">
+                                <TextBlock Text="TEXT" />
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="Blue" />
+                    </Trigger>
+                </Style.Triggers>-->
+            </Style>
+            
+            <!--<Style TargetType="{x:Type FrameworkElement}" x:Key="fieldBase">
+                <Setter Property="Height" Value="{StaticResource fieldHeight}" />
+            </Style>
+            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource fieldBase}" />
+            <Style TargetType="{x:Type TextBlock}" x:Key="fieldText" BasedOn="{StaticResource fieldBase}" />-->
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

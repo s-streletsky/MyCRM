@@ -14,15 +14,21 @@ namespace CRM.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
-        private bool isClientEditButtonEnabled;
+        private bool isClientsButtonsEnabled;
+        private bool isOrdersButtonsEnabled;
+        private bool isStockButtonsEnabled;
         private Client selectedClient;
         private Order selectedOrder;
+        private StockItem selectedStockItem;
 
         public RelayCommand AddClientCommand { get; }
         public RelayCommand EditClientCommand { get; }
         public RelayCommand DeleteClientCommand { get; }
         public RelayCommand AddOrderCommand { get; }
         public RelayCommand EditOrderCommand { get; }
+        public RelayCommand DeleteOrderCommand { get; }
+        public RelayCommand PaymentsCommand { get; }
+        public RelayCommand StatsCommand { get; }
         public RelayCommand AddNewExchangeRateCommand { get; }
         public RelayCommand AddStockItemCommand { get; }
         public RelayCommand EditStockItemCommand { get; }
@@ -30,24 +36,41 @@ namespace CRM.ViewModels
         public RelayCommand EditManufacturerCommand { get; }
         public RelayCommand EditStockArrivalCommand { get; }
         public RelayCommand EditExchangeRatesCommand { get; }
-        public RelayCommand LoadClientsCommand { get; }
-        public RelayCommand LoadOrdersCommand { get; }
         public Database Database { get; set; }
         public Client SelectedClient {
             get { return selectedClient; }
             set { selectedClient = value;
-                IsClientEditButtonEnabled = true; }
+                if (value != null) IsClientsButtonsEnabled = true;
+                else IsClientsButtonsEnabled = false; }
         }
-        public StockItem SelectedStockItem { get; set; }
+        public StockItem SelectedStockItem { 
+            get { return selectedStockItem; } 
+            set { selectedStockItem = value; 
+                OnPropertyChanged();
+                if (value != null) IsStockButtonsEnabled = true;
+                else IsStockButtonsEnabled = false; } 
+        }
         public Order SelectedOrder { 
             get { return selectedOrder; } 
-            set { selectedOrder = value; }
+            set { selectedOrder = value;
+                if (value != null) IsOrdersButtonsEnabled = true;
+                else IsOrdersButtonsEnabled = false; }
         }
         public Currency SelectedCurrency { get; set; }
-        public bool IsClientEditButtonEnabled { 
-            get { return isClientEditButtonEnabled; }
-            set { isClientEditButtonEnabled = value;
+        public bool IsClientsButtonsEnabled { 
+            get { return isClientsButtonsEnabled; }
+            set { isClientsButtonsEnabled = value;
                 OnPropertyChanged(); }
+        }
+        public bool IsOrdersButtonsEnabled { 
+            get { return isOrdersButtonsEnabled; } 
+            set { isOrdersButtonsEnabled = value; 
+                OnPropertyChanged(); } 
+        }
+        public bool IsStockButtonsEnabled { 
+            get { return isStockButtonsEnabled; } 
+            set { isStockButtonsEnabled = value; 
+                OnPropertyChanged(); } 
         }
 
         public float CurrencyExchangeRate { get; set; }
@@ -59,6 +82,7 @@ namespace CRM.ViewModels
         private StockItemRepository stockItemRepo = new StockItemRepository();
         private ManufacturerRepository manufacturerRepo = new ManufacturerRepository();
         private StockArrivalRepository stockArrivalRepo = new StockArrivalRepository();
+        private PaymentRepository paymentRepo = new PaymentRepository();
 
         public MainViewModel()
         {
@@ -68,6 +92,9 @@ namespace CRM.ViewModels
 
             AddOrderCommand = new RelayCommand(OnAddOrder);
             EditOrderCommand = new RelayCommand(OnEditOrder);
+            DeleteOrderCommand = new RelayCommand(OnDeleteOrder);
+            PaymentsCommand = new RelayCommand(OnPayments);
+            StatsCommand = new RelayCommand(OnStats);
 
             AddStockItemCommand = new RelayCommand(OnAddStockItem);
             EditStockItemCommand = new RelayCommand(OnEditStockItem);
@@ -77,19 +104,18 @@ namespace CRM.ViewModels
             EditStockArrivalCommand = new RelayCommand(OnStockArrivalClick);
             EditExchangeRatesCommand = new RelayCommand(OnExchangeRatesClick);
             
-            LoadClientsCommand = new RelayCommand(OnLoadClients_Click);
-            LoadOrdersCommand = new RelayCommand(OnLoadOrders_Click);
             AddNewExchangeRateCommand = new RelayCommand(OnAddNewExchangeRate_Click);
 
             Database = new Database();
             SelectedClient = null;
 
-            IsClientEditButtonEnabled = false;
+            IsClientsButtonsEnabled = false;
 
             clientRepo.GetAll(Database);
             manufacturerRepo.GetAll(Database);
             stockItemRepo.GetAll(Database);
             orderRepo.GetAll(Database);
+            paymentRepo.GetAll(Database.Payments, Database.Clients, Database.Orders);
             orderItemRepo.GetAll(Database);
             exchangeRateRepo.GetAll(Database);            
             stockArrivalRepo.GetAll(Database);
@@ -97,23 +123,40 @@ namespace CRM.ViewModels
         // Кнопки во вкладке "Клиенты"
         public void OnAddClient()
         {
-            var vm = new ClientViewModel(Database, null, clientRepo);
+            var vm = new ClientViewModel(Database, null, clientRepo, orderRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo);
             AddNewClientView addNewClientView = new AddNewClientView();
 
             addNewClientView.DataContext = vm;
-            addNewClientView.Show();
+            addNewClientView.ShowDialog();
+
+            if (addNewClientView.DialogResult == true)
+            {
+                var newClient = new Client();
+                newClient.Name = vm.Name;
+                newClient.Nickname = vm.Nickname;
+                newClient.Phone = vm.Phone;
+                newClient.Email = vm.Email;
+                newClient.Country = vm.Country;
+                newClient.City = vm.City;
+                newClient.Address = vm.Address;
+                newClient.ShippingMethod = vm.ShippingMethod;
+                newClient.PostalCode = vm.PostalCode;
+
+                var client = clientRepo.Add(newClient);
+                Database.Clients.Insert(0, client);
+            }
         }
         public void OnEditClient()
         {            
             if (SelectedClient != null)
             {
-                var vm = new ClientViewModel(Database, SelectedClient, clientRepo);
+                var vm = new ClientViewModel(Database, SelectedClient, clientRepo, orderRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo);
                 AddNewClientView addNewClientView = new AddNewClientView();
 
                 addNewClientView.DataContext = vm;
 
                 vm.Id = SelectedClient.Id;
-                vm.Created = (DateTime)SelectedClient.Created;
+                vm.Date = (DateTime)SelectedClient.Date;
                 vm.Name = SelectedClient.Name;
                 vm.Nickname = SelectedClient.Nickname;
                 vm.Phone = SelectedClient.Phone;
@@ -124,6 +167,8 @@ namespace CRM.ViewModels
                 vm.ShippingMethod = SelectedClient.ShippingMethod;
                 vm.PostalCode = SelectedClient.PostalCode;
                 vm.Notes = SelectedClient.Notes;
+                vm.Balance = clientRepo.GetBalance(SelectedClient);
+                vm.IsDataGridEnabled = true;
 
                 foreach (var order in Database.Orders)
                 {
@@ -131,9 +176,25 @@ namespace CRM.ViewModels
                     {
                         vm.Orders.Add(order);
                     }
-                }
+                }                
 
-                addNewClientView.Show();
+                addNewClientView.ShowDialog();
+
+                if (addNewClientView.DialogResult == true)
+                {
+                    SelectedClient.Name = vm.Name;
+                    SelectedClient.Nickname = vm.Nickname;
+                    SelectedClient.Phone = vm.Phone;
+                    SelectedClient.Email = vm.Email;
+                    SelectedClient.Country = vm.Country;
+                    SelectedClient.City = vm.City;
+                    SelectedClient.Address = vm.Address;
+                    SelectedClient.ShippingMethod = vm.ShippingMethod;
+                    SelectedClient.PostalCode = vm.PostalCode;
+                    SelectedClient.Notes = vm.Notes;
+
+                    clientRepo.Update(SelectedClient);
+                }
             }
         }
         public void OnDeleteClient()
@@ -151,8 +212,7 @@ namespace CRM.ViewModels
                 if (userChoice == MessageBoxResult.Yes)
                 {
                     clientRepo.Delete(SelectedClient);
-                    var i = Database.Clients.IndexOf(SelectedClient);
-                    Database.Clients.RemoveAt(i);
+                    Database.Clients.Remove(SelectedClient);
                 }
             }
         }
@@ -160,7 +220,7 @@ namespace CRM.ViewModels
         //Кнопки во вкладке "Заказы"
         public void OnAddOrder()
         {
-            var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, SelectedOrder);
+            var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
             OrderView orderView = new OrderView();
             orderView.DataContext = vm;
             orderView.ShowDialog();
@@ -169,21 +229,22 @@ namespace CRM.ViewModels
             {
                 var o = new Order(vm.Date, vm.Client, vm.Status);
                 var order = orderRepo.Add(o);
-                Database.Orders.Add(order);
+                Database.Orders.Insert(0, order);
             }
         }
         public void OnEditOrder()
         {
             if (SelectedOrder != null)
             {
-                var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, SelectedOrder);
+                var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
                 OrderView orderView = new OrderView();
                 orderView.DataContext = vm;
 
                 vm.Id = SelectedOrder.Id;
                 vm.Client = SelectedOrder.Client;
-                vm.Date = SelectedOrder.Created;
+                vm.Date = SelectedOrder.Date;
                 vm.Status = SelectedOrder.Status;
+                vm.Notes = SelectedOrder.Notes;
                 vm.IsDataGridEnabled = true;
 
                 foreach (var item in Database.OrdersItems)
@@ -191,12 +252,64 @@ namespace CRM.ViewModels
                     if (item.Order.Id == SelectedOrder.Id)
                     {
                         vm.OrderItems.Add(item);
-                        vm.UpdateBillingDetails();
                     }
                 }
 
-                orderView.ShowDialog();               
+                vm.UpdateBillingDetails();
+                orderView.ShowDialog();
+
+                if (orderView.DialogResult == true)
+                {
+                    SelectedOrder.Client = vm.Client;
+                    SelectedOrder.Status = vm.Status;
+                    SelectedOrder.Notes = vm.Notes;
+
+                    orderRepo.Update(SelectedOrder);
+                }
             }
+        }
+        public void OnDeleteOrder()
+        {
+            var userChoice = MessageBox.Show("Заказ №" + $"{SelectedOrder.Id}\nУдалить?", "Удаление заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+            List<OrderItem> orderItems = new List<OrderItem>();
+
+            if (userChoice == MessageBoxResult.Yes)
+            {
+                foreach (var item in Database.OrdersItems)
+                {
+                    if (item.Order.Id == SelectedOrder.Id)
+                    {
+                        orderItemRepo.Delete(item);
+                        orderItems.Add(item);
+                    }
+                }
+
+                foreach (var item in orderItems)
+                {
+                    Database.OrdersItems.Remove(item);
+                }
+
+                orderRepo.Delete(SelectedOrder);
+                Database.Orders.Remove(SelectedOrder);
+            }
+        }
+        public void OnPayments()
+        {
+            var vm = new PaymentsViewModel(Database.Payments);
+            PaymentsView paymentsView = new PaymentsView();
+            paymentsView.DataContext = vm;
+            paymentsView.ShowDialog();
+        }
+        public void OnStats()
+        {
+            var vm = new StatsViewModel(Database);
+            StatsView statsView = new StatsView();
+            statsView.DataContext = vm;
+            vm.PrintStats();
+
+
+            statsView.ShowDialog();
         }
 
         // Кнопки во вкладке "Склад"
@@ -205,7 +318,7 @@ namespace CRM.ViewModels
             var vm = new StockItemViewModel(Database, stockItemRepo, manufacturerRepo, null, "Visible", "Hidden");
             AddNewItemView addNewItemView = new AddNewItemView();
             addNewItemView.DataContext = vm;
-            addNewItemView.Show();
+            addNewItemView.ShowDialog();
         }
         public void OnEditStockItem()
         {
@@ -259,22 +372,10 @@ namespace CRM.ViewModels
             stockArrivalView.Show();
         }
 
-        public void OnLoadClients_Click()
-        {
-            clientRepo.GetAll(Database);
-        }
-
-        public void OnLoadOrders_Click()
-        {
-            orderRepo.GetAll(Database);
-        }
-
         public void OnAddNewExchangeRate_Click()
         {
             var newExRate = exchangeRateRepo.Add(new ExchangeRate(SelectedCurrency, CurrencyExchangeRate));
             Database.ExchangeRates.Insert(0, newExRate);
         }
-
-
     }
 }

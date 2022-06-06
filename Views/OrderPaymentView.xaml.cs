@@ -1,4 +1,4 @@
-﻿using CRM.ViewModels;
+﻿using CRM.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,17 +12,15 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using CRM.WPF;
-using CRM.Models;
 
-namespace CRM
+namespace CRM.Views
 {
     /// <summary>
-    /// Interaction logic for AddClient.xaml
+    /// Interaction logic for PaymentView.xaml
     /// </summary>
-    public partial class AddNewClientView : Window, ICloseable
+    public partial class PaymentView : Window, ICloseable
     {
-        public AddNewClientView()
+        public PaymentView()
         {
             InitializeComponent();
         }

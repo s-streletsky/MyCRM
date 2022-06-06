@@ -11,12 +11,12 @@ namespace CRM.Models
 
             using (var cmd = DbConnection.Open())
             {
-                string addNewManufacturer = "INSERT INTO manufacturers (name) VALUES " + $"('{manufacturer.Name}')";
+                string addNewManufacturer = "INSERT INTO Manufacturers (name) VALUES " + $"('{manufacturer.Name}')";
 
                 cmd.CommandText = addNewManufacturer;
                 cmd.ExecuteNonQuery();
 
-                string getManufacturerId = "SELECT id FROM manufacturers WHERE name=" + $"'{manufacturer.Name}'";
+                string getManufacturerId = "SELECT id FROM Manufacturers WHERE name=" + $"'{manufacturer.Name}'";
                 cmd.CommandText = getManufacturerId;
                 manufacturer.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
@@ -30,7 +30,7 @@ namespace CRM.Models
 
             using (var cmd = DbConnection.Open())
             {
-                string deleteManufacturer = "DELETE FROM manufacturers WHERE id=" + $"{manufacturer.Id}";
+                string deleteManufacturer = "DELETE FROM Manufacturers WHERE id=" + $"{manufacturer.Id}";
 
                 cmd.CommandText = deleteManufacturer;
                 cmd.ExecuteNonQuery();
@@ -46,7 +46,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM manufacturers";
+                cmd.CommandText = "SELECT * FROM Manufacturers";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
@@ -71,7 +71,7 @@ namespace CRM.Models
 
             using (var cmd = DbConnection.Open())
             {
-                string updateManufacturer = "UPDATE manufacturers SET name=" + $"'{manufacturer.Name}' " +
+                string updateManufacturer = "UPDATE Manufacturers SET name=" + $"'{manufacturer.Name}' " +
                                             "WHERE id=" + $"'{manufacturer.Id}'";
 
                 cmd.CommandText = updateManufacturer;

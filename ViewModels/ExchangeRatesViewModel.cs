@@ -30,19 +30,19 @@ namespace CRM.ViewModels
 
             SelectedCurrency = Currency.EUR;
 
-            AddExchangeRateCommand = new RelayCommand(OnAddExchangeRateClick);
-            DeleteExchangeRateCommand = new RelayCommand(OnDeleteExchangeRateClick);
+            AddExchangeRateCommand = new RelayCommand(OnAddExchangeRate);
+            DeleteExchangeRateCommand = new RelayCommand(OnDeleteExchangeRate);
         }
 
         // Кнопка "Добавить"
-        private void OnAddExchangeRateClick()
+        private void OnAddExchangeRate()
         {
             var newExRate = ExchangeRateRepo.Add(new ExchangeRate(SelectedCurrency, ExchangeRate));
             Database.ExchangeRates.Insert(0, newExRate);
         }
 
         // Кнопка "Удалить"
-        private void OnDeleteExchangeRateClick()
+        private void OnDeleteExchangeRate()
         {
             ExchangeRateRepo.Delete(SelectedExchangeRate);
             var i = Database.ExchangeRates.IndexOf(SelectedExchangeRate);

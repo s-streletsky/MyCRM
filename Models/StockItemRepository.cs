@@ -13,14 +13,22 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addItem = "INSERT INTO stock_items (name, manufacturer_id, description, currency_id, purchase_price, retail_price, quantity) VALUES "
-                    + $"('{item.Name}', '{item.Manufacturer.Id}', '{item.Description}', '{(int)item.Currency}', '{item.PurchasePrice}', '{item.RetailPrice}', '{item.Quantity}')";
+                cmd.CommandText = "INSERT INTO StockItems (name, manufacturer_id, description, currency_id, purchase_price, retail_price, quantity) VALUES "
+                    + $"(@name, @manufacturer_id, @description, @currency_id, @purchase_price, @retail_price, @quantity)";
 
-                cmd.CommandText = addItem;
+                cmd.Parameters.AddWithValue("@name", item.Name);
+                cmd.Parameters.AddWithValue("@manufacturer_id", item.Manufacturer.Id);
+                cmd.Parameters.AddWithValue("@description", item.Description);
+                cmd.Parameters.AddWithValue("@currency_id", (int)item.Currency);
+                cmd.Parameters.AddWithValue("@purchase_price", item.PurchasePrice);
+                cmd.Parameters.AddWithValue("@retail_price", item.RetailPrice);
+                cmd.Parameters.AddWithValue("@quantity", item.Quantity);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
 
-                string getItemId = "SELECT id FROM stock_items WHERE name=" + $"'{item.Name}'";
-                cmd.CommandText = getItemId;
+                cmd.CommandText = "SELECT id FROM StockItems WHERE name=@name";
+                cmd.Parameters.AddWithValue("@name", item.Name);
+                cmd.Prepare();
                 item.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return item;
@@ -31,9 +39,9 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string deleteItem = "DELETE FROM stock_items WHERE id=" + $"{item.Id}";
-
-                cmd.CommandText = deleteItem;
+                cmd.CommandText = "DELETE FROM StockItems WHERE id=@id";
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
         }
@@ -47,7 +55,7 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM stock_items";
+                cmd.CommandText = "SELECT * FROM StockItems ORDER BY id DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
@@ -81,15 +89,23 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string updateItem = "UPDATE stock_items SET name=" + $"'{item.Name}', " +
-                                                         "manufacturer_id=" + $"{item.Manufacturer.Id}, " +
-                                                         "description=" + $"'{item.Description}', " +
-                                                         "currency_id=" + $"{(int)item.Currency}, " +
-                                                         "purchase_price=" + $"{item.PurchasePrice}, " +
-                                                         "retail_price=" + $"'{item.RetailPrice}' " +
-                                     "WHERE id=" + $"{item.Id}";
+                cmd.CommandText = "UPDATE StockItems SET name=@name, " +
+                                                         "manufacturer_id=@manufacturer_id, " +
+                                                         "description=@description, " +
+                                                         "currency_id=@currency_id, " +
+                                                         "purchase_price=@purchase_price, " +
+                                                         "retail_price=@retail_price " +
+                                     "WHERE id=@id";
 
-                cmd.CommandText = updateItem;
+                cmd.Parameters.AddWithValue("@name", item.Name);
+                cmd.Parameters.AddWithValue("@manufacturer_id", item.Manufacturer.Id);
+                cmd.Parameters.AddWithValue("@description", item.Description);
+                cmd.Parameters.AddWithValue("@currency_id", (int)item.Currency);
+                cmd.Parameters.AddWithValue("@purchase_price", item.PurchasePrice);
+                cmd.Parameters.AddWithValue("@retail_price", item.RetailPrice);
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
+
                 cmd.ExecuteNonQuery();
 
                 return item;
@@ -98,30 +114,49 @@ namespace CRM.Models
 
         public void UpdateQuantity(StockItem item)
         {
-            var quantityList = new List<float>();
+            var stockList = new List<float>();
+            var ordersList = new List<float>();
 
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "SELECT * FROM stock_arrivals WHERE stock_item_id=" + $"{item.Id}";
-
+                cmd.CommandText = "SELECT * FROM StockArrivals WHERE stock_item_id=@id";
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
                 while (sqlReader.Read())
                 {
                     var quantity = sqlReader.GetFloat(3);
 
-                    quantityList.Add(quantity);
+                    stockList.Add(quantity);
                 }
 
                 sqlReader.Close();
 
-                var sum = quantityList.Sum();
-                
-                item.Quantity = sum;
+                var stockSum = stockList.Sum();
 
-                string updateQuantity = "UPDATE stock_items SET quantity=" + $"{sum} " + "WHERE id=" + $"{item.Id}";
+                cmd.CommandText = "SELECT * FROM OrdersItems WHERE stock_item_id=@id";
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
+                SQLiteDataReader sqlReader2 = cmd.ExecuteReader();
 
-                cmd.CommandText = updateQuantity;
+                while (sqlReader2.Read())
+                {
+                    var quantity = sqlReader2.GetFloat(3);
+
+                    ordersList.Add(quantity);
+                }
+
+                sqlReader2.Close();
+
+                var ordersSum = ordersList.Sum();
+
+                item.Quantity = stockSum - ordersSum;
+
+                cmd.CommandText = "UPDATE StockItems SET quantity=@quantity WHERE id=@id";
+                cmd.Parameters.AddWithValue("@quantity", item.Quantity);
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
         }

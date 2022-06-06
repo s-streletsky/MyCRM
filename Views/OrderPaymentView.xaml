@@ -1,0 +1,56 @@
+﻿<Window x:Class="CRM.Views.PaymentView"
+        x:Name="PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CRM.Views"
+        xmlns:vm="clr-namespace:CRM.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:OrderPaymentViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        MinHeight="190"
+        MinWidth="500"
+        Title="PaymentView" Height="190" Width="500">
+    
+    <Window.Resources>
+        <Style x:Key="WindowButton">
+            <Setter Property="Button.Width" Value="100" />
+            <Setter Property="Button.Margin" Value="5,0,0,0" />
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.5*"></ColumnDefinition>
+            <ColumnDefinition Width="0.35*"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="0.25*"></ColumnDefinition>
+            <ColumnDefinition Width="0.25*"></ColumnDefinition>
+            <ColumnDefinition Width="0.35*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0">Клиент:</TextBlock>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="5" Text="{Binding Path=Order.Client.Name, Mode=OneWay}" IsReadOnly="True"></TextBox>
+
+        <TextBlock Grid.Row="1" Grid.Column="0">Заказ:</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Order.Id, Mode=OneWay}" IsReadOnly="True"></TextBox>
+
+        <TextBlock Grid.Row="2" Grid.Column="0">Примечания:</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Notes, Mode=OneWayToSource}"></TextBox>
+
+        <TextBlock Grid.Row="2" Grid.Column="4">Сумма:</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="5" Text="{Binding Path=Amount, Mode=TwoWay}"></TextBox>
+
+        <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=PaymentWindow}">OK</Button>
+            <Button Style="{StaticResource WindowButton}" IsCancel="True">Отмена</Button>
+        </StackPanel>
+    </Grid>
+</Window>

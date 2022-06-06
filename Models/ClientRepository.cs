@@ -9,48 +9,69 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addNewClient = "INSERT INTO clients (created, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes) VALUES "
-                                     + $"('{client.Created}', '{client.Name}', '{client.Nickname}', '{client.Phone}', '{client.Email}', {(int)client.Country}, '{client.City}', '{client.Address}', {(int)client.ShippingMethod}, '{client.PostalCode}', '{client.Notes}')";
+                string addNewClient = "INSERT INTO Clients (date, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes) VALUES "
+                                     + $"('{client.Date}', '{client.Name}', '{client.Nickname}', '{client.Phone}', '{client.Email}', {(int)client.Country}, '{client.City}', '{client.Address}', {(int)client.ShippingMethod}, '{client.PostalCode}', '{client.Notes}')";
 
                 cmd.CommandText = addNewClient;
                 cmd.ExecuteNonQuery();
 
-                string getClientId = "SELECT id FROM clients WHERE created=" + $"'{client.Created}'";
+                string getClientId = "SELECT id FROM Clients WHERE date=" + $"'{client.Date}'";
                 cmd.CommandText = getClientId;
                 client.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return client;
             }
         }
-
         public void Delete(Client client)
         {
             using (var cmd = DbConnection.Open())
             {
-                string deleteClient = "DELETE FROM clients WHERE id=" + $"{client.Id}";
+                string deleteClient = "DELETE FROM Clients WHERE id=" + $"{client.Id}";
 
                 cmd.CommandText = deleteClient;
                 cmd.ExecuteNonQuery();
             }
         }
-
         public Client Get(Client client)
         {
             throw new NotImplementedException();
         }
+        public float GetBalance(Client client)
+        {
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = @"SELECT (SUM(oi.total)-p.paid) balance
+                    FROM OrdersItems oi
+                    INNER JOIN Orders o
+                    ON o.id = oi.order_id
+                    INNER JOIN(
+                        SELECT client_id, SUM(amount) AS paid
+                        FROM Payments
+                        GROUP BY client_id
+                        ) p
+                    ON p.client_id = o.client_id
+                    WHERE o.client_id = @id
+                    GROUP BY o.client_id";
+                cmd.Parameters.AddWithValue("@id", client.Id);
+                cmd.Prepare();
 
+                var result = Convert.ToSingle(cmd.ExecuteScalar());
+
+                return result;
+            }
+        }
         public void GetAll(Database db)
         {
             using (var cmd = DbConnection.Open())    
             {
-                cmd.CommandText = "SELECT * FROM clients";
+                cmd.CommandText = "SELECT * FROM Clients ORDER BY id DESC";
 
                 SQLiteDataReader sqlReader = cmd.ExecuteReader();
 
                 while (sqlReader.Read())
                 {
                     var id = sqlReader.GetInt32(0);
-                    var created = DateTime.Parse(sqlReader.GetString(1));
+                    var date = DateTime.Parse(sqlReader.GetString(1));
                     var name = sqlReader.GetString(2);
                     var nickname = sqlReader.GetString(3);
                     var phone = sqlReader.GetString(4);
@@ -62,18 +83,15 @@ namespace CRM.Models
                     var postalCode = sqlReader.GetString(10);
                     var notes = sqlReader.GetString(11);
 
-                    db.Clients.Add(new Client(id, created, name, nickname, phone, email, country, city, address, shippingMethod, postalCode, notes));
+                    db.Clients.Add(new Client(id, date, name, nickname, phone, email, country, city, address, shippingMethod, postalCode, notes));
                 }
             }
         }
-
         public bool TryDelete(Client client)
         {
             using (var cmd = DbConnection.Open())
             {
-                string exists = "SELECT 1 FROM orders WHERE client_id=" + $"{client.Id} LIMIT 1";
-
-                cmd.CommandText = exists;
+                cmd.CommandText = "SELECT 1 FROM Orders WHERE client_id=" + $"{client.Id} LIMIT 1";
                 var result = cmd.ExecuteScalar();
 
                 if (result != null)
@@ -86,12 +104,11 @@ namespace CRM.Models
                 }
             }
         }
-
         public Client Update(Client client)
         {
             using (var cmd = DbConnection.Open())
             {
-                string updateClient = "UPDATE clients SET name=" + $"'{client.Name}'," +
+                string updateClient = "UPDATE Clients SET name=" + $"'{client.Name}'," +
                                                          "nickname=" + $"'{client.Nickname}', " +
                                                          "phone=" + $"'{client.Phone}', " +
                                                          "email=" + $"'{client.Email}', " +

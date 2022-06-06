@@ -8,19 +8,25 @@ using CRM.Models;
 using System.Collections.ObjectModel;
 using CRM.Views;
 using Microsoft.Toolkit.Mvvm.Input;
+using System.Windows;
 
 namespace CRM.ViewModels
 {
     internal class OrderViewModel : ViewModelBase
     {
-        private int id;
         private Client client;
-        private DateTime? date;
+        private DateTime date;
         private OrderStatus status;
+        private string notes;
         private ObservableCollection<OrderItem> orderItems = new ObservableCollection<OrderItem>();
         private ExchangeRateRepository exchangeRateRepo;
         private OrderItemRepository orderItemRepo;
+        private StockItemRepository stockItemRepo;
+        private PaymentRepository paymentRepo;
         private Order selectedOrder;
+        private OrderItem selectedItem;
+
+        private List<Payment> payments;
 
         private float total;
         private float paid;
@@ -28,8 +34,13 @@ namespace CRM.ViewModels
         private float expenses;
         private float profit;
 
+        private bool isButtonEnabled;
+
         public RelayCommand ChooseClientCommand { get; }
-        public RelayCommand AddStockItemCommand { get; }
+        public RelayCommand AddOrderItemCommand { get; }
+        public RelayCommand EditOrderItemCommand { get; }
+        public RelayCommand DeleteOrderItemCommand { get; }
+        public RelayCommand AddPaymentCommand { get; }
         public RelayCommand<ICloseable> CloseWindowCommand { get; private set; }
         public int Id { get; set; }
         public Client Client { 
@@ -37,7 +48,7 @@ namespace CRM.ViewModels
             set { client = value;
                 OnPropertyChanged(); }
         }
-        public DateTime? Date { 
+        public DateTime Date { 
             get { return date; }
             set { date = value;}
         }
@@ -46,9 +57,26 @@ namespace CRM.ViewModels
             set { status = value; 
                 OnPropertyChanged(); } 
         }
+        public string Notes { 
+            get { return notes; } 
+            set { notes = value; 
+                OnPropertyChanged(); } 
+        }
         public Database Database { get; set; }
-        public bool IsDataGridEnabled { get; set; } = false;
+        public bool IsDataGridEnabled { get; set; }
+        public bool IsButtonEnabled { 
+            get { return isButtonEnabled; } 
+            set { isButtonEnabled = value; 
+                OnPropertyChanged(); } 
+        }
+        public bool IsChooseClientButtonEnabled { get; set; }
         public ObservableCollection<OrderItem> OrderItems { get { return orderItems; } }
+        public OrderItem SelectedItem { 
+            get { return selectedItem; } 
+            set { selectedItem = value;
+                if (value != null) IsButtonEnabled = true; 
+                else IsButtonEnabled = false; } 
+        }
 
 
         public float Total { 
@@ -79,7 +107,7 @@ namespace CRM.ViewModels
 
         public OrderViewModel() { }
 
-        public OrderViewModel(Database db, ExchangeRateRepository err, OrderItemRepository oir, Order selected)
+        public OrderViewModel(Database db, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr, Order selected)
         {
             Date = DateTime.Now;
             Status = OrderStatus.NEW;
@@ -88,9 +116,21 @@ namespace CRM.ViewModels
 
             exchangeRateRepo = err;
             orderItemRepo = oir;
+            stockItemRepo = sir;
+            paymentRepo = pr;
+
+            IsDataGridEnabled = false;
+            IsButtonEnabled = false;
+            IsChooseClientButtonEnabled = true;
+
+            payments = new List<Payment>();
+            paymentRepo.GetOrderPayments(Database, payments, selectedOrder);
 
             ChooseClientCommand = new RelayCommand(OnChooseClient);
-            AddStockItemCommand = new RelayCommand(OnAddItem);
+            AddOrderItemCommand = new RelayCommand(OnAddOrderItem);
+            EditOrderItemCommand = new RelayCommand(OnEditOrderItem);
+            DeleteOrderItemCommand = new RelayCommand(OnDeleteOrderItem);
+            AddPaymentCommand = new RelayCommand(OnAddPayment);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
         private void OnChooseClient()
@@ -105,7 +145,8 @@ namespace CRM.ViewModels
                 Client = vm.SelectedClient;
             }
         }
-        private void OnAddItem()
+
+        private void OnAddOrderItem()
         {
             var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
             OrderItemView orderItemView = new OrderItemView();
@@ -117,15 +158,78 @@ namespace CRM.ViewModels
             {
                 var newOrderItem = new OrderItem(-1, selectedOrder, vm.SelectedItem, vm.Quantity, vm.RetailPrice, vm.Discount, vm.Total, vm.Profit, vm.Expenses, vm.ExchangeRate);
                 var orderItem = orderItemRepo.Add(newOrderItem);
+                stockItemRepo.UpdateQuantity(orderItem.StockItem);
                 Database.OrdersItems.Add(orderItem);
                 orderItems.Add(orderItem);
+                UpdateBillingDetails();
+            }
+        }
+        private void OnEditOrderItem()
+        {
+            var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
+            OrderItemView orderItemView = new OrderItemView();
+            orderItemView.DataContext = vm;
+
+            vm.IsChooseStockItemButtonEnabled = false;
+            vm.OrderId = SelectedItem.Order.Id;
+            vm.SelectedItem = SelectedItem.StockItem;
+            vm.PurchasePrice = SelectedItem.StockItem.PurchasePrice * SelectedItem.ExchangeRate;
+            vm.RetailPrice = SelectedItem.StockItem.RetailPrice * SelectedItem.ExchangeRate;
+            vm.Quantity = SelectedItem.Quantity;
+            vm.Discount = SelectedItem.Discount;
+            vm.ExchangeRate = SelectedItem.ExchangeRate;
+            vm.CalculateBillingInfo();
+
+            orderItemView.ShowDialog();
+
+            if (orderItemView.DialogResult == true)
+            {
+                SelectedItem.Quantity = vm.Quantity;
+                SelectedItem.Discount = vm.Discount;
+                SelectedItem.Total = vm.Total;
+                SelectedItem.Expenses = vm.Expenses;
+                SelectedItem.Profit = vm.Profit;
+
+                orderItemRepo.Update(SelectedItem);
+                stockItemRepo.UpdateQuantity(SelectedItem.StockItem);
+                UpdateBillingDetails();
+            }
+        }
+        private void OnDeleteOrderItem()
+        {
+            var userChoice = MessageBox.Show("Наименование: " + $"{SelectedItem.StockItem.Name}.\nУдалить?", "Удаление позиции заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+            if (userChoice == MessageBoxResult.Yes)
+            {
+                orderItemRepo.Delete(SelectedItem);
+                stockItemRepo.UpdateQuantity(SelectedItem.StockItem);
+                Database.OrdersItems.Remove(selectedItem);
+                orderItems.Remove(SelectedItem);
+                UpdateBillingDetails();
+            }
+        }
+
+        private void OnAddPayment()
+        {
+            var vm = new OrderPaymentViewModel(selectedOrder.Client, selectedOrder, selectedOrder.Total);
+            PaymentView paymentView = new PaymentView();
+            paymentView.DataContext = vm;
+            paymentView.ShowDialog();
+
+            if (paymentView.DialogResult == true)
+            {
+                var newPayment = new Payment(-1, DateTime.Now, vm.Client, vm.Order, vm.Amount, vm.Notes);
+                var payment = paymentRepo.Add(newPayment);
+                Database.Payments.Insert(0, payment);
+                payments.Clear();
+                paymentRepo.GetOrderPayments(Database, payments, selectedOrder);
                 UpdateBillingDetails();
             }
         }
 
         public void UpdateBillingDetails()
         {
-            Total = Expenses = Profit = 0;
+            Total = Paid = Debt = Expenses = Profit = 0;
 
             foreach (var item in OrderItems)
             {
@@ -133,6 +237,15 @@ namespace CRM.ViewModels
                 Expenses += item.Expenses;
                 Profit += item.Profit;
             }
+
+            selectedOrder.Total = Total;
+
+            foreach (var payment in payments)
+            {
+                Paid += payment.Amount;
+            }
+
+            Debt = Total - Paid;
         }
 
         private void CloseWindow(ICloseable window)

@@ -48,9 +48,9 @@
 
         <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.ExchangeRates, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedExchangeRate}" Grid.Row="2">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Date" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
-                <DataGridTextColumn Header="Currency" Binding="{Binding Path=Currency}" />
-                <DataGridTextColumn Header="Rate" Binding="{Binding Path=Value}" />
+                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
+                <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Currency}" />
+                <DataGridTextColumn Header="Курс" Binding="{Binding Path=Value}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

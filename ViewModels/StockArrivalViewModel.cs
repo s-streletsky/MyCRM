@@ -28,13 +28,37 @@ namespace CRM.ViewModels
         public Database Database { get; set; }
         public StockArrivalRepository StockArrivalRepo { get; set;}
         public StockItemRepository StockItemRepo { get; set; }
-        public StockItem StockItem { get { return stockItem; } set { stockItem = value; OnPropertyChanged(); } }
-        public float Quantity { get { return quantity; } set { quantity = value; OnPropertyChanged(); } }
+        public StockItem StockItem { 
+            get { return stockItem; } 
+            set { stockItem = value; 
+                OnPropertyChanged(); } 
+        }
+        public float Quantity { 
+            get { return quantity; } 
+            set { quantity = value; 
+                OnPropertyChanged(); } 
+        }
         public StockArrival SelectedArrival { get; set; }
-        public bool IsAddGridEnabled { get { return isAddGridEnabled; } set { isAddGridEnabled = value; OnPropertyChanged(); } }
-        public string IsAddGridVisible { get { return isAddGridVisible; } set { isAddGridVisible = value; OnPropertyChanged(); } }
-        public string IsEditGridVisible { get { return isEditGridVisible; } set { isEditGridVisible = value; OnPropertyChanged(); } }
-        public bool IsDataGridEnabled { get { return isDataGridEnabled; } set { isDataGridEnabled = value; OnPropertyChanged(); } }
+        public bool IsAddGridEnabled { 
+            get { return isAddGridEnabled; } 
+            set { isAddGridEnabled = value; 
+                OnPropertyChanged(); } 
+        }
+        public string IsAddGridVisible { 
+            get { return isAddGridVisible; } 
+            set { isAddGridVisible = value; 
+                OnPropertyChanged(); } 
+        }
+        public string IsEditGridVisible { 
+            get { return isEditGridVisible; } 
+            set { isEditGridVisible = value; 
+                OnPropertyChanged(); } 
+        }
+        public bool IsDataGridEnabled { 
+            get { return isDataGridEnabled; } 
+            set { isDataGridEnabled = value; 
+                OnPropertyChanged(); } 
+        }
 
         public StockArrivalViewModel(Database db, StockArrivalRepository sar, StockItemRepository sir)
         {

@@ -4,6 +4,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:CRM.Views"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ChooseClientViewModel, IsDesignTimeCreatable=True}"
@@ -25,12 +26,19 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.2*"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Text="{Binding Path=Search}"></TextBox>
-            <Button Grid.Column="1" HorizontalAlignment="Right" Width="80" Command="{Binding Path=SearchCommand}">Найти</Button>
+            <TextBlock Grid.Column="0">Найти по имени:</TextBlock>
+
+            <TextBox Grid.Column="1" Text="{Binding Path=Search, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="TextChanged">
+                        <i:InvokeCommandAction Command="{Binding Path=SearchCommand}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBox>
         </Grid>
 
         <ListBox Grid.Row="2" ItemsSource="{Binding Path=Clients}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedClient, Mode=OneWayToSource}" />

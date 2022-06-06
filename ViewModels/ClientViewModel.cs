@@ -10,16 +10,19 @@ using CRM.Views;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.ComponentModel;
 using System.Windows.Data;
+using System.Windows;
 
 namespace CRM.ViewModels
 {
     class ClientViewModel : ViewModelBase
     {
-        public RelayCommand SaveClientCommand { get; }
         public RelayCommand AddOrderCommand { get; }
+        public RelayCommand EditOrderCommand { get; }
+        public RelayCommand DeleteOrderCommand { get; }
+        public RelayCommand<ICloseable> CloseWindowCommand { get; }
 
         private int? id;
-        private DateTime created;
+        private DateTime date;
         private string name;
         private string nickname;
         private string phone;
@@ -30,21 +33,30 @@ namespace CRM.ViewModels
         private ShippingMethod shippingMethod;
         private string postalCode;
         private string notes;
+        private float balance;
 
         private ObservableCollection<Order> orders;
 
         private Client selectedClient;
+        private Order selectedOrder;
         private Database database;
         private ClientRepository clientRepo;
+        private OrderRepository orderRepo;
+        private ExchangeRateRepository exchangeRateRepo;
+        private OrderItemRepository orderItemRepo;
+        private StockItemRepository stockItemRepo;
+        private PaymentRepository paymentRepo;
+
+        private bool isOrderEditDeleteButtonsEnabled;
 
         public int? Id { 
             get { return id; } 
             set { id = value; 
                 OnPropertyChanged(); } 
         }
-        public DateTime Created { 
-            get { return created; } 
-            set { created = value; 
+        public DateTime Date { 
+            get { return date; } 
+            set { date = value; 
                 OnPropertyChanged(); } 
         }
         public string Name { 
@@ -97,6 +109,11 @@ namespace CRM.ViewModels
             set { notes = value; 
                 OnPropertyChanged(); } 
         }      
+        public float Balance { 
+            get { return balance; } 
+            set { balance = value; 
+                OnPropertyChanged(); } 
+        }
         public Client SelectedClient { 
             get { return selectedClient; } 
             set { selectedClient = value; 
@@ -111,61 +128,122 @@ namespace CRM.ViewModels
             get { return orders; }
             set { orders = value; }
         }
+        public Order SelectedOrder { 
+            get { return selectedOrder; } 
+            set { selectedOrder = value;
+                if (value != null) IsOrderEditDeleteButtonsEnabled = true;
+                else IsOrderEditDeleteButtonsEnabled = false;
+            } 
+        }
+        public bool IsOrderEditDeleteButtonsEnabled { 
+            get { return isOrderEditDeleteButtonsEnabled; } 
+            set { isOrderEditDeleteButtonsEnabled = value; 
+                OnPropertyChanged(); } 
+        }
+        public bool IsDataGridEnabled { get; set; }
 
         public ClientViewModel() { }
-        public ClientViewModel(Database db, Client sc, ClientRepository cr)
+        public ClientViewModel(Database db, Client sc, ClientRepository cr, OrderRepository or, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr)
         {
             Database = db;
             SelectedClient = sc;
             clientRepo = cr;
+            orderRepo = or;
+            exchangeRateRepo = err;
+            orderItemRepo = oir;
+            stockItemRepo = sir;
+            paymentRepo = pr;
+
             Orders = new ObservableCollection<Order>();
 
+            IsDataGridEnabled = false;
+
+            Country = Country.Ukraine;
+            ShippingMethod = ShippingMethod.NovaPoshta;
+
             AddOrderCommand = new RelayCommand(OnAddOrder);
-            SaveClientCommand = new RelayCommand(OnSaveClient);
-        }
-
-        void OnSaveClient()
-        {
-            if (SelectedClient == null)
-            {
-                SelectedClient = new Client();
-                SelectedClient.Created = DateTime.Now;
-
-                SetClientProperties();
-
-                var client = clientRepo.Add(SelectedClient);
-                Database.Clients.Add(client);
-            }
-            else
-            {
-                SetClientProperties();
-                clientRepo.Update(SelectedClient);
-            }
-        }
-
-        private void OnClientMouseDoubleClick()
-        {
-            SetClientProperties();
+            EditOrderCommand = new RelayCommand(OnEditOrder);
+            DeleteOrderCommand = new RelayCommand(OnDeleteOrder);
+            CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
 
         private void OnAddOrder()
         {
-            //var order = new Order();
-            //selectedClient.Orders.Add(order);
+            var o = new Order(DateTime.Now, SelectedClient, OrderStatus.NEW);
+            var order = orderRepo.Add(o);
+            Orders.Insert(0, order);
+            Database.Orders.Add(order);
+        }
+        private void OnEditOrder()
+        {
+            {
+                var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+                OrderView orderView = new OrderView();
+                orderView.DataContext = vm;
+
+                vm.Id = SelectedOrder.Id;
+                vm.Client = SelectedOrder.Client;
+                vm.Date = SelectedOrder.Date;
+                vm.Status = SelectedOrder.Status;
+                vm.Notes = SelectedOrder.Notes;
+                vm.IsDataGridEnabled = true;
+                vm.IsChooseClientButtonEnabled = false;
+
+                foreach (var item in Database.OrdersItems)
+                {
+                    if (item.Order.Id == SelectedOrder.Id)
+                    {
+                        vm.OrderItems.Add(item);
+                    }
+                }
+
+                vm.UpdateBillingDetails();
+                orderView.ShowDialog();
+
+                if (orderView.DialogResult == true)
+                {
+                    SelectedOrder.Status = vm.Status;
+                    SelectedOrder.Notes = vm.Notes;
+
+                    orderRepo.Update(SelectedOrder);
+                }
+            }
+        }
+        private void OnDeleteOrder()
+        {
+            var userChoice = MessageBox.Show("Заказ №" + $"{SelectedOrder.Id}\nУдалить?", "Удаление заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+            List<OrderItem> orderItems = new List<OrderItem>();
+
+            if (userChoice == MessageBoxResult.Yes)
+            {
+                foreach (var item in Database.OrdersItems)
+                {
+                    if (item.Order.Id == SelectedOrder.Id)
+                    {
+                        orderItemRepo.Delete(item);
+                        orderItems.Add(item);
+                    }
+                }
+
+                foreach (var item in orderItems)
+                {
+                    Database.OrdersItems.Remove(item);
+                }
+
+                orderRepo.Delete(SelectedOrder);
+                Orders.Remove(SelectedOrder);
+                Database.Orders.Remove(SelectedOrder);
+            }
         }
 
-        private void SetClientProperties()
+        private void CloseWindow(ICloseable window)
         {
-            selectedClient.Name = Name;
-            selectedClient.Nickname = Nickname;
-            selectedClient.Phone = Phone;
-            selectedClient.Email = Email;
-            selectedClient.Country = Country;
-            selectedClient.City = City;
-            selectedClient.Address = Address;
-            selectedClient.ShippingMethod = ShippingMethod;
-            selectedClient.PostalCode = PostalCode;
-            selectedClient.Notes = Notes;
+            if (window != null)
+            {
+                window.DialogResult = true;
+                window.Close();
+            }
         }
     }
 }
