@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CRM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace CRM
     /// <summary>
     /// Interaction logic for AddItemView.xaml
     /// </summary>
-    public partial class AddNewItemView : Window
+    public partial class AddNewItemView : Window, ICloseable
     {
         public AddNewItemView()
         {

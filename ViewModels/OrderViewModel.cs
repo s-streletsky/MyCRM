@@ -77,6 +77,7 @@ namespace CRM.ViewModels
                 if (value != null) IsButtonEnabled = true; 
                 else IsButtonEnabled = false; } 
         }
+        public string WindowTitle { get; set; }
 
 
         public float Total { 
@@ -152,6 +153,8 @@ namespace CRM.ViewModels
             OrderItemView orderItemView = new OrderItemView();
             orderItemView.DataContext = vm;
             vm.OrderId = selectedOrder.Id;
+            vm.WindowTitle = "Добавить товарную позицию в заказ";
+
             orderItemView.ShowDialog();
 
             if (orderItemView.DialogResult == true)
@@ -178,6 +181,7 @@ namespace CRM.ViewModels
             vm.Quantity = SelectedItem.Quantity;
             vm.Discount = SelectedItem.Discount;
             vm.ExchangeRate = SelectedItem.ExchangeRate;
+            vm.WindowTitle = "Изменить товарную позицию в заказе";
             vm.CalculateBillingInfo();
 
             orderItemView.ShowDialog();

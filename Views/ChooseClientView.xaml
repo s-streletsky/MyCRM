@@ -9,28 +9,29 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ChooseClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="Клиенты" Height="450" Width="600">
+        Title="Клиенты" Height="450" Width="350">
+
+    <Window.Resources>
+        <Style x:Key="WindowButton">
+            <Setter Property="Button.Width" Value="100" />
+            <Setter Property="Button.Margin" Value="5,0,0,0" />
+        </Style>
+    </Window.Resources>
 
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="19"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="80" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ChooseClientWindow}">OK</Button>
-            <Button IsCancel="True" Width="80">Cancel</Button>
-        </StackPanel>
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.2*"></ColumnDefinition>
+                <ColumnDefinition Width="0.16*"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Column="0">Найти по имени:</TextBlock>
+            <TextBlock Grid.Column="0">Найти:</TextBlock>
 
             <TextBox Grid.Column="1" Text="{Binding Path=Search, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Triggers>
@@ -41,7 +42,11 @@
             </TextBox>
         </Grid>
 
-        <ListBox Grid.Row="2" ItemsSource="{Binding Path=Clients}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedClient, Mode=OneWayToSource}" />
+        <ListBox Margin="0,10,0,10" Grid.Row="1" ItemsSource="{Binding Path=Clients}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedClient, Mode=OneWayToSource}" />
 
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ChooseClientWindow}">ОК</Button>
+            <Button Style="{StaticResource WindowButton}" IsCancel="True">Отмена</Button>
+        </StackPanel>
     </Grid>
 </Window>

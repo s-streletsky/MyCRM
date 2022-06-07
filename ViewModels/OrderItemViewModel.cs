@@ -75,6 +75,7 @@ namespace CRM.ViewModels
                 OnPropertyChanged(); } 
         }
         public bool IsChooseStockItemButtonEnabled { get; set; }
+        public string WindowTitle { get; set; }
 
         public RelayCommand ChooseStockItemCommand { get; }
         public RelayCommand TextChangedCommand { get; }

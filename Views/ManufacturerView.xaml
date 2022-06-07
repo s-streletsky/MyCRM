@@ -8,54 +8,59 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ManufacturerViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="Производители" Height="450" Width="380">
+        MinHeight="480"
+        MinWidth="350"
+        Title="Производители" Height="480" Width="350">
     
     <Window.Resources>
         <Style x:Key="ActionButton">
-            <Setter Property="Button.Width" Value="60" />
-            <Setter Property="Button.Margin" Value="5,0,0,0" />
-        </Style>
-        <Style TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,0,0,15"></Setter>
+            <Setter Property="Button.Width" Value="70" />
+            <Setter Property="Button.Margin" Value="1,1,0,1" />
         </Style>
     </Window.Resources>
     
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="19"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition Height="18"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <!--Add new manufacturer Start-->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" IsEnabled="{Binding Path=IsAddStackPanelEnabled}" Visibility="{Binding Path=IsAddStackPanelVisible}">
-            <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
-            <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=AddOKCommand}" />
-            <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=AddCancelCommand}"/>
-        </StackPanel>
-        <!--Add new manufacturer End-->
+        <Grid Grid.Row="0" IsEnabled="{Binding Path=IsAddGridEnabled}" Visibility="{Binding Path=IsAddGridVisible}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-        <!--Edit manufacturer Start-->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Visibility="{Binding Path=IsEditStackPanelVisible}">
-            <TextBox Width="200" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
-            <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=EditOKCommand}" />
-            <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=EditCancelCommand}"/>
-        </StackPanel>
-        <!--Edit manufacturer End-->
+            <TextBox Grid.Column="0" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
 
-        <Menu Grid.Row="1" IsEnabled="{Binding Path=IsListBoxEnabled}">
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=AddOKCommand}" />
+                <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=AddCancelCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="0" Visibility="{Binding Path=IsEditGridVisible}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=EditOKCommand}" />
+                <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=EditCancelCommand}"/>
+            </StackPanel>
+        </Grid>
+
+        <Menu Grid.Row="2" IsEnabled="{Binding Path=IsListBoxEnabled}">
             <MenuItem Header="Добавить" Command="{Binding AddManufacturerCommand}"></MenuItem>
-            <MenuItem Header="Изменить" Command="{Binding EditManufacturerCommand}"></MenuItem>
-            <MenuItem Header="Удалить" Command="{Binding DeleteManufacturerCommand}"></MenuItem>
+            <MenuItem Header="Изменить" Command="{Binding EditManufacturerCommand}" IsEnabled="{Binding Path=IsEditDeleteButtonsEnabled}"></MenuItem>
+            <MenuItem Header="Удалить" Command="{Binding DeleteManufacturerCommand}" IsEnabled="{Binding Path=IsEditDeleteButtonsEnabled}"></MenuItem>
         </Menu>
 
-        <!--<DataGrid SelectedItem="{Binding Path=SelectedManufacturer}" Grid.Row="1" AutoGenerateColumns="False" ItemsSource="{Binding Database.Manufacturers, Mode=TwoWay}" IsReadOnly="True" SelectionMode="Single">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Manufacturer" Binding="{Binding Path=Name}" Width="300"></DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>-->
-
-        <ListBox IsEnabled="{Binding Path=IsListBoxEnabled}" Grid.Row="2" ItemsSource="{Binding Path=Database.Manufacturers, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedManufacturer}" DisplayMemberPath="Name"></ListBox>
-
+        <ListBox IsEnabled="{Binding Path=IsListBoxEnabled}" Grid.Row="3" ItemsSource="{Binding Path=Database.Manufacturers, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedManufacturer}" DisplayMemberPath="Name"></ListBox>
     </Grid>
 </Window>

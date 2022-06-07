@@ -8,20 +8,23 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:PaymentsViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="PaymentsView" Height="450" Width="400">
+        MinHeight="450"
+        MinWidth="400"
+        Title="Платежи" Height="450" Width="400">
+    
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.1*"></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.4*"/>
+                <ColumnDefinition Width="100"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             
-            <TextBlock Margin="0,0,10,0" Grid.Column="0">Найти по имени:</TextBlock>
+            <TextBlock Grid.Column="0">Найти по имени:</TextBlock>
             <TextBox Grid.Column="1" Text="{Binding Path=Search, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="TextChanged">
@@ -31,6 +34,6 @@
             </TextBox>
         </Grid>
                 
-        <ListBox Grid.Row="1" ItemsSource="{Binding Path=Payments}"></ListBox>
+        <ListBox Margin="0,10,0,0" Grid.Row="1" ItemsSource="{Binding Path=Payments}"></ListBox>
     </Grid>
 </Window>

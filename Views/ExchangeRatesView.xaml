@@ -9,15 +9,14 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ExchangeRatesViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="Курс валют" Height="450" Width="350">
+        MinHeight="450"
+        MinWidth="300"
+        Title="Курс валют" Height="450" Width="300">
     
     <Window.Resources>
         <Style TargetType="Button">
-            <Setter Property="Button.Width" Value="60" />
-            <Setter Property="Button.Margin" Value="5,0,0,0" />
-        </Style>
-        <Style TargetType="StackPanel">
-            <Setter Property="Margin" Value="0,0,0,15"></Setter>
+            <Setter Property="Button.Width" Value="70" />
+            <Setter Property="Button.Margin" Value="1,1,0,1" />
         </Style>
     </Window.Resources>
 
@@ -31,24 +30,31 @@
         </Grid.Resources>
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"></RowDefinition>
-            <RowDefinition Height="19"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition Height="18"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" IsEnabled="{Binding Path=IsAddStackPanelEnabled}" Visibility="{Binding Path=IsAddStackPanelVisible}">
-            <ComboBox ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedItem="{Binding Path=SelectedCurrency}" Width="60" Margin="0,0,5,0"></ComboBox>
-            <TextBox Width="100" Text="{Binding Path=ExchangeRate}"></TextBox>
-            <Button Content="Добавить" Command="{Binding Path=AddExchangeRateCommand}" />
-        </StackPanel>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-        <Menu Grid.Row="1">
+            <ComboBox Grid.Column="0" ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedItem="{Binding Path=SelectedCurrency}"></ComboBox>
+            <TextBox Grid.Column="1" Text="{Binding Path=ExchangeRate}"></TextBox>
+            <Button Grid.Column="2" Content="Добавить" Command="{Binding Path=AddExchangeRateCommand}" />
+        </Grid>
+
+        <Menu Grid.Row="2">
             <MenuItem Header="Удалить" Command="{Binding Path=DeleteExchangeRateCommand}"></MenuItem>
         </Menu>
 
-        <DataGrid AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.ExchangeRates, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedExchangeRate}" Grid.Row="2">
+        <DataGrid Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.ExchangeRates, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedExchangeRate}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
+                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
                 <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Currency}" />
                 <DataGridTextColumn Header="Курс" Binding="{Binding Path=Value}" />
             </DataGrid.Columns>

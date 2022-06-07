@@ -8,22 +8,26 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:StatsViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="StatsView" Height="380" Width="320">
+        MinHeight="380"
+        MinWidth="320"
+        Title="Статистика" Height="380" Width="320">
+    
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition></ColumnDefinition>
@@ -31,9 +35,7 @@
             <ColumnDefinition Width="0.45*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <!--<Calendar Grid.Column="2" Grid.RowSpan="6" Dis></Calendar>-->
-
-        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">Статистика за:</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0">Отчёт за:</TextBlock>
         <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Months}" SelectedItem="{Binding Path=SelectedMonth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="SelectionChanged">
@@ -74,8 +76,6 @@
         <TextBlock Grid.Row="11" Grid.Column="0">Прибыль:</TextBlock>
         <TextBlock Grid.Row="11" Grid.Column="1" Text="{Binding Path=Profit}"></TextBlock>
 
-        <StackPanel Grid.Row="12" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button IsCancel="True">OK</Button>
-        </StackPanel>
+        <Button Grid.Row="13" Grid.Column="1" Grid.ColumnSpan="2" Width="100" IsCancel="True" HorizontalAlignment="Right">ОК</Button>
     </Grid>
 </Window>

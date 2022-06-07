@@ -7,22 +7,21 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:StockArrivalViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="Приход товара" Height="450" Width="500">
+        MinHeight="450"
+        MinWidth="351"
+        Title="Приход товара" Height="450" Width="380">
 
     <Window.Resources>
-        <Style TargetType="ComboBox">
-            <Setter Property="Margin" Value="0,0,0,5"></Setter>
-        </Style>
         <Style TargetType="Button">
-            <Setter Property="Margin" Value="5,0,0,0"></Setter>
-            <Setter Property="Width" Value="60"></Setter>
+            <Setter Property="Margin" Value="1,1,0,1"></Setter>
+            <Setter Property="Width" Value="70"></Setter>
         </Style>
     </Window.Resources>
     
     <Grid Margin="15">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"></RowDefinition>
-            <RowDefinition Height="19"></RowDefinition>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="18"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -32,46 +31,62 @@
         <!--Add new arrival Start-->
         <Grid Grid.ColumnSpan="2" IsEnabled="{Binding Path=IsAddGridEnabled}" Visibility="{Binding Path=IsAddGridVisible}" Margin="0,0,0,15">
             <Grid.RowDefinitions>
-                <RowDefinition Height="25"></RowDefinition>
-                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+                <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition  Width="0.35*"></ColumnDefinition>
+                <ColumnDefinition  Width="94"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0">Наименование</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0">Наименование:</TextBlock>
             <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Database.StockItems}" DisplayMemberPath="Name" IsEditable="True" IsTextSearchEnabled="True" SelectedItem="{Binding Path=StockItem}"></ComboBox>
 
-            <TextBlock Grid.Row="1">Количество</TextBlock>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <TextBox Width="100" Text="{Binding Path=Quantity}"></TextBox>
-                <Button Command="{Binding Path=AddOKCommand}">ОК</Button>
-                <Button Command="{Binding Path=AddCancelCommand}">Отмена</Button>
-            </StackPanel>
+            <TextBlock Grid.Row="1" Grid.Column="0">Количество:</TextBlock>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Text="{Binding Path=Quantity}"></TextBox>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Command="{Binding Path=AddOKCommand}">ОК</Button>
+                    <Button Command="{Binding Path=AddCancelCommand}">Отмена</Button>
+                </StackPanel>
+            </Grid>
         </Grid>
         <!--Add new arrival End-->
 
         <!--Edit arrival Start-->
         <Grid Grid.ColumnSpan="2" Visibility="{Binding Path=IsEditGridVisible}" Margin="0,0,0,15">
             <Grid.RowDefinitions>
-                <RowDefinition Height="25"></RowDefinition>
-                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+                <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition  Width="0.35*"></ColumnDefinition>
+                <ColumnDefinition  Width="94"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row="0" Grid.Column="0">Наименование</TextBlock>
+            <TextBlock Grid.Row="0" Grid.Column="0">Наименование:</TextBlock>
             <ComboBox Grid.Row="0" Grid.Column="1" ItemsSource="{Binding Path=Database.StockItems}" DisplayMemberPath="Name" IsEditable="True" IsTextSearchEnabled="True" SelectedItem="{Binding Path=StockItem}" IsEnabled="False"></ComboBox>
 
-            <TextBlock Grid.Row="1">Количество</TextBlock>
-            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal">
-                <TextBox Width="100" Text="{Binding Path=Quantity}"></TextBox>
-                <Button Command="{Binding Path=EditOKCommand}">ОК</Button>
-                <Button Command="{Binding Path=EditCancelCommand}">Отмена</Button>
-            </StackPanel>
+            <TextBlock Grid.Row="1" Grid.Column="0">Количество:</TextBlock>
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.5*"></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Text="{Binding Path=Quantity}"></TextBox>
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Command="{Binding Path=EditOKCommand}">ОК</Button>
+                    <Button Command="{Binding Path=EditCancelCommand}">Отмена</Button>
+                </StackPanel>
+            </Grid>
         </Grid>
         <!--Edit arrival End-->
 
@@ -83,9 +98,9 @@
 
         <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Database.StockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}" />
+                <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
                 <DataGridTextColumn Header="Наименование" Binding="{Binding Path=StockItem.Name}" MinWidth="200"/>
-                <DataGridTextColumn Header="Количество" Binding="{Binding Path=Quantity}"/>
+                <DataGridTextColumn Header="Кол-во" Binding="{Binding Path=Quantity}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

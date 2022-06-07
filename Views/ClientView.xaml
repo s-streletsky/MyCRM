@@ -12,8 +12,8 @@
         d:DataContext="{d:DesignInstance Type=vm:ClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         MinHeight="500"
-        MinWidth="720"
-        Title="Редактирование карточки клиента" Height="500" Width="720">
+        MinWidth="670"
+        Title="{Binding Path=WindowTitle}" Height="500" Width="670">
 
     <Window.Resources>
         <Style x:Key="WindowButton">
@@ -44,10 +44,10 @@
             <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
             <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
             <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
-            <RowDefinition Height="0.1*"></RowDefinition>
-            <RowDefinition Height="0.4*"></RowDefinition>
+            <RowDefinition Height="16"></RowDefinition>
+            <RowDefinition Height="54"></RowDefinition>
             <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
-            <RowDefinition Height="0.1*"></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
             <RowDefinition Height="18"></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
@@ -55,7 +55,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.17*"></ColumnDefinition>
             <ColumnDefinition Width="0.5*" Name="col1"></ColumnDefinition>
-            <ColumnDefinition Width="0.1*"></ColumnDefinition>
+            <ColumnDefinition Width="0.05*"></ColumnDefinition>
             <ColumnDefinition Width="0.17*"></ColumnDefinition>
             <ColumnDefinition Width="0.5*" Name="col4"></ColumnDefinition>
         </Grid.ColumnDefinitions>

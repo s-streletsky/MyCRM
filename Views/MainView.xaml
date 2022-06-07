@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="MainWindow" Height="650" Width="1200">
+        Title="MyCRM v1.0 — учёт клиентов, заказов и склада" Height="650" Width="1200">
 
     <Window.Resources>
         <Style x:Key="InnerGrid">

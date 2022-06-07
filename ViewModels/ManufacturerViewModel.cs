@@ -14,9 +14,10 @@ namespace CRM.ViewModels
     {
         private Manufacturer selectedManufacturer;
         private bool isListBoxEnabled;
-        private string isAddStackPanelVisible;
-        private bool isAddStackPanelEnabled;
-        private string isEditStackPanelVisible;
+        private string isAddGridVisible;
+        private bool isAddGridEnabled;
+        private string isEditGridVisible;
+        private bool isEditDeleteButtonsEnabled;
         private string name;
 
         public RelayCommand AddManufacturerCommand { get; }
@@ -26,15 +27,27 @@ namespace CRM.ViewModels
         public RelayCommand AddCancelCommand { get; }
         public RelayCommand EditOKCommand { get; }
         public RelayCommand EditCancelCommand { get; }
-        public Manufacturer SelectedManufacturer { get { return selectedManufacturer; } set { selectedManufacturer = value; OnPropertyChanged(); } }
+        public Manufacturer SelectedManufacturer { 
+            get { return selectedManufacturer; } 
+            set { selectedManufacturer = value;
+                if (value != null) IsEditDeleteButtonsEnabled = true;
+                else IsEditDeleteButtonsEnabled = false;
+            } 
+        }
         public Database Database { get; set; }
         public ManufacturerRepository ManufacturerRepo { get; set; }
         public bool IsListBoxEnabled { get { return isListBoxEnabled; } set { isListBoxEnabled = value; OnPropertyChanged(); } }
-        public string IsAddStackPanelVisible { get { return isAddStackPanelVisible; } set { isAddStackPanelVisible = value; OnPropertyChanged(); } }
-        public bool IsAddStackPanelEnabled { get { return isAddStackPanelEnabled; } set { isAddStackPanelEnabled = value; OnPropertyChanged(); } }
-        public string IsEditStackPanelVisible { get { return isEditStackPanelVisible; } set { isEditStackPanelVisible = value; OnPropertyChanged(); } }
+        public string IsAddGridVisible { get { return isAddGridVisible; } set { isAddGridVisible = value; OnPropertyChanged(); } }
+        public bool IsAddGridEnabled { get { return isAddGridEnabled; } set { isAddGridEnabled = value; OnPropertyChanged(); } }
+        public string IsEditGridVisible { get { return isEditGridVisible; } set { isEditGridVisible = value; OnPropertyChanged(); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged(); } }
+        public bool IsEditDeleteButtonsEnabled { 
+            get { return isEditDeleteButtonsEnabled; } 
+            set { isEditDeleteButtonsEnabled = value; 
+                OnPropertyChanged(); } 
+        }
         private List<string> Visibility { get; set; } = new List<string>() { "Hidden", "Visible" };
+
 
         public ManufacturerViewModel(Database db, ManufacturerRepository mfr)
         {
@@ -42,9 +55,9 @@ namespace CRM.ViewModels
             ManufacturerRepo = mfr;
 
             IsListBoxEnabled = true;
-            IsAddStackPanelEnabled = false;
-            IsAddStackPanelVisible = Visibility[1];
-            IsEditStackPanelVisible = Visibility[0];
+            IsAddGridEnabled = false;
+            IsAddGridVisible = Visibility[1];
+            IsEditGridVisible = Visibility[0];
 
             AddManufacturerCommand = new RelayCommand(OnAddMenuButtonClick);
             EditManufacturerCommand = new RelayCommand(OnEditMenuButtonClick);
@@ -66,15 +79,15 @@ namespace CRM.ViewModels
         {
             if (SelectedManufacturer != null)
             {
-                IsAddStackPanelVisible = Visibility[0];
-                IsEditStackPanelVisible = Visibility[1];
+                IsAddGridVisible = Visibility[0];
+                IsEditGridVisible = Visibility[1];
 
                 DisableListBox();
                 Name = SelectedManufacturer.Name;
             }
             else
             {
-                Name = "Выберите запись из списка ниже!";
+                Name = "Выберите запись из списка!";
             }           
         }
 
@@ -118,20 +131,20 @@ namespace CRM.ViewModels
         private void EnableListBox()
         {
             IsListBoxEnabled = true;
-            IsAddStackPanelEnabled = false;
+            IsAddGridEnabled = false;
             Name = "";
         }
 
         private void DisableListBox()
         {
             IsListBoxEnabled = false;
-            IsAddStackPanelEnabled = true;            
+            IsAddGridEnabled = true;            
         }
 
         private void HideEditStackPanel()
         {
-            IsAddStackPanelVisible = Visibility[1];
-            IsEditStackPanelVisible = Visibility[0];
+            IsAddGridVisible = Visibility[1];
+            IsEditGridVisible = Visibility[0];
         }
     }
 }

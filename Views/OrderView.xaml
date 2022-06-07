@@ -8,18 +8,21 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM.Views"
         xmlns:models="clr-namespace:CRM.Models"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:OrderViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         MinHeight="480"
-        MinWidth="700"
-        Title="Заказ" Height="480" Width="700">
+        MinWidth="640"
+        Title="{Binding Path=WindowTitle}" Height="480" Width="640">
 
     <Window.Resources>
         <Style x:Key="WindowButton">
             <Setter Property="Button.Width" Value="100" />
             <Setter Property="Button.Margin" Value="5,0,0,0" />
         </Style>
+
+        <wpf:EnumDescriptionConverter x:Key="descConverter"></wpf:EnumDescriptionConverter>
     </Window.Resources>
     
     <Grid Margin="15">
@@ -34,7 +37,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.6*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="1.5*"></ColumnDefinition>
+            <ColumnDefinition Width="1.2*"></ColumnDefinition>
             <ColumnDefinition Width="0.6*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
@@ -57,34 +60,40 @@
         <Grid Grid.Column="1" Grid.ColumnSpan="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="0.15*"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox Text="{Binding Path=Client.Name, Mode=TwoWay}"></TextBox>
+            <TextBox Text="{Binding Path=Client.Name, Mode=TwoWay}" IsReadOnly="True"></TextBox>
             <Button Grid.Column="1" Margin="0,1,0,1" Command="{Binding Path=ChooseClientCommand}" IsEnabled="{Binding Path=IsChooseClientButtonEnabled}">Выбрать</Button>
         </Grid>
 
         <TextBlock Grid.Row="1">Дата:</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Date, Mode=OneWay, StringFormat=\{0:dd.MM.yy HH:mm\}}" VerticalContentAlignment="Center"></TextBox>
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Date, Mode=OneWay, StringFormat=\{0:dd.MM.yy HH:mm\}}" IsReadOnly="True"></TextBox>
         
         <TextBlock Grid.Row="2">Статус:</TextBlock>
-        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource orderStatusDataProvider}}" SelectedItem="{Binding Path=Status, Mode=TwoWay}"></ComboBox>
+        <ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Source={StaticResource orderStatusDataProvider}}" SelectedItem="{Binding Path=Status, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource descConverter}}"></TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
 
         <Button Grid.Row="5" Grid.Column="1" Command="{Binding Path=AddPaymentCommand}">Внести платёж</Button>
 
         <TextBlock Grid.Row="1" Grid.Column="3">К оплате:</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding Path=Total, Mode=OneWay}"></TextBox>
+        <TextBox Grid.Row="1" Grid.Column="4" Text="{Binding Path=Total, Mode=OneWay}" IsReadOnly="True"></TextBox>
         
         <TextBlock Grid.Row="2" Grid.Column="3">Оплачено:</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Path=Paid, Mode=OneWay}"></TextBox>
+        <TextBox Grid.Row="2" Grid.Column="4" Text="{Binding Path=Paid, Mode=OneWay}" IsReadOnly="True"></TextBox>
         
         <TextBlock Grid.Row="3" Grid.Column="3">Долг:</TextBlock>
-        <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding Path=Debt, Mode=OneWay}"></TextBox>
+        <TextBox Grid.Row="3" Grid.Column="4" Text="{Binding Path=Debt, Mode=OneWay}" IsReadOnly="True"></TextBox>
         
         <TextBlock Grid.Row="5" Grid.Column="3">Расходы:</TextBlock>
-        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=Expenses, Mode=OneWay}"></TextBox>
+        <TextBox Grid.Row="5" Grid.Column="4" Text="{Binding Path=Expenses, Mode=OneWay}" IsReadOnly="True"></TextBox>
         
         <TextBlock Grid.Row="6" Grid.Column="3">Прибыль:</TextBlock>
-        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=Profit, Mode=OneWay}"></TextBox>
+        <TextBox Grid.Row="6" Grid.Column="4" Text="{Binding Path=Profit, Mode=OneWay}" IsReadOnly="True"></TextBox>
 
         <TextBlock Grid.Row="7">Примечания:</TextBlock>
         <TextBox Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding Path=Notes, Mode=TwoWay}" VerticalContentAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"></TextBox>

@@ -100,16 +100,14 @@ namespace CRM.ViewModels
             EditStockItemCommand = new RelayCommand(OnEditStockItem);
             DeleteStockItemCommand = new RelayCommand(OnDeleteStockItem);
 
-            EditManufacturerCommand = new RelayCommand(OnManufacturersClick);
-            EditStockArrivalCommand = new RelayCommand(OnStockArrivalClick);
-            EditExchangeRatesCommand = new RelayCommand(OnExchangeRatesClick);
-            
-            AddNewExchangeRateCommand = new RelayCommand(OnAddNewExchangeRate_Click);
+            EditManufacturerCommand = new RelayCommand(OnManufacturers);
+            EditStockArrivalCommand = new RelayCommand(OnStockArrival);
+            EditExchangeRatesCommand = new RelayCommand(OnExchangeRates);           
 
             Database = new Database();
             SelectedClient = null;
 
-            IsClientsButtonsEnabled = false;
+            //IsClientsButtonsEnabled = false;
 
             clientRepo.GetAll(Database);
             manufacturerRepo.GetAll(Database);
@@ -120,13 +118,15 @@ namespace CRM.ViewModels
             exchangeRateRepo.GetAll(Database);            
             stockArrivalRepo.GetAll(Database);
         }
-        // Кнопки во вкладке "Клиенты"
+        //Кнопки во вкладке "Клиенты"
         public void OnAddClient()
         {
             var vm = new ClientViewModel(Database, null, clientRepo, orderRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo);
             AddNewClientView addNewClientView = new AddNewClientView();
 
             addNewClientView.DataContext = vm;
+            vm.WindowTitle = "Добавить нового клиента";
+
             addNewClientView.ShowDialog();
 
             if (addNewClientView.DialogResult == true)
@@ -169,6 +169,7 @@ namespace CRM.ViewModels
                 vm.Notes = SelectedClient.Notes;
                 vm.Balance = clientRepo.GetBalance(SelectedClient);
                 vm.IsDataGridEnabled = true;
+                vm.WindowTitle = "Изменить данные клиента";
 
                 foreach (var order in Database.Orders)
                 {
@@ -223,6 +224,8 @@ namespace CRM.ViewModels
             var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
             OrderView orderView = new OrderView();
             orderView.DataContext = vm;
+            vm.WindowTitle = "Добавить новый заказ";
+
             orderView.ShowDialog();
 
             if (orderView.DialogResult == true)
@@ -246,6 +249,7 @@ namespace CRM.ViewModels
                 vm.Status = SelectedOrder.Status;
                 vm.Notes = SelectedOrder.Notes;
                 vm.IsDataGridEnabled = true;
+                vm.WindowTitle = "Изменить содержимое заказа";
 
                 foreach (var item in Database.OrdersItems)
                 {
@@ -308,17 +312,25 @@ namespace CRM.ViewModels
             statsView.DataContext = vm;
             vm.PrintStats();
 
-
             statsView.ShowDialog();
         }
 
-        // Кнопки во вкладке "Склад"
+        //Кнопки во вкладке "Склад"
         public void OnAddStockItem()
         {
             var vm = new StockItemViewModel(Database, stockItemRepo, manufacturerRepo, null, "Visible", "Hidden");
             AddNewItemView addNewItemView = new AddNewItemView();
             addNewItemView.DataContext = vm;
+            vm.WindowTitle = "Добавить товарную позицию";
+
             addNewItemView.ShowDialog();
+
+            if (addNewItemView.DialogResult == true)
+            {
+                var newItem = new StockItem(vm.Name, vm.Manufacturer, vm.Description, vm.Currency, vm.PurchasePrice, vm.RetailPrice);
+                var item = stockItemRepo.Add(newItem);
+                Database.StockItems.Insert(0, item);
+            }
         }
         public void OnEditStockItem()
         {
@@ -337,8 +349,21 @@ namespace CRM.ViewModels
                 vm.PurchasePrice = SelectedStockItem.PurchasePrice;
                 vm.RetailPrice = SelectedStockItem.RetailPrice;
                 vm.Quantity = SelectedStockItem.Quantity;
+                vm.WindowTitle = "Изменить товарную позицию";
 
-                addNewItemView.Show();
+                addNewItemView.ShowDialog();
+
+                if (addNewItemView.DialogResult == true)
+                {
+                    SelectedStockItem.Name = vm.Name;
+                    SelectedStockItem.Manufacturer = vm.Manufacturer;
+                    SelectedStockItem.Description = vm.Description;
+                    SelectedStockItem.Currency = vm.Currency;
+                    SelectedStockItem.PurchasePrice = vm.PurchasePrice;
+                    SelectedStockItem.RetailPrice = vm.RetailPrice;
+
+                    stockItemRepo.Update(SelectedStockItem);
+                }
             }                       
         }
         public void OnDeleteStockItem()
@@ -347,35 +372,29 @@ namespace CRM.ViewModels
             var i = Database.StockItems.IndexOf(SelectedStockItem);
             Database.StockItems.RemoveAt(i);
         }
-        public void OnManufacturersClick()
+        public void OnManufacturers()
         {
             var vm = new ManufacturerViewModel(Database, manufacturerRepo);
             ManufacturerView manufacturerView = new ManufacturerView();
 
             manufacturerView.DataContext = vm;
-            manufacturerView.Show();
+            manufacturerView.ShowDialog();
         }
-        private void OnExchangeRatesClick()
+        private void OnExchangeRates()
         {
             var vm = new ExchangeRatesViewModel(Database, exchangeRateRepo);
             ExchangeRatesView exchangeRatesView = new ExchangeRatesView();
 
             exchangeRatesView.DataContext = vm;
-            exchangeRatesView.Show();
+            exchangeRatesView.ShowDialog();
         }
-        public void OnStockArrivalClick()
+        public void OnStockArrival()
         {
             var vm = new StockArrivalViewModel(Database, stockArrivalRepo, stockItemRepo);
             StockArrivalView stockArrivalView = new StockArrivalView();
 
             stockArrivalView.DataContext = vm;
-            stockArrivalView.Show();
-        }
-
-        public void OnAddNewExchangeRate_Click()
-        {
-            var newExRate = exchangeRateRepo.Add(new ExchangeRate(SelectedCurrency, CurrencyExchangeRate));
-            Database.ExchangeRates.Insert(0, newExRate);
+            stockArrivalView.ShowDialog();
         }
     }
 }

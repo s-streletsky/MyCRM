@@ -141,6 +141,7 @@ namespace CRM.ViewModels
                 OnPropertyChanged(); } 
         }
         public bool IsDataGridEnabled { get; set; }
+        public string WindowTitle { get; set; }
 
         public ClientViewModel() { }
         public ClientViewModel(Database db, Client sc, ClientRepository cr, OrderRepository or, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr)
@@ -172,7 +173,7 @@ namespace CRM.ViewModels
             var o = new Order(DateTime.Now, SelectedClient, OrderStatus.NEW);
             var order = orderRepo.Add(o);
             Orders.Insert(0, order);
-            Database.Orders.Add(order);
+            Database.Orders.Insert(0, order);
         }
         private void OnEditOrder()
         {

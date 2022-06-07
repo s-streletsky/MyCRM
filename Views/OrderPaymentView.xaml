@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         MinHeight="190"
         MinWidth="500"
-        Title="PaymentView" Height="190" Width="500">
+        Title="Внести платёж" Height="190" Width="500">
     
     <Window.Resources>
         <Style x:Key="WindowButton">

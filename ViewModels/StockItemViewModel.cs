@@ -24,6 +24,7 @@ namespace CRM.ViewModels
 
         public RelayCommand SaveNewCommand { get; }
         public RelayCommand SaveEditCommand { get; }
+        public RelayCommand<ICloseable> CloseWindowCommand { get; }
 
         public int Id { 
             get { return id; } 
@@ -75,6 +76,7 @@ namespace CRM.ViewModels
         public Database Database { get; set; }
         public StockItemRepository StockRepo { get; set; }
         public ManufacturerRepository ManufacturerRepo { get; set; }
+        public string WindowTitle { get; set; }
 
         public StockItemViewModel() { }
         public StockItemViewModel(Database db, StockItemRepository sr, ManufacturerRepository mfr, StockItem si, string saveNewVis, string saveEditVis)
@@ -86,27 +88,18 @@ namespace CRM.ViewModels
             IsSaveNewButtonVisible = saveNewVis;
             IsSaveEditButtonVisible = saveEditVis;
 
-            SaveNewCommand = new RelayCommand(OnSaveNew);
-            SaveEditCommand = new RelayCommand(OnSaveEdit);
+            //SaveNewCommand = new RelayCommand(OnSaveNew);
+            //SaveEditCommand = new RelayCommand(OnSaveEdit);
+            CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
 
-        private void OnSaveNew()
+        private void CloseWindow(ICloseable window)
         {
-            var newItem = new StockItem(Name, Manufacturer, Description, Currency, PurchasePrice, RetailPrice);
-            var i = StockRepo.Add(newItem);
-            Database.StockItems.Add(i);
-        }
-
-        private void OnSaveEdit()
-        {
-            SelectedStockItem.Name = Name;
-            SelectedStockItem.Manufacturer = Manufacturer;
-            SelectedStockItem.Description = Description;
-            SelectedStockItem.Currency = Currency;
-            SelectedStockItem.PurchasePrice = PurchasePrice;
-            SelectedStockItem.RetailPrice = RetailPrice;
-
-            StockRepo.Update(SelectedStockItem);
+            if (window != null)
+            {
+                window.DialogResult = true;
+                window.Close();
+            }
         }
     }
 }

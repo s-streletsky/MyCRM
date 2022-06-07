@@ -9,7 +9,14 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:OrderItemViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="OrderItemView" Height="250" Width="500">
+        Title="{Binding Path=WindowTitle}" Height="280" Width="500">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Button.Width" Value="100" />
+            <Setter Property="Button.Margin" Value="5,0,0,0" />
+        </Style>
+    </Window.Resources>
     
     <Grid Margin="15">
         <Grid.ColumnDefinitions>
@@ -20,18 +27,18 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
             <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0">Наименование</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0">Наименование:</TextBlock>
 
         <Grid Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4">
             <Grid.ColumnDefinitions>
@@ -40,10 +47,10 @@
             </Grid.ColumnDefinitions>
             
             <TextBox Grid.Column="0" Text="{Binding Path=SelectedItem.Name, Mode=OneWay}" IsReadOnly="True"></TextBox>
-            <Button Grid.Column="1" Width="80" Command="{Binding Path=ChooseStockItemCommand}" IsEnabled="{Binding Path=IsChooseStockItemButtonEnabled}">Выбрать</Button>
+            <Button Grid.Column="1" Width="70" Margin="0,1,0,1" Command="{Binding Path=ChooseStockItemCommand}" IsEnabled="{Binding Path=IsChooseStockItemButtonEnabled}">Выбрать</Button>
         </Grid>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">Цена, розница</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0">Цена, розница:</TextBlock>
         <TextBox Grid.Row="1" Grid.Column="1" IsReadOnly="True" Text="{Binding Path=RetailPrice, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
@@ -52,7 +59,7 @@
             </i:Interaction.Triggers>
         </TextBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Количество</TextBlock>
+        <TextBlock Grid.Row="2" Grid.Column="0">Количество:</TextBlock>
         <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
@@ -61,7 +68,7 @@
             </i:Interaction.Triggers>
         </TextBox>
 
-        <TextBlock Grid.Row="3" Grid.Column="0">Скидка</TextBlock>
+        <TextBlock Grid.Row="3" Grid.Column="0">Скидка:</TextBlock>
         <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=Discount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
@@ -70,17 +77,17 @@
             </i:Interaction.Triggers>
         </TextBox>
 
-        <TextBlock Grid.Row="4" Grid.Column="0">Итого</TextBlock>
+        <TextBlock Grid.Row="4" Grid.Column="0">Итого:</TextBlock>
         <TextBox Grid.Row="4" Grid.Column="1" IsReadOnly="True" Text="{Binding Path=Total, Mode=OneWay}"></TextBox>
 
-        <TextBlock Grid.Row="6" Grid.Column="0">Заказ</TextBlock>
+        <TextBlock Grid.Row="6" Grid.Column="0">Заказ:</TextBlock>
         <TextBox Grid.Row="6" Grid.Column="1" Text="{Binding Path=OrderId}"></TextBox>
 
 
-        <TextBlock Grid.Row="1" Grid.Column="3">Цена, закупка</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="3">Цена, закупка:</TextBlock>
         <TextBox Grid.Row="1" Grid.Column="4" IsReadOnly="True" Text="{Binding Path=PurchasePrice, Mode=OneWay}"></TextBox>
         
-        <TextBlock Grid.Row="4" Grid.Column="3">Прибыль</TextBlock>
+        <TextBlock Grid.Row="4" Grid.Column="3">Прибыль:</TextBlock>
         <TextBox Grid.Row="4" Grid.Column="4" IsReadOnly="True" Text="{Binding Path=Profit, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
@@ -89,7 +96,7 @@
             </i:Interaction.Triggers>
         </TextBox>
 
-        <TextBlock Grid.Row="5" Grid.Column="3">Расходы</TextBlock>
+        <TextBlock Grid.Row="5" Grid.Column="3">Расходы:</TextBlock>
         <TextBox Grid.Row="5" Grid.Column="4" IsReadOnly="True" Text="{Binding Path=Expenses, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
@@ -100,7 +107,7 @@
 
         <StackPanel Grid.Row="8" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Width="80" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=OrderItemWindow}">OK</Button>
-            <Button IsCancel="True" Width="80">Cancel</Button>
+            <Button IsCancel="True" Width="80">Отмена</Button>
         </StackPanel>
     </Grid>
 </Window>

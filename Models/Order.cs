@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +11,19 @@ namespace CRM.Models
 {
     enum OrderStatus
     {
+        [Description("Собран")]
         Ready = 1,
+        [Description("На отправку")]
         Awaiting_dispatch,
+        [Description("Оплачен")]
         Fully_paid,
+        [Description("НОВЫЙ")]
         NEW,
+        [Description("Выставлен счёт")]
         Billed,
+        [Description("Оплачен частично")]
         Partially_paid,
+        [Description("Отправлен")]
         Shipped
     }
     class Order : ViewModelBase
