@@ -39,9 +39,13 @@ namespace CRM.ViewModels
         public Database Database { get; set; }
         public Client SelectedClient {
             get { return selectedClient; }
-            set { selectedClient = value;
-                if (value != null) IsClientsButtonsEnabled = true;
-                else IsClientsButtonsEnabled = false; }
+            set
+            {
+                selectedClient = value;
+                OnPropertyChanged(nameof(IsClientsButtonsEnabled));
+                //if (value != null) IsClientsButtonsEnabled = true;
+                //else IsClientsButtonsEnabled = false; }
+            }
         }
         public StockItem SelectedStockItem { 
             get { return selectedStockItem; } 
@@ -58,9 +62,10 @@ namespace CRM.ViewModels
         }
         public Currency SelectedCurrency { get; set; }
         public bool IsClientsButtonsEnabled { 
-            get { return isClientsButtonsEnabled; }
-            set { isClientsButtonsEnabled = value;
-                OnPropertyChanged(); }
+            get { return SelectedClient != null; }
+            //get { return isClientsButtonsEnabled; }
+            //set { isClientsButtonsEnabled = value;
+            //    OnPropertyChanged(); }
         }
         public bool IsOrdersButtonsEnabled { 
             get { return isOrdersButtonsEnabled; } 

@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ChooseStockItemViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="Складские позиции" Height="450" Width="600">
+        Title="Складские позиции" Height="450" Width="400">
 
     <Grid Margin="15">
         <Grid.RowDefinitions>

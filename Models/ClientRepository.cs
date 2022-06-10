@@ -40,24 +40,41 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = @"SELECT (SUM(oi.total)-p.paid) balance
-                    FROM OrdersItems oi
-                    INNER JOIN Orders o
-                    ON o.id = oi.order_id
-                    INNER JOIN(
-                        SELECT client_id, SUM(amount) AS paid
-                        FROM Payments
-                        GROUP BY client_id
-                        ) p
-                    ON p.client_id = o.client_id
+                //cmd.CommandText = @"SELECT (SUM(oi.total)-p.paid) balance
+                //    FROM OrdersItems oi
+                //    INNER JOIN Orders o
+                //    ON o.id = oi.order_id
+                //    INNER JOIN(
+                //        SELECT client_id, SUM(amount) AS paid
+                //        FROM Payments
+                //        GROUP BY client_id
+                //        ) p
+                //    ON p.client_id = o.client_id
+                //    WHERE o.client_id = @id
+                //    GROUP BY o.client_id";
+                //cmd.Parameters.AddWithValue("@id", client.Id);
+                //cmd.Prepare();
+
+                cmd.CommandText = @"SELECT IFNULL(SUM(oi.total), 0)
+                    FROM Orders o
+                    LEFT JOIN OrdersItems oi
+                    ON oi.order_id = o.id
                     WHERE o.client_id = @id
                     GROUP BY o.client_id";
                 cmd.Parameters.AddWithValue("@id", client.Id);
                 cmd.Prepare();
+                var ordersItemsTotal = Convert.ToSingle(cmd.ExecuteScalar());
 
-                var result = Convert.ToSingle(cmd.ExecuteScalar());
+                cmd.CommandText = @"SELECT IFNULL(SUM(amount), 0)
+                    FROM Payments
+                    WHERE client_id = @id";
+                cmd.Parameters.AddWithValue("@id", client.Id);
+                cmd.Prepare();
+                var paymentsTotal = Convert.ToSingle(cmd.ExecuteScalar());
 
-                return result;
+                float balance = paymentsTotal - ordersItemsTotal;
+
+                return balance;
             }
         }
         public void GetAll(Database db)
@@ -108,17 +125,18 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string updateClient = "UPDATE Clients SET name=" + $"'{client.Name}'," +
-                                                         "nickname=" + $"'{client.Nickname}', " +
-                                                         "phone=" + $"'{client.Phone}', " +
-                                                         "email=" + $"'{client.Email}', " +
-                                                         "country=" + $"{(int)client.Country}, " +
-                                                         "city=" + $"'{client.City}', " +
-                                                         "address=" + $"'{client.Address}', " +
-                                                         "shipping_method_id=" + $"{(int)client.ShippingMethod}, " +
-                                                         "postal_code=" + $"'{client.PostalCode}', " +
-                                                         "notes=" + $"'{client.Notes}' " +
-                                    "WHERE id=" + $"'{client.Id}'";
+                string updateClient = "UPDATE Clients " +
+                    "SET name=" + $"'{client.Name}', " +
+                    "nickname=" + $"'{client.Nickname}', " +
+                    "phone=" + $"'{client.Phone}', " +
+                    "email=" + $"'{client.Email}', " +
+                    "country=" + $"{(int)client.Country}, " +
+                    "city=" + $"'{client.City}', " +
+                    "address=" + $"'{client.Address}', " +
+                    "shipping_method_id=" + $"{(int)client.ShippingMethod}, " +
+                    "postal_code=" + $"'{client.PostalCode}', " +
+                    "notes=" + $"'{client.Notes}' " +
+                    "WHERE id=" + $"'{client.Id}'";
                                                         
                 cmd.CommandText = updateClient;
                 cmd.ExecuteNonQuery();

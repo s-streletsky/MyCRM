@@ -13,6 +13,18 @@ namespace CRM
     /// </summary>
     public partial class App : Application
     {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
 
+            //var view = new DbSelectView();
+            //view.showdialog();
+            //if (view.DialogResult != true) { return; }
+
+            var vm = new MainViewModel();
+            var view = new MainView();
+            view.DataContext = vm;
+            view.ShowDialog();
+        }
     }
 }

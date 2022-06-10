@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        Title="MyCRM v1.0 — учёт клиентов, заказов и склада" Height="650" Width="1200">
+        Title="MyCRM v1.0 — учёт клиентов, заказов, товаров/услуг" Height="650" Width="1200">
 
     <Window.Resources>
         <Style x:Key="InnerGrid">
@@ -98,7 +98,9 @@
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}"/>
                             <DataGridTextColumn Header="Клиент" Binding="{Binding Path=Client.Name}" />
-                            <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}" />
+                            <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}">
+                                
+                            </DataGridTextColumn>
                             <DataGridTextColumn Header="Сумма" Binding="{Binding Path=Total}" />
                             <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}" />
                         </DataGrid.Columns>
@@ -110,7 +112,7 @@
             <TabItem>
 
                 <TabItem.Header>
-                    <TextBlock Text="Склад"
+                    <TextBlock Text="Товары/Услуги"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
                 </TabItem.Header>
 

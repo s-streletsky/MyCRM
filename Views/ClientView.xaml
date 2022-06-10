@@ -36,6 +36,11 @@
                     <x:Type TypeName="models:ShippingMethod" />
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
+            <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="statusDataProvider">
+                <ObjectDataProvider.MethodParameters>
+                    <x:Type TypeName="models:OrderStatus" />
+                </ObjectDataProvider.MethodParameters>
+            </ObjectDataProvider>
         </Grid.Resources>
         
         <Grid.RowDefinitions>
@@ -102,12 +107,12 @@
         <TextBlock Grid.Row="6" Grid.Column="0">Примечания:</TextBlock>
         <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Text="{Binding Path=Notes, Mode=TwoWay}" VerticalContentAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Visible"></TextBox>
 
-        <StackPanel Grid.Row="7" Grid.Column="3" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
             <TextBlock Margin="0,0,4,0">Создан:</TextBlock>
             <TextBlock Margin="0,0,24,0" Text="{Binding Path=Date, StringFormat=\{0:dd.MM.yy HH:mm\}}"></TextBlock>
 
             <TextBlock Margin="0,0,4,0">Баланс:</TextBlock>
-            <TextBlock Text="{Binding Path=Balance}"></TextBlock>
+            <TextBox Width="80" Text="{Binding Path=Balance}" IsReadOnly="True" Background="{Binding Path=BalanceBackground}"></TextBox>
         </StackPanel>
 
         <Menu Grid.Row="9" Grid.ColumnSpan="5" IsEnabled="{Binding Path=IsDataGridEnabled}">
@@ -120,7 +125,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                 <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
-                <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}" />
+                <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}">
+                    <!--<DataGridTextColumn.Header.-->
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Сумма" Binding="{Binding Path=Total}" />
                 <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}" />
             </DataGrid.Columns>

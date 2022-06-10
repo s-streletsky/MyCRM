@@ -40,7 +40,9 @@ namespace CRM.ViewModels
         public ChooseClientViewModel() { }
         public ChooseClientViewModel(ObservableCollection<Client> c)
         {
-            clients = CollectionViewSource.GetDefaultView(c);
+            var collectionViewSource = new CollectionViewSource();
+            collectionViewSource.Source = c;
+            clients = collectionViewSource.View;
             SearchCommand = new RelayCommand(OnSearch);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }

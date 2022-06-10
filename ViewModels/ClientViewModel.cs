@@ -34,6 +34,7 @@ namespace CRM.ViewModels
         private string postalCode;
         private string notes;
         private float balance;
+        private string balanceBackground;
 
         private ObservableCollection<Order> orders;
 
@@ -112,6 +113,11 @@ namespace CRM.ViewModels
         public float Balance { 
             get { return balance; } 
             set { balance = value; 
+                OnPropertyChanged(); if (value < 0) BalanceBackground = "#ffb3ba"; else BalanceBackground = "#baffc9"; } 
+        }
+        public string BalanceBackground { 
+            get { return balanceBackground; } 
+            set { balanceBackground = value; 
                 OnPropertyChanged(); } 
         }
         public Client SelectedClient { 
