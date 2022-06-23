@@ -12,11 +12,12 @@ namespace CRM.ViewModels
     internal class StockArrivalViewModel : ViewModelBase
     {
         private StockItem stockItem;
-        private float quantity;
+        private BindableFloat quantity;
         private bool isAddGridEnabled;
         private string isAddGridVisible;
         private string isEditGridVisible;
         private bool isDataGridEnabled;
+        private StockArrival selectedArrival;
 
         public RelayCommand AddStockArrivalCommand { get; }
         public RelayCommand EditStockArrivalCommand { get; }
@@ -33,12 +34,16 @@ namespace CRM.ViewModels
             set { stockItem = value; 
                 OnPropertyChanged(); } 
         }
-        public float Quantity { 
+        public BindableFloat Quantity { 
             get { return quantity; } 
             set { quantity = value; 
                 OnPropertyChanged(); } 
         }
-        public StockArrival SelectedArrival { get; set; }
+        public StockArrival SelectedArrival { 
+            get { return selectedArrival; } 
+            set { selectedArrival = value; 
+                OnPropertyChanged(nameof(IsEditDeleteButtonsEnabled)); } 
+        }
         public bool IsAddGridEnabled { 
             get { return isAddGridEnabled; } 
             set { isAddGridEnabled = value; 
@@ -59,6 +64,9 @@ namespace CRM.ViewModels
             set { isDataGridEnabled = value; 
                 OnPropertyChanged(); } 
         }
+        public bool IsEditDeleteButtonsEnabled { 
+            get { return SelectedArrival != null; } 
+        }
 
         public StockArrivalViewModel(Database db, StockArrivalRepository sar, StockItemRepository sir)
         {
@@ -70,6 +78,9 @@ namespace CRM.ViewModels
             IsAddGridVisible = "Visible";
             IsEditGridVisible = "Hidden";
             IsDataGridEnabled = true;
+
+            Quantity = new BindableFloat();
+            Quantity.Input = "0";
 
             AddStockArrivalCommand = new RelayCommand(OnAddStockArrival);
             EditStockArrivalCommand = new RelayCommand(OnEditStockArrival);
@@ -89,7 +100,7 @@ namespace CRM.ViewModels
 
         private void OnEditStockArrival()
         {
-            Quantity = SelectedArrival.Quantity;
+            Quantity.Input = SelectedArrival.Quantity.ToString();
             StockItem = SelectedArrival.StockItem;
 
             DisableDataGrid();
@@ -109,7 +120,7 @@ namespace CRM.ViewModels
         // Кнопки добавления новой записи
         private void OnAddOK()
         {
-            var newArrival = StockArrivalRepo.Add(new StockArrival(StockItem, Quantity));
+            var newArrival = StockArrivalRepo.Add(new StockArrival(StockItem, Quantity.Value));
             Database.StockArrivals.Insert(0, newArrival);
             StockItemRepo.UpdateQuantity(newArrival.StockItem);
 
@@ -126,7 +137,7 @@ namespace CRM.ViewModels
         // Кнопки редактирования записи
         private void OnEditOK()
         {
-            SelectedArrival.Quantity = Quantity;
+            SelectedArrival.Quantity = Quantity.Value;
             StockArrivalRepo.Update(SelectedArrival);
             StockItemRepo.UpdateQuantity(SelectedArrival.StockItem);
 
@@ -164,7 +175,8 @@ namespace CRM.ViewModels
         private void ClearEnteredData()
         {
             StockItem = null;
-            Quantity = 0;
+            Quantity.Input = "0";
+            Quantity.Value = 0;
         }
     }
 }

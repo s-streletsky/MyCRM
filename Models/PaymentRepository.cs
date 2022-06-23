@@ -33,7 +33,13 @@ namespace CRM.Models
 
         public void Delete(Payment item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = "DELETE FROM Payments WHERE id=@id";
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public Payment Get(Payment item)
@@ -59,8 +65,8 @@ namespace CRM.Models
                         var date = DateTime.Parse(sqlReader.GetString(1));
                         var client = db.Clients.First(x => x.Id == sqlReader.GetInt32(2));
                         var ord = db.Orders.First(x => x.Id == sqlReader.GetInt32(3));
-                        var amount = sqlReader.GetFloat(4);
-                        var notes = sqlReader.GetString(5);
+                        var amount = sqlReader.GetFloat(4);                       
+                        var notes = sqlReader.IsDBNull(5) ? null : sqlReader.GetString(5);
 
                         list.Add(new Payment(id, date, client, ord, amount, notes));
                     }
@@ -81,7 +87,7 @@ namespace CRM.Models
                     var client = clients.First(x => x.Id == sqlReader.GetInt32(2));
                     var order = orders.First(x => x.Id == sqlReader.GetInt32(3));
                     var amount = sqlReader.GetFloat(4);
-                    var notes = sqlReader.GetString(5);
+                    var notes = sqlReader.IsDBNull(5) ? null : sqlReader.GetString(5);
 
                     payments.Add(new Payment(id, date,client, order,amount, notes));
                 }
@@ -93,9 +99,20 @@ namespace CRM.Models
             throw new NotImplementedException();
         }
 
-        public Payment Update(Payment item)
+        public Payment Update(Payment payment)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = @"UPDATE Payments
+                    SET amount=@amount
+                    WHERE id=@payment_id";
+                cmd.Parameters.AddWithValue("@amount", payment.Amount);
+                cmd.Parameters.AddWithValue("@payment_id", payment.Id);
+                cmd.Prepare();
+                cmd.ExecuteNonQuery();
+
+                return payment;
+            }
         }
     }
 }

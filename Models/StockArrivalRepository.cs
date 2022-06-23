@@ -13,14 +13,17 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addStockArrival = "INSERT INTO StockArrivals (date, stock_item_id, quantity) VALUES "
-                    + $"('{stockArrival.Date}', {stockArrival.StockItem.Id}, {stockArrival.Quantity})";
-
-                cmd.CommandText = addStockArrival;
+                cmd.CommandText = @"INSERT INTO StockArrivals (date, stock_item_id, quantity)
+                    VALUES (@date, @stock_item_id, @quantity)";
+                cmd.Parameters.AddWithValue("@date", stockArrival.Date);
+                cmd.Parameters.AddWithValue("@stock_item_id", stockArrival.StockItem.Id);
+                cmd.Parameters.AddWithValue("@quantity", stockArrival.Quantity);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
 
-                string getItemId = "SELECT id FROM StockArrivals WHERE date=" + $"'{stockArrival.Date}'";
-                cmd.CommandText = getItemId;
+                cmd.CommandText = "SELECT id FROM StockArrivals WHERE date = @date";
+                cmd.Parameters.AddWithValue("@date", stockArrival.Date);
+                cmd.Prepare();
                 stockArrival.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return stockArrival;
@@ -72,10 +75,13 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string updateStockArrival = "UPDATE StockArrivals SET quantity=" + $"'{stockArrival.Quantity}' " +
-                                            "WHERE id=" + $"'{stockArrival.Id}'";
+                cmd.CommandText = @"UPDATE StockArrivals
+                    SET quantity=@quantity
+                    WHERE id=@id";
 
-                cmd.CommandText = updateStockArrival;
+                cmd.Parameters.AddWithValue("@quantity", stockArrival.Quantity);
+                cmd.Parameters.AddWithValue("@id", stockArrival.Id);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
 
                 return stockArrival;

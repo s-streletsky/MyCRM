@@ -1,0 +1,44 @@
+﻿<Window x:Class="CRM.Views.NewClientView"
+        x:Name="NewClientWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CRM.Views"
+        xmlns:wpf="clr-namespace:CRM.WPF"
+        xmlns:vm="clr-namespace:CRM.ViewModels"
+        d:DataContext="{d:DesignInstance Type=vm:NewClientViewModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
+        Title="Новый клиент" Width="400" SizeToContent="Height">
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="{StaticResource defaultRowHeight}"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="70"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0">ФИО:</TextBlock>
+        <TextBox Grid.Column="1" x:Name="fieldName">
+            <TextBox.Text>
+                <Binding Path="Name"  Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:StringLenghtValidation MinLenght="2" ErrorMessage="{StaticResource stringValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+        <Button Grid.Column="2" Margin="0,1,0,1" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=NewClientWindow}">
+            <Button.IsEnabled>
+                <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                    <MultiBinding.Bindings>
+                        <Binding Path="(Validation.HasError)" ElementName="fieldName" />
+                    </MultiBinding.Bindings>
+                </MultiBinding>
+            </Button.IsEnabled>
+            ОК</Button>
+    </Grid>
+</Window>

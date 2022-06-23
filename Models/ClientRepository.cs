@@ -111,14 +111,8 @@ namespace CRM.Models
                 cmd.CommandText = "SELECT 1 FROM Orders WHERE client_id=" + $"{client.Id} LIMIT 1";
                 var result = cmd.ExecuteScalar();
 
-                if (result != null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
+                if (result != null) return false;
+                else return true;
             }
         }
         public Client Update(Client client)

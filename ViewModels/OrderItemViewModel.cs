@@ -16,9 +16,9 @@ namespace CRM.ViewModels
     {
         private int orderId;
         private float retailPrice;
-        private float purchasePrice;
-        private float quantity;
-        private float discount;
+        private float? purchasePrice;
+        private BindableFloat quantity;
+        private BindableFloat discount;
         private float total;
         private float expenses;
         private float profit;
@@ -39,19 +39,19 @@ namespace CRM.ViewModels
             set { retailPrice = value; 
                 OnPropertyChanged(); } 
         }
-        public float PurchasePrice { 
+        public float? PurchasePrice { 
             get { return purchasePrice; } 
             set { purchasePrice = value; 
                 OnPropertyChanged(); } 
-        }
-        public float Quantity { 
+        } 
+        public BindableFloat Quantity { 
             get { return quantity; } 
             set { quantity = value; 
                 OnPropertyChanged(); }
         }
-        public float Discount { 
-            get { return discount*100; }
-            set { discount = value/100; 
+        public BindableFloat Discount { 
+            get { return discount; }
+            set { discount = value; 
                 OnPropertyChanged(); } 
         }
         public float Total { 
@@ -95,6 +95,9 @@ namespace CRM.ViewModels
 
             IsChooseStockItemButtonEnabled = true;
 
+            Quantity = new BindableFloat();
+            Discount = new BindableFloat();
+
             ChooseStockItemCommand = new RelayCommand(OnChooseStockItem);
             TextChangedCommand = new RelayCommand(CalculateBillingInfo);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
@@ -105,6 +108,7 @@ namespace CRM.ViewModels
             var vm = new ChooseStockItemViewModel(items);
             ChooseStockItemView chooseStockItemView = new ChooseStockItemView();
             chooseStockItemView.DataContext = vm;
+            chooseStockItemView.Owner = App.Current.MainWindow;
             chooseStockItemView.ShowDialog();
 
             if (chooseStockItemView.DialogResult == true)
@@ -115,23 +119,31 @@ namespace CRM.ViewModels
                 
                 RetailPrice = SelectedItem.RetailPrice * exchangeRate;
                 PurchasePrice = SelectedItem.PurchasePrice * exchangeRate;
+
+                CalculateBillingInfo();
             }
         }
-
         internal void CalculateBillingInfo()
         {
-            Total = Quantity * (RetailPrice - (RetailPrice * discount));
+            if (RetailPrice != null)
+            {
+                Total = Quantity.Value * (RetailPrice - (RetailPrice * (discount.Value / 100)));
+            }
+            else { Total = 0; }
 
-            Expenses = Quantity * PurchasePrice;
+            if (PurchasePrice != null)
+            {
+                Expenses = Quantity.Value * PurchasePrice.Value;
+            }
+            else { Expenses = 0; }
+
             Profit = Total - Expenses;
         }
-
         private float GetExchangeRate(Currency currency)
         {
             var exchangeRate = exchangeRates.First(x => x.Currency == currency);
             return exchangeRate.Value;
         }
-
         private void CloseWindow(ICloseable window)
         {
             if (window != null)

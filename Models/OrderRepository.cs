@@ -85,10 +85,11 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                cmd.CommandText = "UPDATE Orders SET client_id=@client_id, " +
-                                                         "status_id=@status_id, " +
-                                                         "notes=@notes " +
-                                                   "WHERE id=@id";
+                cmd.CommandText = @"UPDATE Orders 
+                    SET client_id = @client_id,
+                    status_id = @status_id,
+                    notes = @notes
+                    WHERE id = @id";
 
                 cmd.Parameters.AddWithValue("@client_id", order.Client.Id);
                 cmd.Parameters.AddWithValue("@status_id", (int)order.Status);

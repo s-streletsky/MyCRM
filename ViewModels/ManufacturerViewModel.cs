@@ -30,8 +30,7 @@ namespace CRM.ViewModels
         public Manufacturer SelectedManufacturer { 
             get { return selectedManufacturer; } 
             set { selectedManufacturer = value;
-                if (value != null) IsEditDeleteButtonsEnabled = true;
-                else IsEditDeleteButtonsEnabled = false;
+                OnPropertyChanged(nameof(IsEditDeleteButtonsEnabled));
             } 
         }
         public Database Database { get; set; }
@@ -42,9 +41,7 @@ namespace CRM.ViewModels
         public string IsEditGridVisible { get { return isEditGridVisible; } set { isEditGridVisible = value; OnPropertyChanged(); } }
         public string Name { get { return name; } set { name = value; OnPropertyChanged(); } }
         public bool IsEditDeleteButtonsEnabled { 
-            get { return isEditDeleteButtonsEnabled; } 
-            set { isEditDeleteButtonsEnabled = value; 
-                OnPropertyChanged(); } 
+            get { return SelectedManufacturer != null; } 
         }
         private List<string> Visibility { get; set; } = new List<string>() { "Hidden", "Visible" };
 
@@ -72,7 +69,7 @@ namespace CRM.ViewModels
         public void OnAddMenuButtonClick()
         {
             DisableListBox();
-            Name = "Новый производитель";
+            //Name = "Новый производитель";
         }
 
         public void OnEditMenuButtonClick()

@@ -7,9 +7,11 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM"
         xmlns:models="clr-namespace:CRM.Models"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:StockItemViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         MinHeight="360"
         MinWidth="450"
         Title="{Binding Path=WindowTitle}" Height="360" Width="450">
@@ -45,36 +47,73 @@
             <ColumnDefinition Width="120"></ColumnDefinition>
             <ColumnDefinition Width="0.3*"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="20"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         
         <TextBlock Grid.Row="0" Grid.Column="0">Наименование:</TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
+        <TextBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" x:Name="fieldProductName">
+            <TextBox.Text>
+                <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:StringLenghtValidation MinLenght="2" ErrorMessage="{StaticResource stringValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBlock Grid.Row="1" Grid.Column="0">Производитель:</TextBlock>
-        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" ItemsSource="{Binding Path=Database.Manufacturers}" DisplayMemberPath="Name" IsEditable="True" IsTextSearchEnabled="True" SelectedItem="{Binding Path=Manufacturer}"></ComboBox>
+        <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="70"/>
+            </Grid.ColumnDefinitions>
+
+            <ComboBox Grid.Column="0" ItemsSource="{Binding Path=Database.Manufacturers}" DisplayMemberPath="Name" IsEditable="True" SelectedItem="{Binding Path=Manufacturer}"></ComboBox>
+            <Button Grid.Column="1" Margin="0,1,0,1" Command="{Binding Path=AddManufacturerCommand}">Добавить</Button>
+        </Grid>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Описание:</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Text="{Binding Path=Description, Mode=TwoWay}" VerticalContentAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap"></TextBox>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Description, Mode=TwoWay}" VerticalContentAlignment="Top" AcceptsReturn="True" VerticalScrollBarVisibility="Visible" TextWrapping="Wrap"></TextBox>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Валюта:</TextBlock>
         <ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedValue="{Binding Currency, Mode=TwoWay}"></ComboBox>
 
         <TextBlock Grid.Row="4" Grid.Column="0">Цена закупки:</TextBlock>
-        <TextBox Grid.Row="4" Grid.Column="1" Text="{Binding Path=PurchasePrice, Mode=TwoWay}"></TextBox>
+        <TextBox Grid.Row="4" Grid.Column="1"  x:Name="fieldPurchasePrice">
+            <TextBox.Text>
+                <Binding Path="PurchasePrice.Input" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:FloatsValidation ErrorMessage="{StaticResource ResourceKey=floatsValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBlock Grid.Row="5" Grid.Column="0">Цена продажи:</TextBlock>
-        <TextBox Grid.Row="5" Grid.Column="1" Text="{Binding Path=RetailPrice, Mode=TwoWay}"></TextBox>
+        <TextBox Grid.Row="5" Grid.Column="1" x:Name="fieldRetailPrice">
+            <TextBox.Text>
+                <Binding Path="RetailPrice.Input" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:FloatsValidation ErrorMessage="{StaticResource ResourceKey=floatsValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBlock Grid.Row="6" Grid.Column="0">Остаток:</TextBlock>
         <TextBox Grid.Row="6" Grid.Column="1" IsEnabled="False" Text="{Binding Path=Quantity}"></TextBox>
 
-        <Grid Grid.Row="8" Grid.ColumnSpan="4" HorizontalAlignment="Right">
-            <Button Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ClientView}">Сохранить</Button>
-        </Grid>
-
-        <StackPanel Grid.Row="8" Grid.ColumnSpan="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=StockItemView}">ОК</Button>
+        <StackPanel Grid.Row="8" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=ComparePricesAndCloseCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=StockItemView}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding Path="(Validation.HasError)" ElementName="fieldProductName" />
+                            <Binding Path="(Validation.HasError)" ElementName="fieldPurchasePrice" />
+                            <Binding Path="(Validation.HasError)" ElementName="fieldRetailPrice" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                ОК</Button>
             <Button Style="{StaticResource WindowButton}" IsCancel="True">Отмена</Button>
         </StackPanel>
     </Grid>

@@ -11,6 +11,7 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         MinHeight="500"
         MinWidth="670"
         Title="{Binding Path=WindowTitle}" Height="500" Width="670">
@@ -28,17 +29,17 @@
         <Grid.Resources>
             <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="countryDataProvider">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="models:Country" />
+                    <x:Type TypeName="models:Country"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
             <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="shippingDataProvider">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="models:ShippingMethod" />
+                    <x:Type TypeName="models:ShippingMethod"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
             <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="statusDataProvider">
                 <ObjectDataProvider.MethodParameters>
-                    <x:Type TypeName="models:OrderStatus" />
+                    <x:Type TypeName="models:OrderStatus"/>
                 </ObjectDataProvider.MethodParameters>
             </ObjectDataProvider>
         </Grid.Resources>
@@ -66,7 +67,15 @@
         </Grid.ColumnDefinitions>
         
         <TextBlock Grid.Row="0" Grid.Column="0">ФИО:</TextBlock>
-        <TextBox Text="{Binding Path=Name, Mode=TwoWay}" Grid.Row="0" Grid.Column="1"></TextBox>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="fieldClientName">
+            <TextBox.Text>
+                <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:StringLenghtValidation MinLenght="2" ErrorMessage="{StaticResource stringValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <TextBlock Grid.Row="1">Ник:</TextBlock>
         <TextBox Text="{Binding Path=Nickname, Mode=TwoWay}" Grid.Row="1" Grid.Column="1"></TextBox>
@@ -122,19 +131,28 @@
         </Menu>
 
         <DataGrid Margin="0,0,0,10" Grid.Row="10" Grid.ColumnSpan="5" IsReadOnly="True" AutoGenerateColumns="False" ItemsSource="{Binding Path=Orders}" SelectedItem="{Binding Path=SelectedOrder, Mode=OneWayToSource}" VerticalScrollBarVisibility="Visible" IsEnabled="{Binding Path=IsDataGridEnabled}">
+            <DataGrid.InputBindings>
+                <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditOrderCommand}" />
+            </DataGrid.InputBindings>
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                 <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
-                <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}">
-                    <!--<DataGridTextColumn.Header.-->
-                </DataGridTextColumn>
+                <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status, Converter={StaticResource descConverter}}"/>
                 <DataGridTextColumn Header="Сумма" Binding="{Binding Path=Total}" />
                 <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}" />
             </DataGrid.Columns>
         </DataGrid>
 
         <StackPanel Grid.Row="11" Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ClientView}">ОК</Button>
+            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ClientView}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding Path="(Validation.HasError)" ElementName="fieldClientName" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                ОК</Button>
             <Button Style="{StaticResource WindowButton}" IsCancel="True">Отмена</Button>
         </StackPanel>
     </Grid>

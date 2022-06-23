@@ -6,6 +6,7 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM"
         xmlns:models="clr-namespace:CRM.Models"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
@@ -25,6 +26,8 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <wpf:EnumDescriptionConverter x:Key="descConverter"></wpf:EnumDescriptionConverter>
     </Window.Resources>
 
     <Grid Margin="10">
@@ -36,6 +39,14 @@
                 </TabItem.Header>
 
                 <Grid Style="{StaticResource InnerGrid}">
+
+                    <Grid.Resources>
+                        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="shippingDataProvider">
+                            <ObjectDataProvider.MethodParameters>
+                                <x:Type TypeName="models:ShippingMethod" />
+                            </ObjectDataProvider.MethodParameters>
+                        </ObjectDataProvider>
+                    </Grid.Resources>
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="18"></RowDefinition>
@@ -60,8 +71,9 @@
                             <DataGridTextColumn Header="Ник" Binding="{Binding Path=Nickname}" />
                             <DataGridTextColumn Header="Телефон" Binding="{Binding Path=Phone}" />
                             <DataGridTextColumn Header="Город" Binding="{Binding Path=City}" />
-                            <DataGridTextColumn Header="Доставка" Binding="{Binding Path=ShippingMethod}" />
+                            <DataGridTextColumn Header="Способ доставки" Binding="{Binding Path=ShippingMethod, Converter={StaticResource descConverter}}" />
                             <DataGridTextColumn Header="Отделение" Binding="{Binding Path=PostalCode}" />
+                            <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}"/>
                         </DataGrid.Columns>
 
                     </DataGrid>
@@ -77,6 +89,14 @@
 
                 <Grid Style="{StaticResource InnerGrid}">
 
+                    <Grid.Resources>
+                        <ObjectDataProvider MethodName="GetValues" ObjectType="{x:Type sys:Enum}" x:Key="statusDataProvider">
+                            <ObjectDataProvider.MethodParameters>
+                                <x:Type TypeName="models:OrderStatus" />
+                            </ObjectDataProvider.MethodParameters>
+                        </ObjectDataProvider>
+                    </Grid.Resources>
+
                     <Grid.RowDefinitions>
                         <RowDefinition Height="18"></RowDefinition>
                         <RowDefinition></RowDefinition>
@@ -87,7 +107,7 @@
                         <MenuItem Header="Изменить" Command="{Binding Path=EditOrderCommand}" IsEnabled="{Binding Path=IsOrdersButtonsEnabled}"></MenuItem>
                         <MenuItem Header="Удалить" Command="{Binding Path=DeleteOrderCommand}" IsEnabled="{Binding Path=IsOrdersButtonsEnabled}"></MenuItem>
                         <MenuItem Header="Платежи" Command="{Binding Path=PaymentsCommand}"></MenuItem>
-                        <MenuItem Header="Статистика" Command="{Binding Path=StatsCommand}"></MenuItem>
+                        <MenuItem Header="Статистика" Command="{Binding Path=StatsCommand}" IsEnabled="{Binding Path=IsStatsEnabled}"></MenuItem>
                     </Menu>
 
                     <DataGrid SelectedItem="{Binding Path=SelectedOrder, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Orders, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
@@ -98,9 +118,7 @@
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}"/>
                             <DataGridTextColumn Header="Клиент" Binding="{Binding Path=Client.Name}" />
-                            <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status}">
-                                
-                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Статус" Binding="{Binding Path=Status, Converter={StaticResource descConverter}}"/>
                             <DataGridTextColumn Header="Сумма" Binding="{Binding Path=Total}" />
                             <DataGridTextColumn Header="Примечания" Binding="{Binding Path=Notes}" />
                         </DataGrid.Columns>
@@ -133,6 +151,9 @@
                     </Menu>
 
                     <DataGrid SelectedItem="{Binding Path=SelectedStockItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.StockItems}" Grid.Row="1">
+                        <DataGrid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditStockItemCommand}" />
+                        </DataGrid.InputBindings>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Id" Binding="{Binding Path=Id}" />
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Path=Name}" />
@@ -162,14 +183,16 @@
                     </Grid.RowDefinitions>
 
                     <Menu Grid.Row="0">
-                        <MenuItem Header="Добавить" Command=""></MenuItem>
-                        <MenuItem Header="Изменить" Command=""></MenuItem>
-                        <MenuItem Header="Удалить" Command=""></MenuItem>
+                        <MenuItem Header="Изменить" Command="{Binding Path=EditOrderItemCommand}" IsEnabled="{Binding Path=IsOrdersItemsButtonsEnabled}"></MenuItem>
+                        <MenuItem Header="Удалить" Command="{Binding Path=DeleteOrderItemCommand}" IsEnabled="{Binding Path=IsOrdersItemsButtonsEnabled}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.OrdersItems}" Grid.Row="1">
+                    <DataGrid SelectedItem="{Binding Path=SelectedOrderItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.OrdersItems}" Grid.Row="1">
+                        <DataGrid.InputBindings>
+                            <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditOrderItemCommand}" />
+                        </DataGrid.InputBindings>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Клиент" Binding="{Binding Path=Order.Client.Name}"></DataGridTextColumn>
+                            <DataGridTextColumn Header="Клиент" Binding="{Binding Path=Order.Client.Name}"/>
                             <DataGridTextColumn Header="Заказ" Binding="{Binding Path=Order.Id}" />
                             <DataGridTextColumn Header="Наименование" Binding="{Binding Path=StockItem.Name}" />
                             <DataGridTextColumn Header="Кол-во" Binding="{Binding Path=Quantity}" />

@@ -9,6 +9,7 @@
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ChooseClientViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="Клиенты" Height="450" Width="350">
 
     <Window.Resources>
@@ -27,7 +28,7 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.16*"></ColumnDefinition>
+                <ColumnDefinition Width="44"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
@@ -42,7 +43,13 @@
             </TextBox>
         </Grid>
 
-        <ListBox Margin="0,10,0,10" Grid.Row="1" ItemsSource="{Binding Path=Clients}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedClient, Mode=OneWayToSource}" />
+        <ListBox Margin="0,10,0,10" Grid.Row="1" ItemsSource="{Binding Path=Clients}" DisplayMemberPath="Name" SelectedItem="{Binding Path=SelectedClient, Mode=OneWayToSource}">
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseDoubleClick">
+                    <i:InvokeCommandAction Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ChooseClientWindow}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </ListBox>
 
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=ChooseClientWindow}">ОК</Button>

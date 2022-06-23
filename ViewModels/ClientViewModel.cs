@@ -137,19 +137,23 @@ namespace CRM.ViewModels
         public Order SelectedOrder { 
             get { return selectedOrder; } 
             set { selectedOrder = value;
-                if (value != null) IsOrderEditDeleteButtonsEnabled = true;
-                else IsOrderEditDeleteButtonsEnabled = false;
+                OnPropertyChanged(nameof(IsOrderEditDeleteButtonsEnabled));
             } 
         }
         public bool IsOrderEditDeleteButtonsEnabled { 
-            get { return isOrderEditDeleteButtonsEnabled; } 
-            set { isOrderEditDeleteButtonsEnabled = value; 
-                OnPropertyChanged(); } 
+            get { return SelectedOrder != null; } 
         }
         public bool IsDataGridEnabled { get; set; }
         public string WindowTitle { get; set; }
 
         public ClientViewModel() { }
+        //public ClientViewModel(Database db, ClientRepository cr)
+        //{
+        //    Database = db;
+        //    clientRepo = cr;
+
+        //    IsDataGridEnabled = false;
+        //}
         public ClientViewModel(Database db, Client sc, ClientRepository cr, OrderRepository or, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr)
         {
             Database = db;
@@ -184,9 +188,10 @@ namespace CRM.ViewModels
         private void OnEditOrder()
         {
             {
-                var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+                var vm = new OrderViewModel(Database, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
                 OrderView orderView = new OrderView();
                 orderView.DataContext = vm;
+                orderView.Owner = App.Current.MainWindow;
 
                 vm.Id = SelectedOrder.Id;
                 vm.Client = SelectedOrder.Client;
@@ -195,6 +200,7 @@ namespace CRM.ViewModels
                 vm.Notes = SelectedOrder.Notes;
                 vm.IsDataGridEnabled = true;
                 vm.IsChooseClientButtonEnabled = false;
+                vm.WindowTitle = "Изменить содержимое заказа";
 
                 foreach (var item in Database.OrdersItems)
                 {
@@ -238,9 +244,9 @@ namespace CRM.ViewModels
                     Database.OrdersItems.Remove(item);
                 }
 
-                orderRepo.Delete(SelectedOrder);
-                Orders.Remove(SelectedOrder);
+                orderRepo.Delete(SelectedOrder);                
                 Database.Orders.Remove(SelectedOrder);
+                Orders.Remove(SelectedOrder);
             }
         }
 

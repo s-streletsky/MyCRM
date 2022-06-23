@@ -19,6 +19,7 @@ namespace CRM.ViewModels
         private OrderStatus status;
         private string notes;
         private ObservableCollection<OrderItem> orderItems = new ObservableCollection<OrderItem>();
+        private ClientRepository clientRepo;
         private ExchangeRateRepository exchangeRateRepo;
         private OrderItemRepository orderItemRepo;
         private StockItemRepository stockItemRepo;
@@ -37,6 +38,7 @@ namespace CRM.ViewModels
         private bool isButtonEnabled;
 
         public RelayCommand ChooseClientCommand { get; }
+        public RelayCommand AddNewClientCommand { get; }
         public RelayCommand AddOrderItemCommand { get; }
         public RelayCommand EditOrderItemCommand { get; }
         public RelayCommand DeleteOrderItemCommand { get; }
@@ -64,18 +66,15 @@ namespace CRM.ViewModels
         }
         public Database Database { get; set; }
         public bool IsDataGridEnabled { get; set; }
-        public bool IsButtonEnabled { 
-            get { return isButtonEnabled; } 
-            set { isButtonEnabled = value; 
-                OnPropertyChanged(); } 
+        public bool IsOrderItemsEditDeleteButtonsEnabled { 
+            get { return SelectedItem != null; }
         }
         public bool IsChooseClientButtonEnabled { get; set; }
         public ObservableCollection<OrderItem> OrderItems { get { return orderItems; } }
         public OrderItem SelectedItem { 
             get { return selectedItem; } 
             set { selectedItem = value;
-                if (value != null) IsButtonEnabled = true; 
-                else IsButtonEnabled = false; } 
+                OnPropertyChanged(nameof(IsOrderItemsEditDeleteButtonsEnabled)); } 
         }
         public string WindowTitle { get; set; }
 
@@ -108,26 +107,27 @@ namespace CRM.ViewModels
 
         public OrderViewModel() { }
 
-        public OrderViewModel(Database db, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr, Order selected)
+        public OrderViewModel(Database db, ClientRepository cr, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr, Order selected)
         {
             Date = DateTime.Now;
             Status = OrderStatus.NEW;
             Database = db;
             selectedOrder = selected;
 
+            clientRepo = cr;
             exchangeRateRepo = err;
             orderItemRepo = oir;
             stockItemRepo = sir;
             paymentRepo = pr;
 
             IsDataGridEnabled = false;
-            IsButtonEnabled = false;
             IsChooseClientButtonEnabled = true;
 
             payments = new List<Payment>();
             paymentRepo.GetOrderPayments(Database, payments, selectedOrder);
 
             ChooseClientCommand = new RelayCommand(OnChooseClient);
+            AddNewClientCommand = new RelayCommand(OnAddNewClient);
             AddOrderItemCommand = new RelayCommand(OnAddOrderItem);
             EditOrderItemCommand = new RelayCommand(OnEditOrderItem);
             DeleteOrderItemCommand = new RelayCommand(OnDeleteOrderItem);
@@ -139,11 +139,32 @@ namespace CRM.ViewModels
             var vm = new ChooseClientViewModel(Database.Clients);
             ChooseClientView chooseClientView = new ChooseClientView();
             chooseClientView.DataContext = vm;
+            chooseClientView.Owner = App.Current.MainWindow;
             chooseClientView.ShowDialog();
 
             if (chooseClientView.DialogResult == true)
             {
                 Client = vm.SelectedClient;
+            }
+        }
+        private void OnAddNewClient()
+        {
+            var vm = new NewClientViewModel();
+            NewClientView newClientView = new NewClientView();
+            newClientView.DataContext = vm;
+            newClientView.Owner = App.Current.MainWindow;
+
+            newClientView.ShowDialog();
+
+            if (newClientView.DialogResult == true)
+            {
+                var newClient = new Client();
+                newClient.Name = vm.Name;
+
+                var client = clientRepo.Add(newClient);
+                Database.Clients.Insert(0, client);
+
+                Client = Database.Clients[0];
             }
         }
 
@@ -152,14 +173,19 @@ namespace CRM.ViewModels
             var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
             OrderItemView orderItemView = new OrderItemView();
             orderItemView.DataContext = vm;
+            orderItemView.Owner = App.Current.MainWindow;
             vm.OrderId = selectedOrder.Id;
+            vm.Quantity.Value = 1;
+            vm.Quantity.Input = "1";
+            vm.Discount.Value = 0;
+            vm.Discount.Input = "0";
             vm.WindowTitle = "Добавить товарную позицию в заказ";
 
             orderItemView.ShowDialog();
 
             if (orderItemView.DialogResult == true)
             {
-                var newOrderItem = new OrderItem(-1, selectedOrder, vm.SelectedItem, vm.Quantity, vm.RetailPrice, vm.Discount, vm.Total, vm.Profit, vm.Expenses, vm.ExchangeRate);
+                var newOrderItem = new OrderItem(-1, selectedOrder, vm.SelectedItem, vm.Quantity.Value, vm.RetailPrice, vm.Discount.Value, vm.Total, vm.Profit, vm.Expenses, vm.ExchangeRate);
                 var orderItem = orderItemRepo.Add(newOrderItem);
                 stockItemRepo.UpdateQuantity(orderItem.StockItem);
                 Database.OrdersItems.Add(orderItem);
@@ -172,14 +198,17 @@ namespace CRM.ViewModels
             var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
             OrderItemView orderItemView = new OrderItemView();
             orderItemView.DataContext = vm;
+            orderItemView.Owner = App.Current.MainWindow;
 
             vm.IsChooseStockItemButtonEnabled = false;
             vm.OrderId = SelectedItem.Order.Id;
             vm.SelectedItem = SelectedItem.StockItem;
             vm.PurchasePrice = SelectedItem.StockItem.PurchasePrice * SelectedItem.ExchangeRate;
             vm.RetailPrice = SelectedItem.StockItem.RetailPrice * SelectedItem.ExchangeRate;
-            vm.Quantity = SelectedItem.Quantity;
-            vm.Discount = SelectedItem.Discount;
+            vm.Quantity.Value = SelectedItem.Quantity;
+            vm.Quantity.Input = SelectedItem.Quantity.ToString();
+            vm.Discount.Value = SelectedItem.Discount;
+            vm.Discount.Input = SelectedItem.Discount.ToString();
             vm.ExchangeRate = SelectedItem.ExchangeRate;
             vm.WindowTitle = "Изменить товарную позицию в заказе";
             vm.CalculateBillingInfo();
@@ -188,8 +217,8 @@ namespace CRM.ViewModels
 
             if (orderItemView.DialogResult == true)
             {
-                SelectedItem.Quantity = vm.Quantity;
-                SelectedItem.Discount = vm.Discount;
+                SelectedItem.Quantity = vm.Quantity.Value;
+                SelectedItem.Discount = vm.Discount.Value;
                 SelectedItem.Total = vm.Total;
                 SelectedItem.Expenses = vm.Expenses;
                 SelectedItem.Profit = vm.Profit;
@@ -207,7 +236,7 @@ namespace CRM.ViewModels
             {
                 orderItemRepo.Delete(SelectedItem);
                 stockItemRepo.UpdateQuantity(SelectedItem.StockItem);
-                Database.OrdersItems.Remove(selectedItem);
+                Database.OrdersItems.Remove(SelectedItem);
                 orderItems.Remove(SelectedItem);
                 UpdateBillingDetails();
             }
@@ -215,14 +244,20 @@ namespace CRM.ViewModels
 
         private void OnAddPayment()
         {
-            var vm = new OrderPaymentViewModel(selectedOrder.Client, selectedOrder, selectedOrder.Total);
+            var stringDebt = Convert.ToString(Debt);
+            
+            var vm = new OrderPaymentViewModel(selectedOrder.Client, selectedOrder, stringDebt);
             PaymentView paymentView = new PaymentView();
             paymentView.DataContext = vm;
+            paymentView.Owner = App.Current.MainWindow;
             paymentView.ShowDialog();
 
             if (paymentView.DialogResult == true)
             {
-                var newPayment = new Payment(-1, DateTime.Now, vm.Client, vm.Order, vm.Amount, vm.Notes);
+                var a = Convert.ToDouble(vm.Amount);
+                var amount = Math.Round(a, 2);
+
+                var newPayment = new Payment(-1, DateTime.Now, vm.Client, vm.Order, (float)amount, vm.Notes);
                 var payment = paymentRepo.Add(newPayment);
                 Database.Payments.Insert(0, payment);
                 payments.Clear();

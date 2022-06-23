@@ -3,31 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
 using CRM.Models;
+using CRM.WPF;
 using Microsoft.Toolkit.Mvvm.Input;
 
 namespace CRM.ViewModels
 {
-    internal class OrderPaymentViewModel
+    internal class NewClientViewModel : ViewModelBase
     {
-        private Client client;
-        private Order order;
-
+        private string name;
+        public string Name { 
+            get { return name; } 
+            set { name = value; 
+                OnPropertyChanged(); } 
+        }
         public RelayCommand<ICloseable> CloseWindowCommand { get; private set; }
 
-        public Client Client { get { return client; } }
-        public Order Order { get { return order; } }
-        public string Amount { get; set; }
-        public string Notes { get; set; }
-
-        public OrderPaymentViewModel() { }
-        public OrderPaymentViewModel(Client c, Order o, string amount)
+        public NewClientViewModel()
         {
-            client = c;
-            order = o;
-            Amount = amount;
-
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
 

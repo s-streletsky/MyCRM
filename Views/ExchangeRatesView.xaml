@@ -6,9 +6,11 @@
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         xmlns:local="clr-namespace:CRM.Views"
         xmlns:models="clr-namespace:CRM.Models"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ExchangeRatesViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         MinHeight="450"
         MinWidth="300"
         Title="Курс валют" Height="450" Width="300">
@@ -44,15 +46,31 @@
             </Grid.ColumnDefinitions>
 
             <ComboBox Grid.Column="0" ItemsSource="{Binding Source={StaticResource currencyDataProvider}}" SelectedItem="{Binding Path=SelectedCurrency}"></ComboBox>
-            <TextBox Grid.Column="1" Text="{Binding Path=ExchangeRate}"></TextBox>
-            <Button Grid.Column="2" Content="Добавить" Command="{Binding Path=AddExchangeRateCommand}" />
+            <TextBox Grid.Column="1" x:Name="fieldExchangeRate">
+                <TextBox.Text>
+                    <Binding Path="ExchangeRate.Input" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <wpf:FloatsValidation ErrorMessage="Целое или дробное значение (пример: 75 или 42,75)" ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+            <Button Grid.Column="2" Content="Добавить" Command="{Binding Path=AddExchangeRateCommand}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding Path="(Validation.HasError)" ElementName="fieldExchangeRate" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            </Button>
         </Grid>
 
         <Menu Grid.Row="2">
-            <MenuItem Header="Удалить" Command="{Binding Path=DeleteExchangeRateCommand}"></MenuItem>
+            <MenuItem Header="Удалить" Command="{Binding Path=DeleteExchangeRateCommand}" IsEnabled="{Binding Path=IsDeleteButtonEnabled}"></MenuItem>
         </Menu>
 
-        <DataGrid Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.ExchangeRates, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedExchangeRate}">
+        <DataGrid Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.ExchangeRates, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedExchangeRate, Mode=OneWayToSource}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
                 <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Currency}" />

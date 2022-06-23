@@ -6,9 +6,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns:local="clr-namespace:CRM.ViewModels"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:OrderItemViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         Title="{Binding Path=WindowTitle}" Height="280" Width="500">
 
     <Window.Resources>
@@ -46,7 +48,15 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             
-            <TextBox Grid.Column="0" Text="{Binding Path=SelectedItem.Name, Mode=OneWay}" IsReadOnly="True"></TextBox>
+            <TextBox Grid.Column="0" IsReadOnly="True" x:Name="fieldProduct">
+                <TextBox.Text>
+                    <Binding Path="SelectedItem.Name" Mode="OneWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <wpf:StringLenghtValidation MinLenght="1" ErrorMessage="Наименование не выбрано!" ValidatesOnTargetUpdated="True" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
             <Button Grid.Column="1" Width="70" Margin="0,1,0,1" Command="{Binding Path=ChooseStockItemCommand}" IsEnabled="{Binding Path=IsChooseStockItemButtonEnabled}">Выбрать</Button>
         </Grid>
 
@@ -60,7 +70,14 @@
         </TextBox>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Количество:</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Quantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N3}">
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="fieldQuantity">
+            <TextBox.Text>
+                <Binding Path="Quantity.Input" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:FloatsValidation ErrorMessage="{StaticResource ResourceKey=floatsValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding Path=TextChangedCommand}" />
@@ -69,7 +86,14 @@
         </TextBox>
 
         <TextBlock Grid.Row="3" Grid.Column="0">Скидка:</TextBlock>
-        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=Discount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}">
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="fieldDiscount">
+            <TextBox.Text>
+                <Binding Path="Discount.Input" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:FloatsValidation ErrorMessage="{StaticResource ResourceKey=floatsValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="TextChanged">
                     <i:InvokeCommandAction Command="{Binding Path=TextChangedCommand}" />
@@ -106,7 +130,17 @@
         </TextBox>
 
         <StackPanel Grid.Row="8" Grid.ColumnSpan="5" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Width="80" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=OrderItemWindow}">OK</Button>
+            <Button Width="80" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=OrderItemWindow}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding Path="(Validation.HasError)" ElementName="fieldProduct" />
+                            <Binding Path="(Validation.HasError)" ElementName="fieldQuantity" />
+                            <Binding Path="(Validation.HasError)" ElementName="fieldDiscount" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.IsEnabled>
+            OK</Button>
             <Button IsCancel="True" Width="80">Отмена</Button>
         </StackPanel>
     </Grid>

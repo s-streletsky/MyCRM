@@ -5,9 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CRM.Views"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:OrderPaymentViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         MinHeight="190"
         MinWidth="500"
         Title="Внести платёж" Height="190" Width="500">
@@ -43,13 +45,29 @@
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Order.Id, Mode=OneWay}" IsReadOnly="True"></TextBox>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Примечания:</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Notes, Mode=OneWayToSource}"></TextBox>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Notes}"></TextBox>
 
         <TextBlock Grid.Row="2" Grid.Column="4">Сумма:</TextBlock>
-        <TextBox Grid.Row="2" Grid.Column="5" Text="{Binding Path=Amount, Mode=TwoWay}"></TextBox>
+        <TextBox Grid.Row="2" Grid.Column="5" x:Name="fieldPaymentSum">
+            <TextBox.Text>
+                <Binding Path="Amount" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <wpf:FloatsValidation ErrorMessage="{StaticResource ResourceKey=floatsValidationErrorMessage}" ValidatesOnTargetUpdated="True" />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
 
         <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="6" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=PaymentWindow}">OK</Button>
+            <Button Style="{StaticResource WindowButton}" Command="{Binding Path=CloseWindowCommand, Mode=OneWay}" CommandParameter="{Binding ElementName=PaymentWindow}">
+                <Button.IsEnabled>
+                    <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                        <MultiBinding.Bindings>
+                            <Binding Path="(Validation.HasError)" ElementName="fieldPaymentSum" />
+                        </MultiBinding.Bindings>
+                    </MultiBinding>
+                </Button.IsEnabled>
+                OK</Button>
             <Button Style="{StaticResource WindowButton}" IsCancel="True">Отмена</Button>
         </StackPanel>
     </Grid>

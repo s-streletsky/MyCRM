@@ -13,27 +13,28 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addNewExRate = "INSERT INTO ExchangeRates (date, currency_id, value) VALUES "
-                                     + $"('{rate.Date}', {(int)rate.Currency}, {rate.Value})";
+                cmd.CommandText = @"INSERT INTO ExchangeRates (date, currency_id, value)
+                    VALUES (@date, @currency_id, @value)";
 
-                cmd.CommandText = addNewExRate;
+                cmd.Parameters.AddWithValue("@date", rate.Date);
+                cmd.Parameters.AddWithValue("@currency_id", (int)rate.Currency);
+                cmd.Parameters.AddWithValue("@value", rate.Value);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
 
                 return rate;
             }
         }
-
         public void Delete(ExchangeRate rate)
         {
             using (var cmd = DbConnection.Open())
             {
-                string deleteRate = "DELETE FROM ExchangeRates WHERE date=" + $"'{rate.Date}'";
-
-                cmd.CommandText = deleteRate;
+                cmd.CommandText = "DELETE FROM ExchangeRates WHERE id=@id";
+                cmd.Parameters.AddWithValue("@id", rate.Id);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
             }
         }
-
         public ExchangeRate Get(ExchangeRate rate)
         {
             throw new NotImplementedException();
@@ -57,12 +58,10 @@ namespace CRM.Models
                 }
             }
         }
-
         public bool TryDelete(ExchangeRate item)
         {
             throw new NotImplementedException();
         }
-
         public ExchangeRate Update(ExchangeRate rate)
         {
             throw new NotImplementedException();

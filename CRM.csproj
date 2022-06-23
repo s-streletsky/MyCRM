@@ -116,6 +116,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\NewClientView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\OrderItemView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -181,6 +185,7 @@
     <Compile Include="ViewModels\ChooseStockItemViewModel.cs" />
     <Compile Include="ViewModels\ExchangeRatesViewModel.cs" />
     <Compile Include="ViewModels\ManufacturerViewModel.cs" />
+    <Compile Include="ViewModels\NewClientViewModel.cs" />
     <Compile Include="ViewModels\OrderItemViewModel.cs" />
     <Compile Include="ViewModels\OrderPaymentViewModel.cs" />
     <Compile Include="ViewModels\PaymentsViewModel.cs" />
@@ -190,6 +195,9 @@
     </Compile>
     <Compile Include="Views\ChooseStockItemView.xaml.cs">
       <DependentUpon>ChooseStockItemView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NewClientView.xaml.cs">
+      <DependentUpon>NewClientView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\OrderItemView.xaml.cs">
       <DependentUpon>OrderItemView.xaml</DependentUpon>
@@ -220,7 +228,11 @@
     <Compile Include="ViewModels\StockItemViewModel.cs" />
     <Compile Include="ViewModels\ClientViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="WPF\BindableFloat.cs" />
     <Compile Include="WPF\EnumDescriptionConverter.cs" />
+    <Compile Include="WPF\FloatsValidation.cs" />
+    <Compile Include="WPF\StringLenghtValidation.cs" />
+    <Compile Include="WPF\ValidationResultConverter.cs" />
     <Compile Include="WPF\ViewModelBase.cs" />
     <Compile Include="Views\StockItemView.xaml.cs">
       <DependentUpon>StockItemView.xaml</DependentUpon>

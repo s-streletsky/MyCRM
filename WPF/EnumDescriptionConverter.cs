@@ -32,7 +32,6 @@ namespace CRM.WPF
                 return attrib.Description;
             }
         }
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             Enum myEnum = (Enum)value;
@@ -47,7 +46,6 @@ namespace CRM.WPF
             }
             return myEnum.ToString();
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return string.Empty;

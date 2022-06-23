@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CRM.Views"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:StockArrivalViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         MinHeight="450"
         MinWidth="351"
         Title="Приход товара" Height="450" Width="380">
@@ -49,7 +51,15 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Text="{Binding Path=Quantity}"></TextBox>
+                <TextBox>
+                    <TextBox.Text>
+                        <Binding Path="Quantity.Input" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <wpf:FloatsValidation ErrorMessage="Целое или дробное значение (пример: 75 или 42,75)" ValidatesOnTargetUpdated="True" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button Command="{Binding Path=AddOKCommand}">ОК</Button>
@@ -80,7 +90,15 @@
                     <ColumnDefinition></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Text="{Binding Path=Quantity}"></TextBox>
+                <TextBox>
+                    <TextBox.Text>
+                        <Binding Path="Quantity.Input" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <wpf:FloatsValidation ErrorMessage="Целое или дробное значение (пример: 75 или 42,75)" ValidatesOnTargetUpdated="True" />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button Command="{Binding Path=EditOKCommand}">ОК</Button>
@@ -92,8 +110,8 @@
 
         <Menu Grid.Row="1" Grid.ColumnSpan="2" IsEnabled="{Binding Path=IsDataGridEnabled}">
             <MenuItem Header="Добавить" Command="{Binding Path=AddStockArrivalCommand}"></MenuItem>
-            <MenuItem Header="Изменить" Command="{Binding Path=EditStockArrivalCommand}"></MenuItem>
-            <MenuItem Header="Удалить" Command="{Binding Path=DeleteStockArrivalCommand}"></MenuItem>
+            <MenuItem Header="Изменить" Command="{Binding Path=EditStockArrivalCommand}" IsEnabled="{Binding Path=IsEditDeleteButtonsEnabled}"></MenuItem>
+            <MenuItem Header="Удалить" Command="{Binding Path=DeleteStockArrivalCommand}" IsEnabled="{Binding Path=IsEditDeleteButtonsEnabled}"></MenuItem>
         </Menu>
 
         <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Database.StockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}">

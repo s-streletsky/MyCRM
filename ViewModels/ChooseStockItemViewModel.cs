@@ -38,7 +38,9 @@ namespace CRM.ViewModels
         public ChooseStockItemViewModel() { }
         public ChooseStockItemViewModel(ObservableCollection<StockItem> i)
         {
-            stockItems = CollectionViewSource.GetDefaultView(i);
+            var collectionViewSource = new CollectionViewSource();
+            collectionViewSource.Source = i;
+            stockItems = collectionViewSource.View;
             SearchCommand = new RelayCommand(OnSearch);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }

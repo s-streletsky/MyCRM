@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.IO;
 using CRM.Models;
 using CRM.Views;
 using CRM.WPF;
@@ -14,12 +15,10 @@ namespace CRM.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
-        private bool isClientsButtonsEnabled;
-        private bool isOrdersButtonsEnabled;
-        private bool isStockButtonsEnabled;
         private Client selectedClient;
         private Order selectedOrder;
         private StockItem selectedStockItem;
+        private OrderItem selectedOrderItem;
 
         public RelayCommand AddClientCommand { get; }
         public RelayCommand EditClientCommand { get; }
@@ -36,47 +35,43 @@ namespace CRM.ViewModels
         public RelayCommand EditManufacturerCommand { get; }
         public RelayCommand EditStockArrivalCommand { get; }
         public RelayCommand EditExchangeRatesCommand { get; }
+        public RelayCommand EditOrderItemCommand { get; }
+        public RelayCommand DeleteOrderItemCommand { get; }
         public Database Database { get; set; }
         public Client SelectedClient {
             get { return selectedClient; }
-            set
-            {
-                selectedClient = value;
+            set { selectedClient = value;
                 OnPropertyChanged(nameof(IsClientsButtonsEnabled));
-                //if (value != null) IsClientsButtonsEnabled = true;
-                //else IsClientsButtonsEnabled = false; }
             }
         }
         public StockItem SelectedStockItem { 
-            get { return selectedStockItem; } 
-            set { selectedStockItem = value; 
-                OnPropertyChanged();
-                if (value != null) IsStockButtonsEnabled = true;
-                else IsStockButtonsEnabled = false; } 
+            get { return selectedStockItem; }
+            set { selectedStockItem = value;
+                OnPropertyChanged(nameof(IsStockButtonsEnabled));
+            }
         }
         public Order SelectedOrder { 
             get { return selectedOrder; } 
             set { selectedOrder = value;
-                if (value != null) IsOrdersButtonsEnabled = true;
-                else IsOrdersButtonsEnabled = false; }
+                OnPropertyChanged(nameof(IsOrdersButtonsEnabled)); }
+        }
+        public OrderItem SelectedOrderItem { 
+            get { return selectedOrderItem; } 
+            set { selectedOrderItem = value; 
+                OnPropertyChanged(nameof(IsOrdersItemsButtonsEnabled)); } 
         }
         public Currency SelectedCurrency { get; set; }
         public bool IsClientsButtonsEnabled { 
             get { return SelectedClient != null; }
-            //get { return isClientsButtonsEnabled; }
-            //set { isClientsButtonsEnabled = value;
-            //    OnPropertyChanged(); }
         }
         public bool IsOrdersButtonsEnabled { 
-            get { return isOrdersButtonsEnabled; } 
-            set { isOrdersButtonsEnabled = value; 
-                OnPropertyChanged(); } 
+            get { return SelectedOrder != null; }
         }
         public bool IsStockButtonsEnabled { 
-            get { return isStockButtonsEnabled; } 
-            set { isStockButtonsEnabled = value; 
-                OnPropertyChanged(); } 
+            get { return SelectedStockItem != null; }
         }
+        public bool IsOrdersItemsButtonsEnabled { get { return SelectedOrderItem != null; } }
+        public bool IsStatsEnabled { get { return Database.Orders.Count != 0; } }
 
         public float CurrencyExchangeRate { get; set; }
 
@@ -107,12 +102,21 @@ namespace CRM.ViewModels
 
             EditManufacturerCommand = new RelayCommand(OnManufacturers);
             EditStockArrivalCommand = new RelayCommand(OnStockArrival);
-            EditExchangeRatesCommand = new RelayCommand(OnExchangeRates);           
+            EditExchangeRatesCommand = new RelayCommand(OnExchangeRates);
+
+            EditOrderItemCommand = new RelayCommand(OnEditOrderItem);
+            DeleteOrderItemCommand = new RelayCommand(OnDeleteOrderItem);
 
             Database = new Database();
-            SelectedClient = null;
-
+            
+            //SelectedClient = null;
             //IsClientsButtonsEnabled = false;
+
+            if (File.Exists("db.sqlite") == false)
+            {
+                using (FileStream fs = File.Create("db.sqlite")) { }
+                Database.CreateEmptyDatabase();
+            }
 
             clientRepo.GetAll(Database);
             manufacturerRepo.GetAll(Database);
@@ -120,9 +124,10 @@ namespace CRM.ViewModels
             orderRepo.GetAll(Database);
             paymentRepo.GetAll(Database.Payments, Database.Clients, Database.Orders);
             orderItemRepo.GetAll(Database);
-            exchangeRateRepo.GetAll(Database);            
+            exchangeRateRepo.GetAll(Database);
             stockArrivalRepo.GetAll(Database);
         }
+
         //Кнопки во вкладке "Клиенты"
         public void OnAddClient()
         {
@@ -130,6 +135,7 @@ namespace CRM.ViewModels
             AddNewClientView addNewClientView = new AddNewClientView();
 
             addNewClientView.DataContext = vm;
+            addNewClientView.Owner = App.Current.MainWindow;
             vm.WindowTitle = "Добавить нового клиента";
 
             addNewClientView.ShowDialog();
@@ -156,9 +162,10 @@ namespace CRM.ViewModels
             if (SelectedClient != null)
             {
                 var vm = new ClientViewModel(Database, SelectedClient, clientRepo, orderRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo);
-                AddNewClientView addNewClientView = new AddNewClientView();
+                AddNewClientView EditClientView = new AddNewClientView();
 
-                addNewClientView.DataContext = vm;
+                EditClientView.DataContext = vm;
+                EditClientView.Owner = App.Current.MainWindow;
 
                 vm.Id = SelectedClient.Id;
                 vm.Date = (DateTime)SelectedClient.Date;
@@ -173,7 +180,7 @@ namespace CRM.ViewModels
                 vm.PostalCode = SelectedClient.PostalCode;
                 vm.Notes = SelectedClient.Notes;
                 vm.Balance = clientRepo.GetBalance(SelectedClient);
-                vm.IsDataGridEnabled = true;
+                vm.IsDataGridEnabled = true;                
                 vm.WindowTitle = "Изменить данные клиента";
 
                 foreach (var order in Database.Orders)
@@ -184,9 +191,9 @@ namespace CRM.ViewModels
                     }
                 }                
 
-                addNewClientView.ShowDialog();
+                EditClientView.ShowDialog();
 
-                if (addNewClientView.DialogResult == true)
+                if (EditClientView.DialogResult == true)
                 {
                     SelectedClient.Name = vm.Name;
                     SelectedClient.Nickname = vm.Nickname;
@@ -226,9 +233,10 @@ namespace CRM.ViewModels
         //Кнопки во вкладке "Заказы"
         public void OnAddOrder()
         {
-            var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+            var vm = new OrderViewModel(Database, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
             OrderView orderView = new OrderView();
             orderView.DataContext = vm;
+            orderView.Owner = App.Current.MainWindow;
             vm.WindowTitle = "Добавить новый заказ";
 
             orderView.ShowDialog();
@@ -242,39 +250,38 @@ namespace CRM.ViewModels
         }
         public void OnEditOrder()
         {
-            if (SelectedOrder != null)
+            var vm = new OrderViewModel(Database, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+            OrderView orderView = new OrderView();
+            orderView.DataContext = vm;
+            orderView.Owner = App.Current.MainWindow;
+
+            vm.Id = SelectedOrder.Id;
+            vm.Client = SelectedOrder.Client;
+            vm.Date = SelectedOrder.Date;
+            vm.Status = SelectedOrder.Status;
+            vm.Notes = SelectedOrder.Notes;
+            vm.IsDataGridEnabled = true;
+            vm.IsChooseClientButtonEnabled = false;
+            vm.WindowTitle = "Изменить содержимое заказа";
+
+            foreach (var item in Database.OrdersItems)
             {
-                var vm = new OrderViewModel(Database, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
-                OrderView orderView = new OrderView();
-                orderView.DataContext = vm;
-
-                vm.Id = SelectedOrder.Id;
-                vm.Client = SelectedOrder.Client;
-                vm.Date = SelectedOrder.Date;
-                vm.Status = SelectedOrder.Status;
-                vm.Notes = SelectedOrder.Notes;
-                vm.IsDataGridEnabled = true;
-                vm.WindowTitle = "Изменить содержимое заказа";
-
-                foreach (var item in Database.OrdersItems)
+                if (item.Order.Id == SelectedOrder.Id)
                 {
-                    if (item.Order.Id == SelectedOrder.Id)
-                    {
-                        vm.OrderItems.Add(item);
-                    }
+                    vm.OrderItems.Add(item);
                 }
+            }
 
-                vm.UpdateBillingDetails();
-                orderView.ShowDialog();
+            vm.UpdateBillingDetails();
+            orderView.ShowDialog();
 
-                if (orderView.DialogResult == true)
-                {
-                    SelectedOrder.Client = vm.Client;
-                    SelectedOrder.Status = vm.Status;
-                    SelectedOrder.Notes = vm.Notes;
+            if (orderView.DialogResult == true)
+            {
+                SelectedOrder.Client = vm.Client;
+                SelectedOrder.Status = vm.Status;
+                SelectedOrder.Notes = vm.Notes;
 
-                    orderRepo.Update(SelectedOrder);
-                }
+                orderRepo.Update(SelectedOrder);
             }
         }
         public void OnDeleteOrder()
@@ -282,6 +289,7 @@ namespace CRM.ViewModels
             var userChoice = MessageBox.Show("Заказ №" + $"{SelectedOrder.Id}\nУдалить?", "Удаление заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
             List<OrderItem> orderItems = new List<OrderItem>();
+            List<Payment> orderPayments = new List<Payment>();
 
             if (userChoice == MessageBoxResult.Yes)
             {
@@ -290,6 +298,7 @@ namespace CRM.ViewModels
                     if (item.Order.Id == SelectedOrder.Id)
                     {
                         orderItemRepo.Delete(item);
+                        stockItemRepo.UpdateQuantity(item.StockItem);
                         orderItems.Add(item);
                     }
                 }
@@ -299,15 +308,30 @@ namespace CRM.ViewModels
                     Database.OrdersItems.Remove(item);
                 }
 
+                foreach (var payment in Database.Payments)
+                {
+                    if (payment.Order.Id == SelectedOrder.Id)
+                    {
+                        paymentRepo.Delete(payment);
+                        orderPayments.Add(payment);
+                    }
+                }
+
+                foreach (var payment in orderPayments)
+                {
+                    Database.Payments.Remove(payment);
+                }
+
                 orderRepo.Delete(SelectedOrder);
-                Database.Orders.Remove(SelectedOrder);
+                Database.Orders.Remove(SelectedOrder);                
             }
         }
         public void OnPayments()
         {
-            var vm = new PaymentsViewModel(Database.Payments);
+            var vm = new PaymentsViewModel(Database.Payments, paymentRepo);
             PaymentsView paymentsView = new PaymentsView();
             paymentsView.DataContext = vm;
+            paymentsView.Owner = App.Current.MainWindow;
             paymentsView.ShowDialog();
         }
         public void OnStats()
@@ -315,6 +339,7 @@ namespace CRM.ViewModels
             var vm = new StatsViewModel(Database);
             StatsView statsView = new StatsView();
             statsView.DataContext = vm;
+            statsView.Owner = App.Current.MainWindow;
             vm.PrintStats();
 
             statsView.ShowDialog();
@@ -326,63 +351,79 @@ namespace CRM.ViewModels
             var vm = new StockItemViewModel(Database, stockItemRepo, manufacturerRepo, null, "Visible", "Hidden");
             AddNewItemView addNewItemView = new AddNewItemView();
             addNewItemView.DataContext = vm;
+            addNewItemView.Owner = App.Current.MainWindow;
+            vm.Currency = Currency.UAH;
             vm.WindowTitle = "Добавить товарную позицию";
 
             addNewItemView.ShowDialog();
 
             if (addNewItemView.DialogResult == true)
             {
-                var newItem = new StockItem(vm.Name, vm.Manufacturer, vm.Description, vm.Currency, vm.PurchasePrice, vm.RetailPrice);
+                var newItem = new StockItem(vm.Name, vm.Manufacturer, vm.Description, vm.Currency, vm.PurchasePrice.Value, vm.RetailPrice.Value);
                 var item = stockItemRepo.Add(newItem);
                 Database.StockItems.Insert(0, item);
             }
         }
         public void OnEditStockItem()
         {
-            if (SelectedStockItem != null)
+            var vm = new StockItemViewModel(Database, stockItemRepo, manufacturerRepo, SelectedStockItem, "Hidden", "Visible");
+            AddNewItemView editItemView = new AddNewItemView();
+
+            editItemView.DataContext = vm;
+            editItemView.Owner = App.Current.MainWindow;
+
+            vm.Id = SelectedStockItem.Id;
+            vm.Name = SelectedStockItem.Name;
+            vm.Manufacturer = SelectedStockItem.Manufacturer;
+            vm.Description = SelectedStockItem.Description;
+            vm.Currency = SelectedStockItem.Currency;
+            vm.PurchasePrice.Value = SelectedStockItem.PurchasePrice;
+            vm.PurchasePrice.Input = SelectedStockItem.PurchasePrice.ToString();
+            vm.RetailPrice.Value = SelectedStockItem.RetailPrice;
+            vm.RetailPrice.Input = SelectedStockItem.RetailPrice.ToString();
+            vm.Quantity = SelectedStockItem.Quantity;
+            vm.WindowTitle = "Изменить товарную позицию";
+
+            editItemView.ShowDialog();
+
+            if (editItemView.DialogResult == true)
             {
-                var vm = new StockItemViewModel(Database, stockItemRepo, manufacturerRepo, SelectedStockItem, "Hidden", "Visible");
-                AddNewItemView addNewItemView = new AddNewItemView();
+                SelectedStockItem.Name = vm.Name;
+                SelectedStockItem.Manufacturer = vm.Manufacturer;
+                SelectedStockItem.Description = vm.Description;
+                SelectedStockItem.Currency = vm.Currency;
+                SelectedStockItem.PurchasePrice = vm.PurchasePrice.Value;
+                SelectedStockItem.RetailPrice = vm.RetailPrice.Value;
 
-                addNewItemView.DataContext = vm;
-
-                vm.Id = SelectedStockItem.Id;
-                vm.Name = SelectedStockItem.Name;
-                vm.Manufacturer = SelectedStockItem.Manufacturer;
-                vm.Description = SelectedStockItem.Description;
-                vm.Currency = SelectedStockItem.Currency;
-                vm.PurchasePrice = SelectedStockItem.PurchasePrice;
-                vm.RetailPrice = SelectedStockItem.RetailPrice;
-                vm.Quantity = SelectedStockItem.Quantity;
-                vm.WindowTitle = "Изменить товарную позицию";
-
-                addNewItemView.ShowDialog();
-
-                if (addNewItemView.DialogResult == true)
-                {
-                    SelectedStockItem.Name = vm.Name;
-                    SelectedStockItem.Manufacturer = vm.Manufacturer;
-                    SelectedStockItem.Description = vm.Description;
-                    SelectedStockItem.Currency = vm.Currency;
-                    SelectedStockItem.PurchasePrice = vm.PurchasePrice;
-                    SelectedStockItem.RetailPrice = vm.RetailPrice;
-
-                    stockItemRepo.Update(SelectedStockItem);
-                }
-            }                       
+                stockItemRepo.Update(SelectedStockItem);
+            }
         }
         public void OnDeleteStockItem()
         {
-            stockItemRepo.Delete(SelectedStockItem);
-            var i = Database.StockItems.IndexOf(SelectedStockItem);
-            Database.StockItems.RemoveAt(i);
+            var result = stockItemRepo.TryDelete(SelectedStockItem);
+
+            if (result == false)
+            {
+                MessageBox.Show($"Невозможно удалить {SelectedStockItem.Name}, т. к. данная позиция присутствует в заказах!", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                var userChoice = MessageBox.Show("Позиция: " + $"{SelectedStockItem.Name}.\nУдалить?", "Удаление складской позиции", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+                if (userChoice == MessageBoxResult.Yes)
+                {
+                    stockItemRepo.Delete(SelectedStockItem);
+                    Database.StockItems.Remove(SelectedStockItem);
+                }
+            }
         }
         public void OnManufacturers()
         {
             var vm = new ManufacturerViewModel(Database, manufacturerRepo);
             ManufacturerView manufacturerView = new ManufacturerView();
-
             manufacturerView.DataContext = vm;
+            manufacturerView.Owner = App.Current.MainWindow;
+
             manufacturerView.ShowDialog();
         }
         private void OnExchangeRates()
@@ -391,6 +432,7 @@ namespace CRM.ViewModels
             ExchangeRatesView exchangeRatesView = new ExchangeRatesView();
 
             exchangeRatesView.DataContext = vm;
+            exchangeRatesView.Owner = App.Current.MainWindow;
             exchangeRatesView.ShowDialog();
         }
         public void OnStockArrival()
@@ -399,7 +441,56 @@ namespace CRM.ViewModels
             StockArrivalView stockArrivalView = new StockArrivalView();
 
             stockArrivalView.DataContext = vm;
+            stockArrivalView.Owner = App.Current.MainWindow;
             stockArrivalView.ShowDialog();
+        }
+
+        //Кнопки во вкладке "Позиции"
+        public void OnEditOrderItem()
+        {
+            var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
+            OrderItemView orderItemView = new OrderItemView();
+            orderItemView.DataContext = vm;
+            orderItemView.Owner = App.Current.MainWindow;
+
+            vm.IsChooseStockItemButtonEnabled = false;
+            vm.OrderId = SelectedOrderItem.Order.Id;
+            vm.SelectedItem = SelectedOrderItem.StockItem;
+            vm.PurchasePrice = SelectedOrderItem.StockItem.PurchasePrice * SelectedOrderItem.ExchangeRate;
+            vm.RetailPrice = SelectedOrderItem.StockItem.RetailPrice * SelectedOrderItem.ExchangeRate;
+            vm.Quantity.Value = SelectedOrderItem.Quantity;
+            vm.Quantity.Input = SelectedOrderItem.Quantity.ToString();
+            vm.Discount.Value = SelectedOrderItem.Discount;
+            vm.Discount.Input = SelectedOrderItem.Discount.ToString();
+            vm.ExchangeRate = SelectedOrderItem.ExchangeRate;
+            vm.WindowTitle = "Изменить товарную позицию в заказе";
+            vm.CalculateBillingInfo();
+
+            orderItemView.ShowDialog();
+
+            if (orderItemView.DialogResult == true)
+            {
+                SelectedOrderItem.Quantity = vm.Quantity.Value;
+                SelectedOrderItem.Discount = vm.Discount.Value;
+                SelectedOrderItem.Total = vm.Total;
+                SelectedOrderItem.Expenses = vm.Expenses;
+                SelectedOrderItem.Profit = vm.Profit;
+
+                orderItemRepo.Update(SelectedOrderItem);
+                stockItemRepo.UpdateQuantity(SelectedOrderItem.StockItem);
+            }
+        }
+        public void OnDeleteOrderItem()
+        {
+            var userChoice = MessageBox.Show("Наименование: " + $"{SelectedOrderItem.StockItem.Name}.\nУдалить?", "Удаление позиции заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+            if (userChoice == MessageBoxResult.Yes)
+            {
+                orderItemRepo.Delete(SelectedOrderItem);
+                stockItemRepo.UpdateQuantity(SelectedOrderItem.StockItem);
+                Database.OrdersItems.Remove(SelectedOrderItem);
+                //UpdateBillingDetails();
+            }
         }
     }
 }

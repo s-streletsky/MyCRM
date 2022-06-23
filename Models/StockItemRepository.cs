@@ -17,7 +17,7 @@ namespace CRM.Models
                     + $"(@name, @manufacturer_id, @description, @currency_id, @purchase_price, @retail_price, @quantity)";
 
                 cmd.Parameters.AddWithValue("@name", item.Name);
-                cmd.Parameters.AddWithValue("@manufacturer_id", item.Manufacturer.Id);
+                cmd.Parameters.AddWithValue("@manufacturer_id", item.Manufacturer?.Id);
                 cmd.Parameters.AddWithValue("@description", item.Description);
                 cmd.Parameters.AddWithValue("@currency_id", (int)item.Currency);
                 cmd.Parameters.AddWithValue("@purchase_price", item.PurchasePrice);
@@ -63,8 +63,12 @@ namespace CRM.Models
                 {
                     var id = sqlReader.GetInt32(0);
                     var name = sqlReader.GetString(1);
-                    var manufacturer = db.Manufacturers.First(x => x.Id == sqlReader.GetInt32(2));
-                    var description = sqlReader.GetString(3);
+
+                    var manufacturerId = sqlReader.IsDBNull(2) ? (int?)null : sqlReader.GetInt32(2);
+                    var manufacturer = manufacturerId.HasValue ? db.Manufacturers.First(x => x.Id == manufacturerId) : null;
+
+                    var description = sqlReader.IsDBNull(3) ? null : sqlReader.GetString(3);
+
                     var currency = (Currency)sqlReader.GetInt32(4);
                     var purchasePrice = sqlReader.GetFloat(5);
                     var retailPrice = sqlReader.GetFloat(6);
@@ -82,7 +86,17 @@ namespace CRM.Models
 
         public bool TryDelete(StockItem item)
         {
-            throw new NotImplementedException();
+            using (var cmd = DbConnection.Open())
+            {
+                cmd.CommandText = "SELECT 1 FROM OrdersItems WHERE stock_item_id=@id";
+                cmd.Parameters.AddWithValue("@id", item.Id);
+                cmd.Prepare();
+                var result = cmd.ExecuteScalar();
+
+                if (result != null)
+                    return false;
+                    else return true;
+            }
         }
 
         public StockItem Update(StockItem item)
@@ -127,12 +141,10 @@ namespace CRM.Models
                 while (sqlReader.Read())
                 {
                     var quantity = sqlReader.GetFloat(3);
-
                     stockList.Add(quantity);
                 }
 
                 sqlReader.Close();
-
                 var stockSum = stockList.Sum();
 
                 cmd.CommandText = "SELECT * FROM OrdersItems WHERE stock_item_id=@id";
@@ -143,12 +155,10 @@ namespace CRM.Models
                 while (sqlReader2.Read())
                 {
                     var quantity = sqlReader2.GetFloat(3);
-
                     ordersList.Add(quantity);
                 }
 
                 sqlReader2.Close();
-
                 var ordersSum = ordersList.Sum();
 
                 item.Quantity = stockSum - ordersSum;

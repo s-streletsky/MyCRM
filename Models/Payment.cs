@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CRM.WPF;
 
 namespace CRM.Models
 {
-    internal class Payment
+    internal class Payment : ViewModelBase
     {
+        private float amount;
+
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public Client Client { get; set; }
         public Order Order { get; set; }
-        public float Amount { get; set; }
+        public float Amount { 
+            get { return amount; } 
+            set { amount = value; 
+                OnPropertyChanged(); } 
+        }
         public string Notes { get; set; }
 
         public Payment() { }

@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CRM.Views"
         xmlns:models="clr-namespace:CRM.Models"
+        xmlns:wpf="clr-namespace:CRM.WPF"
         xmlns:vm="clr-namespace:CRM.ViewModels"
         d:DataContext="{d:DesignInstance Type=vm:ManufacturerViewModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterOwner"
         MinHeight="480"
         MinWidth="350"
         Title="Производители" Height="480" Width="350">
@@ -27,16 +29,32 @@
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" IsEnabled="{Binding Path=IsAddGridEnabled}" Visibility="{Binding Path=IsAddGridVisible}">
+        <Grid Grid.Row="0" IsEnabled="{Binding IsAddGridEnabled}" Visibility="{Binding IsAddGridVisible}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
+            <TextBox Grid.Column="0" x:Name="fieldAddNewManufacturer" IsEnabled="{Binding IsAddGridEnabled}">
+                <TextBox.Text>
+                    <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <wpf:StringLenghtValidation MinLenght="2" ErrorMessage="{StaticResource stringValidationErrorMessage}" ValidatesOnTargetUpdated="True"/>
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=AddOKCommand}" />
+                <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=AddOKCommand}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                            <MultiBinding.Bindings>
+                                <Binding Path="(Validation.HasError)" ElementName="fieldAddNewManufacturer" />
+                            </MultiBinding.Bindings>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
                 <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=AddCancelCommand}"/>
             </StackPanel>
         </Grid>
@@ -47,10 +65,26 @@
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <TextBox Grid.Column="0" Text="{Binding Path=Name, Mode=TwoWay}"></TextBox>
+            <TextBox Grid.Column="0" x:Name="fieldEditManufacturer">
+                <TextBox.Text>
+                    <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                        <Binding.ValidationRules>
+                            <wpf:StringLenghtValidation MinLenght="2" ErrorMessage="Минимальное кол-во символов: 3" />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=EditOKCommand}" />
+                <Button Style="{StaticResource ActionButton}" Content="OK" Command="{Binding Path=EditOKCommand}">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource ValidationResultConverter}">
+                            <MultiBinding.Bindings>
+                                <Binding Path="(Validation.HasError)" ElementName="fieldEditManufacturer" />
+                            </MultiBinding.Bindings>
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
                 <Button Style="{StaticResource ActionButton}" Content="Отмена" Command="{Binding Path=EditCancelCommand}"/>
             </StackPanel>
         </Grid>

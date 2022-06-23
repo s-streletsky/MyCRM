@@ -13,16 +13,20 @@ namespace CRM.Models
     {
         [Description("Украина")]
         Ukraine,
-        [Description("США")]
-        USA
+        [Description("Молдова")]
+        Moldova
     }
 
     enum ShippingMethod
     {
+        [Description("-- не указан --")]
+        undefined = 0,
         [Description("Новая почта")]
-        NovaPoshta = 1,
+        NovaPoshta,
         [Description("Укрпочта")]
-        Ukrposhta
+        Ukrposhta,
+        [Description("Самовывоз")]
+        Self_PickUp
     }
     
     class Client : ViewModelBase
