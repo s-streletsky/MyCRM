@@ -36,19 +36,22 @@ namespace CRM.ViewModels
         private float balance;
         private string balanceBackground;
 
+        private ObservableCollection<Client> dbClients;
+        private ObservableCollection<Order> dbOrders;
+        private ObservableCollection<OrderItem> dbOrdersItems;
+        private ObservableCollection<StockItem> dbStockItems;
+        private ObservableCollection<ExchangeRate> dbExchangeRates;
+        private ObservableCollection<Payment> dbPayments;
         private ObservableCollection<Order> orders;
 
         private Client selectedClient;
-        private Order selectedOrder;
-        private Database database;
+        private Order selectedOrder;        
         private ClientRepository clientRepo;
         private OrderRepository orderRepo;
         private ExchangeRateRepository exchangeRateRepo;
         private OrderItemRepository orderItemRepo;
         private StockItemRepository stockItemRepo;
         private PaymentRepository paymentRepo;
-
-        private bool isOrderEditDeleteButtonsEnabled;
 
         public int? Id { 
             get { return id; } 
@@ -125,11 +128,11 @@ namespace CRM.ViewModels
             set { selectedClient = value; 
                 OnPropertyChanged(); } 
         }
-        public Database Database {
-            get { return database; }
-            set { database = value;
-                OnPropertyChanged(); }
-        }
+        //public Database Database {
+        //    get { return database; }
+        //    set { database = value;
+        //        OnPropertyChanged(); }
+        //}
         public ObservableCollection<Order> Orders {
             get { return orders; }
             set { orders = value; }
@@ -154,9 +157,14 @@ namespace CRM.ViewModels
 
         //    IsDataGridEnabled = false;
         //}
-        public ClientViewModel(Database db, Client sc, ClientRepository cr, OrderRepository or, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr)
+        public ClientViewModel(ObservableCollection<Client> clients, ObservableCollection<Order> orders, ObservableCollection<OrderItem> oi, ObservableCollection<StockItem> si, ObservableCollection<ExchangeRate> er, ObservableCollection<Payment> p, Client sc, ClientRepository cr, OrderRepository or, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr)
         {
-            Database = db;
+            dbClients = clients;
+            dbOrders = orders;
+            dbOrdersItems = oi;
+            dbStockItems = si;
+            dbExchangeRates = er;
+            dbPayments = p;
             SelectedClient = sc;
             clientRepo = cr;
             orderRepo = or;
@@ -183,12 +191,12 @@ namespace CRM.ViewModels
             var o = new Order(DateTime.Now, SelectedClient, OrderStatus.NEW);
             var order = orderRepo.Add(o);
             Orders.Insert(0, order);
-            Database.Orders.Insert(0, order);
+            dbOrders.Insert(0, order);
         }
         private void OnEditOrder()
         {
             {
-                var vm = new OrderViewModel(Database, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+                var vm = new OrderViewModel(dbClients, dbOrders, dbOrdersItems, dbStockItems, dbExchangeRates, dbPayments, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
                 OrderView orderView = new OrderView();
                 orderView.DataContext = vm;
                 orderView.Owner = App.Current.MainWindow;
@@ -202,7 +210,7 @@ namespace CRM.ViewModels
                 vm.IsChooseClientButtonEnabled = false;
                 vm.WindowTitle = "Изменить содержимое заказа";
 
-                foreach (var item in Database.OrdersItems)
+                foreach (var item in dbOrdersItems)
                 {
                     if (item.Order.Id == SelectedOrder.Id)
                     {
@@ -230,7 +238,7 @@ namespace CRM.ViewModels
 
             if (userChoice == MessageBoxResult.Yes)
             {
-                foreach (var item in Database.OrdersItems)
+                foreach (var item in dbOrdersItems)
                 {
                     if (item.Order.Id == SelectedOrder.Id)
                     {
@@ -241,11 +249,11 @@ namespace CRM.ViewModels
 
                 foreach (var item in orderItems)
                 {
-                    Database.OrdersItems.Remove(item);
+                    dbOrdersItems.Remove(item);
                 }
 
                 orderRepo.Delete(SelectedOrder);                
-                Database.Orders.Remove(SelectedOrder);
+                dbOrders.Remove(SelectedOrder);
                 Orders.Remove(SelectedOrder);
             }
         }

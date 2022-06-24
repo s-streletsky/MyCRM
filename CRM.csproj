@@ -167,6 +167,7 @@
     <Compile Include="Models\StockItemRepository.cs" />
     <Compile Include="ViewModels\ChooseClientViewModel.cs" />
     <Compile Include="ViewModels\ChooseStockItemViewModel.cs" />
+    <Compile Include="ViewModels\ClientsTabViewModel.cs" />
     <Compile Include="ViewModels\ExchangeRatesViewModel.cs" />
     <Compile Include="ViewModels\ManufacturerViewModel.cs" />
     <Compile Include="ViewModels\NewClientViewModel.cs" />

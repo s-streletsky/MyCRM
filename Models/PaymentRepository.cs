@@ -47,7 +47,7 @@ namespace CRM.Models
             throw new NotImplementedException();
         }
 
-        public void GetOrderPayments(Database db, List<Payment> list, Order order)
+        public void GetOrderPayments(IEnumerable<Client> clients, IEnumerable<Order> orders, List<Payment> list, Order order)
         {
             if (order != null)
             {
@@ -63,8 +63,8 @@ namespace CRM.Models
                     {
                         var id = sqlReader.GetInt32(0);
                         var date = DateTime.Parse(sqlReader.GetString(1));
-                        var client = db.Clients.First(x => x.Id == sqlReader.GetInt32(2));
-                        var ord = db.Orders.First(x => x.Id == sqlReader.GetInt32(3));
+                        var client = clients.First(x => x.Id == sqlReader.GetInt32(2));
+                        var ord = orders.First(x => x.Id == sqlReader.GetInt32(3));
                         var amount = sqlReader.GetFloat(4);                       
                         var notes = sqlReader.IsDBNull(5) ? null : sqlReader.GetString(5);
 

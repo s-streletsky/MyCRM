@@ -20,9 +20,9 @@ namespace CRM
     /// <summary>
     /// Interaction logic for AddClient.xaml
     /// </summary>
-    public partial class AddNewClientView : Window, ICloseable
+    public partial class ClientView : Window, ICloseable
     {
-        public AddNewClientView()
+        public ClientView()
         {
             InitializeComponent();
         }

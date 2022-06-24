@@ -33,7 +33,7 @@
     <Grid Margin="10">
 
         <TabControl>
-            <TabItem>
+            <TabItem DataContext="{Binding Path=ClientsTabViewModel}">
                 <TabItem.Header>
                     <TextBlock Text="Клиенты" Style="{StaticResource HeaderTextBlockStyle}"/>
                 </TabItem.Header>
@@ -59,7 +59,7 @@
                         <MenuItem Header="Удалить" Command="{Binding DeleteClientCommand}" IsEnabled="{Binding Path=IsClientsButtonsEnabled}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Clients, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                    <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbClients, Mode=OneWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
 
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />

@@ -14,11 +14,19 @@ namespace CRM.ViewModels
 {
     internal class OrderViewModel : ViewModelBase
     {
+        private ObservableCollection<Client> dbClients;
+        private ObservableCollection<Order> dbOrders;
+        private ObservableCollection<OrderItem> dbOrdersItems;
+        private ObservableCollection<StockItem> dbStockItems;
+        private ObservableCollection<ExchangeRate> dbExchangeRates;
+        private ObservableCollection<Payment> dbPayments;
+
         private Client client;
         private DateTime date;
         private OrderStatus status;
         private string notes;
         private ObservableCollection<OrderItem> orderItems = new ObservableCollection<OrderItem>();
+        
         private ClientRepository clientRepo;
         private ExchangeRateRepository exchangeRateRepo;
         private OrderItemRepository orderItemRepo;
@@ -64,7 +72,6 @@ namespace CRM.ViewModels
             set { notes = value; 
                 OnPropertyChanged(); } 
         }
-        public Database Database { get; set; }
         public bool IsDataGridEnabled { get; set; }
         public bool IsOrderItemsEditDeleteButtonsEnabled { 
             get { return SelectedItem != null; }
@@ -107,11 +114,17 @@ namespace CRM.ViewModels
 
         public OrderViewModel() { }
 
-        public OrderViewModel(Database db, ClientRepository cr, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr, Order selected)
+        public OrderViewModel(ObservableCollection<Client> c, ObservableCollection<Order> o, ObservableCollection<OrderItem> oi, ObservableCollection<StockItem> si, ObservableCollection<ExchangeRate> er, ObservableCollection<Payment> p, ClientRepository cr, ExchangeRateRepository err, OrderItemRepository oir, StockItemRepository sir, PaymentRepository pr, Order selected)
         {
+            dbClients = c;
+            dbOrders = o;
+            dbOrdersItems = oi;
+            dbStockItems = si;
+            dbExchangeRates = er;
+            dbPayments = p;
+
             Date = DateTime.Now;
             Status = OrderStatus.NEW;
-            Database = db;
             selectedOrder = selected;
 
             clientRepo = cr;
@@ -124,7 +137,7 @@ namespace CRM.ViewModels
             IsChooseClientButtonEnabled = true;
 
             payments = new List<Payment>();
-            paymentRepo.GetOrderPayments(Database, payments, selectedOrder);
+            paymentRepo.GetOrderPayments(dbClients, dbOrders, payments, selectedOrder);
 
             ChooseClientCommand = new RelayCommand(OnChooseClient);
             AddNewClientCommand = new RelayCommand(OnAddNewClient);
@@ -136,7 +149,7 @@ namespace CRM.ViewModels
         }
         private void OnChooseClient()
         {
-            var vm = new ChooseClientViewModel(Database.Clients);
+            var vm = new ChooseClientViewModel(dbClients);
             ChooseClientView chooseClientView = new ChooseClientView();
             chooseClientView.DataContext = vm;
             chooseClientView.Owner = App.Current.MainWindow;
@@ -162,15 +175,15 @@ namespace CRM.ViewModels
                 newClient.Name = vm.Name;
 
                 var client = clientRepo.Add(newClient);
-                Database.Clients.Insert(0, client);
+                dbClients.Insert(0, client);
 
-                Client = Database.Clients[0];
+                Client = dbClients[0];
             }
         }
 
         private void OnAddOrderItem()
         {
-            var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
+            var vm = new OrderItemViewModel(dbStockItems, dbExchangeRates, exchangeRateRepo);
             OrderItemView orderItemView = new OrderItemView();
             orderItemView.DataContext = vm;
             orderItemView.Owner = App.Current.MainWindow;
@@ -188,14 +201,14 @@ namespace CRM.ViewModels
                 var newOrderItem = new OrderItem(-1, selectedOrder, vm.SelectedItem, vm.Quantity.Value, vm.RetailPrice, vm.Discount.Value, vm.Total, vm.Profit, vm.Expenses, vm.ExchangeRate);
                 var orderItem = orderItemRepo.Add(newOrderItem);
                 stockItemRepo.UpdateQuantity(orderItem.StockItem);
-                Database.OrdersItems.Add(orderItem);
+                dbOrdersItems.Add(orderItem);
                 orderItems.Add(orderItem);
                 UpdateBillingDetails();
             }
         }
         private void OnEditOrderItem()
         {
-            var vm = new OrderItemViewModel(Database.StockItems, Database.ExchangeRates, exchangeRateRepo);
+            var vm = new OrderItemViewModel(dbStockItems, dbExchangeRates, exchangeRateRepo);
             OrderItemView orderItemView = new OrderItemView();
             orderItemView.DataContext = vm;
             orderItemView.Owner = App.Current.MainWindow;
@@ -236,7 +249,7 @@ namespace CRM.ViewModels
             {
                 orderItemRepo.Delete(SelectedItem);
                 stockItemRepo.UpdateQuantity(SelectedItem.StockItem);
-                Database.OrdersItems.Remove(SelectedItem);
+                dbOrdersItems.Remove(SelectedItem);
                 orderItems.Remove(SelectedItem);
                 UpdateBillingDetails();
             }
@@ -259,9 +272,9 @@ namespace CRM.ViewModels
 
                 var newPayment = new Payment(-1, DateTime.Now, vm.Client, vm.Order, (float)amount, vm.Notes);
                 var payment = paymentRepo.Add(newPayment);
-                Database.Payments.Insert(0, payment);
+                dbPayments.Insert(0, payment);
                 payments.Clear();
-                paymentRepo.GetOrderPayments(Database, payments, selectedOrder);
+                paymentRepo.GetOrderPayments(dbClients, dbOrders, payments, selectedOrder);
                 UpdateBillingDetails();
             }
         }
