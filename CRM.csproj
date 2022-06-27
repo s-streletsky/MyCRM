@@ -173,6 +173,7 @@
     <Compile Include="ViewModels\NewClientViewModel.cs" />
     <Compile Include="ViewModels\OrderItemViewModel.cs" />
     <Compile Include="ViewModels\OrderPaymentViewModel.cs" />
+    <Compile Include="ViewModels\OrdersTabViewModel.cs" />
     <Compile Include="ViewModels\PaymentsViewModel.cs" />
     <Compile Include="ViewModels\StatsViewModel.cs" />
     <Compile Include="Views\ChooseClientView.xaml.cs">

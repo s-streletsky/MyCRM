@@ -11,7 +11,8 @@ namespace CRM.ViewModels
 {
     internal class StatsViewModel : ViewModelBase
     {
-        private Database database;
+        private IEnumerable<Order> dbOrders;
+        private IEnumerable<Payment> dbPayments;
         
         private string selectedMonth;
         private int selectedYear;
@@ -83,16 +84,17 @@ namespace CRM.ViewModels
                 OnPropertyChanged(); } 
         }
 
-        public StatsViewModel(Database db)
+        public StatsViewModel(IEnumerable<Order> o, IEnumerable<Payment> p)
         {
             months = new List<string>(13) { "Весь год", "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь" };
             years = new List<int>(10);
 
-            database = db;
+            dbOrders = o;
+            dbPayments = p;
 
             PrintStatsCommand = new RelayCommand(PrintStats);
 
-            var firstOrder = database.Orders.Last<Order>();
+            var firstOrder = dbOrders.Last<Order>();
             DateTime firstOrderDate = firstOrder.Date;
             var firstOrderYear = firstOrderDate.Year;
 
@@ -127,7 +129,7 @@ namespace CRM.ViewModels
 
             OrdersTotal = OrdersNew = OrdersInProgress = OrdersClosed = 0;
 
-            foreach (var order in database.Orders)
+            foreach (var order in dbOrders)
             {
                 if (order.Date >= periodStart && order.Date <= periodEnd)
                 {
@@ -150,7 +152,7 @@ namespace CRM.ViewModels
 
             PaymentsTotal = 0;
 
-            foreach (var payment in database.Payments)
+            foreach (var payment in dbPayments)
             {
                 if (payment.Date >= periodStart && payment.Date <= periodEnd)
                 {
@@ -160,7 +162,7 @@ namespace CRM.ViewModels
 
             Income = Expenses = Profit = 0;
 
-            foreach (var order in database.Orders)
+            foreach (var order in dbOrders)
             {
                 if (order.Date >= periodStart && order.Date <= periodEnd)
                 {

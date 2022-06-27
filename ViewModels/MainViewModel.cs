@@ -16,24 +16,26 @@ namespace CRM.ViewModels
     class MainViewModel : ViewModelBase
     {
         private ClientsTabViewModel clientsTabViewModel;
+        private OrdersTabViewModel ordersTabViewModel;
 
         private Database db;
 
-        private Client selectedClient;
-        private Order selectedOrder;
+        //private Client selectedClient;
+        //private Order selectedOrder;
         private StockItem selectedStockItem;
         private OrderItem selectedOrderItem;
 
         public ClientsTabViewModel ClientsTabViewModel { get { return clientsTabViewModel; } }
+        public OrdersTabViewModel OrdersTabViewModel { get { return ordersTabViewModel; } }
 
         //public RelayCommand AddClientCommand { get; }
         //public RelayCommand EditClientCommand { get; }
         //public RelayCommand DeleteClientCommand { get; }
-        public RelayCommand AddOrderCommand { get; }
-        public RelayCommand EditOrderCommand { get; }
-        public RelayCommand DeleteOrderCommand { get; }
-        public RelayCommand PaymentsCommand { get; }
-        public RelayCommand StatsCommand { get; }
+        //public RelayCommand AddOrderCommand { get; }
+        //public RelayCommand EditOrderCommand { get; }
+        //public RelayCommand DeleteOrderCommand { get; }
+        //public RelayCommand PaymentsCommand { get; }
+        //public RelayCommand StatsCommand { get; }
         public RelayCommand AddNewExchangeRateCommand { get; }
         public RelayCommand AddStockItemCommand { get; }
         public RelayCommand EditStockItemCommand { get; }
@@ -55,11 +57,11 @@ namespace CRM.ViewModels
                 OnPropertyChanged(nameof(IsStockButtonsEnabled));
             }
         }
-        public Order SelectedOrder { 
-            get { return selectedOrder; } 
-            set { selectedOrder = value;
-                OnPropertyChanged(nameof(IsOrdersButtonsEnabled)); }
-        }
+        //public Order SelectedOrder { 
+        //    get { return selectedOrder; } 
+        //    set { selectedOrder = value;
+        //        OnPropertyChanged(nameof(IsOrdersButtonsEnabled)); }
+        //}
         public OrderItem SelectedOrderItem { 
             get { return selectedOrderItem; } 
             set { selectedOrderItem = value; 
@@ -69,10 +71,11 @@ namespace CRM.ViewModels
         //public bool IsClientsButtonsEnabled { 
         //    get { return SelectedClient != null; }
         //}
-        public bool IsOrdersButtonsEnabled { 
-            get { return SelectedOrder != null; }
-        }
-        public bool IsStockButtonsEnabled { 
+        //public bool IsOrdersButtonsEnabled { 
+        //    get { return SelectedOrder != null; }
+        //}
+        public bool IsStockButtonsEnabled
+        {
             get { return SelectedStockItem != null; }
         }
         public bool IsOrdersItemsButtonsEnabled { get { return SelectedOrderItem != null; } }
@@ -95,11 +98,11 @@ namespace CRM.ViewModels
             //EditClientCommand = new RelayCommand(OnEditClient);
             //DeleteClientCommand = new RelayCommand(OnDeleteClient);
 
-            AddOrderCommand = new RelayCommand(OnAddOrder);
-            EditOrderCommand = new RelayCommand(OnEditOrder);
-            DeleteOrderCommand = new RelayCommand(OnDeleteOrder);
-            PaymentsCommand = new RelayCommand(OnPayments);
-            StatsCommand = new RelayCommand(OnStats);
+            //AddOrderCommand = new RelayCommand(OnAddOrder);
+            //EditOrderCommand = new RelayCommand(OnEditOrder);
+            //DeleteOrderCommand = new RelayCommand(OnDeleteOrder);
+            //PaymentsCommand = new RelayCommand(OnPayments);
+            //StatsCommand = new RelayCommand(OnStats);
 
             AddStockItemCommand = new RelayCommand(OnAddStockItem);
             EditStockItemCommand = new RelayCommand(OnEditStockItem);
@@ -130,6 +133,7 @@ namespace CRM.ViewModels
             stockArrivalRepo.GetAll(db);
 
             clientsTabViewModel = new ClientsTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
+            ordersTabViewModel = new OrdersTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
         }
 
         //Кнопки во вкладке "Клиенты"
@@ -235,119 +239,119 @@ namespace CRM.ViewModels
         //}
 
         //Кнопки во вкладке "Заказы"
-        public void OnAddOrder()
-        {
-            var vm = new OrderViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
-            OrderView orderView = new OrderView();
-            orderView.DataContext = vm;
-            orderView.Owner = App.Current.MainWindow;
-            vm.WindowTitle = "Добавить новый заказ";
+        //public void OnAddOrder()
+        //{
+        //    var vm = new OrderViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+        //    OrderView orderView = new OrderView();
+        //    orderView.DataContext = vm;
+        //    orderView.Owner = App.Current.MainWindow;
+        //    vm.WindowTitle = "Добавить новый заказ";
 
-            orderView.ShowDialog();
+        //    orderView.ShowDialog();
 
-            if (orderView.DialogResult == true)
-            {
-                var o = new Order(vm.Date, vm.Client, vm.Status);
-                var order = orderRepo.Add(o);
-                db.Orders.Insert(0, order);
-            }
-        }
-        public void OnEditOrder()
-        {
-            var vm = new OrderViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
-            OrderView orderView = new OrderView();
-            orderView.DataContext = vm;
-            orderView.Owner = App.Current.MainWindow;
+        //    if (orderView.DialogResult == true)
+        //    {
+        //        var o = new Order(vm.Date, vm.Client, vm.Status);
+        //        var order = orderRepo.Add(o);
+        //        db.Orders.Insert(0, order);
+        //    }
+        //}
+        //public void OnEditOrder()
+        //{
+        //    var vm = new OrderViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, exchangeRateRepo, orderItemRepo, stockItemRepo, paymentRepo, SelectedOrder);
+        //    OrderView orderView = new OrderView();
+        //    orderView.DataContext = vm;
+        //    orderView.Owner = App.Current.MainWindow;
 
-            vm.Id = SelectedOrder.Id;
-            vm.Client = SelectedOrder.Client;
-            vm.Date = SelectedOrder.Date;
-            vm.Status = SelectedOrder.Status;
-            vm.Notes = SelectedOrder.Notes;
-            vm.IsDataGridEnabled = true;
-            vm.IsChooseClientButtonEnabled = false;
-            vm.WindowTitle = "Изменить содержимое заказа";
+        //    vm.Id = SelectedOrder.Id;
+        //    vm.Client = SelectedOrder.Client;
+        //    vm.Date = SelectedOrder.Date;
+        //    vm.Status = SelectedOrder.Status;
+        //    vm.Notes = SelectedOrder.Notes;
+        //    vm.IsDataGridEnabled = true;
+        //    vm.IsChooseClientButtonEnabled = false;
+        //    vm.WindowTitle = "Изменить содержимое заказа";
 
-            foreach (var item in db.OrdersItems)
-            {
-                if (item.Order.Id == SelectedOrder.Id)
-                {
-                    vm.OrderItems.Add(item);
-                }
-            }
+        //    foreach (var item in db.OrdersItems)
+        //    {
+        //        if (item.Order.Id == SelectedOrder.Id)
+        //        {
+        //            vm.OrderItems.Add(item);
+        //        }
+        //    }
 
-            vm.UpdateBillingDetails();
-            orderView.ShowDialog();
+        //    vm.UpdateBillingDetails();
+        //    orderView.ShowDialog();
 
-            if (orderView.DialogResult == true)
-            {
-                SelectedOrder.Client = vm.Client;
-                SelectedOrder.Status = vm.Status;
-                SelectedOrder.Notes = vm.Notes;
+        //    if (orderView.DialogResult == true)
+        //    {
+        //        SelectedOrder.Client = vm.Client;
+        //        SelectedOrder.Status = vm.Status;
+        //        SelectedOrder.Notes = vm.Notes;
 
-                orderRepo.Update(SelectedOrder);
-            }
-        }
-        public void OnDeleteOrder()
-        {
-            var userChoice = MessageBox.Show("Заказ №" + $"{SelectedOrder.Id}\nУдалить?", "Удаление заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+        //        orderRepo.Update(SelectedOrder);
+        //    }
+        //}
+        //public void OnDeleteOrder()
+        //{
+        //    var userChoice = MessageBox.Show("Заказ №" + $"{SelectedOrder.Id}\nУдалить?", "Удаление заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
-            List<OrderItem> orderItems = new List<OrderItem>();
-            List<Payment> orderPayments = new List<Payment>();
+        //    List<OrderItem> orderItems = new List<OrderItem>();
+        //    List<Payment> orderPayments = new List<Payment>();
 
-            if (userChoice == MessageBoxResult.Yes)
-            {
-                foreach (var item in db.OrdersItems)
-                {
-                    if (item.Order.Id == SelectedOrder.Id)
-                    {
-                        orderItemRepo.Delete(item);
-                        stockItemRepo.UpdateQuantity(item.StockItem);
-                        orderItems.Add(item);
-                    }
-                }
+        //    if (userChoice == MessageBoxResult.Yes)
+        //    {
+        //        foreach (var item in db.OrdersItems)
+        //        {
+        //            if (item.Order.Id == SelectedOrder.Id)
+        //            {
+        //                orderItemRepo.Delete(item);
+        //                stockItemRepo.UpdateQuantity(item.StockItem);
+        //                orderItems.Add(item);
+        //            }
+        //        }
 
-                foreach (var item in orderItems)
-                {
-                    db.OrdersItems.Remove(item);
-                }
+        //        foreach (var item in orderItems)
+        //        {
+        //            db.OrdersItems.Remove(item);
+        //        }
 
-                foreach (var payment in db.Payments)
-                {
-                    if (payment.Order.Id == SelectedOrder.Id)
-                    {
-                        paymentRepo.Delete(payment);
-                        orderPayments.Add(payment);
-                    }
-                }
+        //        foreach (var payment in db.Payments)
+        //        {
+        //            if (payment.Order.Id == SelectedOrder.Id)
+        //            {
+        //                paymentRepo.Delete(payment);
+        //                orderPayments.Add(payment);
+        //            }
+        //        }
 
-                foreach (var payment in orderPayments)
-                {
-                    db.Payments.Remove(payment);
-                }
+        //        foreach (var payment in orderPayments)
+        //        {
+        //            db.Payments.Remove(payment);
+        //        }
 
-                orderRepo.Delete(SelectedOrder);
-                db.Orders.Remove(SelectedOrder);                
-            }
-        }
-        public void OnPayments()
-        {
-            var vm = new PaymentsViewModel(db.Payments, paymentRepo);
-            PaymentsView paymentsView = new PaymentsView();
-            paymentsView.DataContext = vm;
-            paymentsView.Owner = App.Current.MainWindow;
-            paymentsView.ShowDialog();
-        }
-        public void OnStats()
-        {
-            var vm = new StatsViewModel(db);
-            StatsView statsView = new StatsView();
-            statsView.DataContext = vm;
-            statsView.Owner = App.Current.MainWindow;
-            vm.PrintStats();
+        //        orderRepo.Delete(SelectedOrder);
+        //        db.Orders.Remove(SelectedOrder);                
+        //    }
+        //}
+        //public void OnPayments()
+        //{
+        //    var vm = new PaymentsViewModel(db.Payments, paymentRepo);
+        //    PaymentsView paymentsView = new PaymentsView();
+        //    paymentsView.DataContext = vm;
+        //    paymentsView.Owner = App.Current.MainWindow;
+        //    paymentsView.ShowDialog();
+        //}
+        //public void OnStats()
+        //{
+        //    var vm = new StatsViewModel(db);
+        //    StatsView statsView = new StatsView();
+        //    statsView.DataContext = vm;
+        //    statsView.Owner = App.Current.MainWindow;
+        //    vm.PrintStats();
 
-            statsView.ShowDialog();
-        }
+        //    statsView.ShowDialog();
+        //}
 
         //Кнопки во вкладке "Склад"
         public void OnAddStockItem()

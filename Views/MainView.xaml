@@ -59,7 +59,7 @@
                         <MenuItem Header="Удалить" Command="{Binding DeleteClientCommand}" IsEnabled="{Binding Path=IsClientsButtonsEnabled}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbClients, Mode=OneWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                    <DataGrid SelectedItem="{Binding Path=SelectedClient, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbClients}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
 
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditClientCommand}" />
@@ -80,8 +80,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem>
-
+            <TabItem DataContext="{Binding Path=OrdersTabViewModel}">
                 <TabItem.Header>
                     <TextBlock Text="Заказы"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
@@ -110,7 +109,7 @@
                         <MenuItem Header="Статистика" Command="{Binding Path=StatsCommand}" IsEnabled="{Binding Path=IsStatsEnabled}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedOrder, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Database.Orders, Mode=TwoWay}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
+                    <DataGrid SelectedItem="{Binding Path=SelectedOrder, Mode=TwoWay}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbOrders}" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="4">
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding Path=EditOrderCommand}" />
                         </DataGrid.InputBindings>
