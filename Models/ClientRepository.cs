@@ -10,14 +10,25 @@ namespace CRM.Models
         {
             using (var cmd = DbConnection.Open())
             {
-                string addNewClient = "INSERT INTO Clients (date, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes) VALUES "
-                                     + $"('{client.Date}', '{client.Name}', '{client.Nickname}', '{client.Phone}', '{client.Email}', {(int)client.Country}, '{client.City}', '{client.Address}', {(int)client.ShippingMethod}, '{client.PostalCode}', '{client.Notes}')";
-
-                cmd.CommandText = addNewClient;
+                cmd.CommandText = @"INSERT INTO Clients (date, name, nickname, phone, email, country, city, address, shipping_method_id, postal_code, notes)
+                    VALUES (@date, @name, @nickname, @phone, @email, @country, @city, @address, @shipping_method, @postal_code, @notes)";                                     
+                cmd.Parameters.AddWithValue("@date", client.Date);
+                cmd.Parameters.AddWithValue("@name", client.Name);
+                cmd.Parameters.AddWithValue("@nickname", client.Nickname);
+                cmd.Parameters.AddWithValue("@phone", client.Phone);
+                cmd.Parameters.AddWithValue("@email", client.Email);
+                cmd.Parameters.AddWithValue("@country", (int)client.Country);
+                cmd.Parameters.AddWithValue("@city", client.City);
+                cmd.Parameters.AddWithValue("@address", client.Address);
+                cmd.Parameters.AddWithValue("@shipping_method", (int)client.ShippingMethod);
+                cmd.Parameters.AddWithValue("@postal_code", client.PostalCode);
+                cmd.Parameters.AddWithValue("@notes", client.Notes);
+                cmd.Prepare();
                 cmd.ExecuteNonQuery();
 
-                string getClientId = "SELECT id FROM Clients WHERE date=" + $"'{client.Date}'";
-                cmd.CommandText = getClientId;
+                cmd.CommandText = "SELECT id FROM Clients WHERE date=@date";
+                cmd.Parameters.AddWithValue("@date", client.Date);
+                cmd.Prepare();
                 client.Id = Convert.ToInt32(cmd.ExecuteScalar());
 
                 return client;

@@ -89,6 +89,7 @@ namespace CRM.ViewModels
                 newClient.Address = vm.Address;
                 newClient.ShippingMethod = vm.ShippingMethod;
                 newClient.PostalCode = vm.PostalCode;
+                newClient.Notes = vm.Notes;
 
                 var client = clientRepo.Add(newClient);
                 dbClients.Insert(0, client);

@@ -17,15 +17,10 @@ namespace CRM.ViewModels
     {
         private Database db;
 
-        private ClientsTabViewModel clientsTabViewModel;
-        private OrdersTabViewModel ordersTabViewModel;
-        private StockTabViewModel stockTabViewModel;
-        private OrdersItemsTabViewModel ordersItemsTabViewModel;
-
-        public ClientsTabViewModel ClientsTabViewModel { get { return clientsTabViewModel; } }
-        public OrdersTabViewModel OrdersTabViewModel { get { return ordersTabViewModel; } }
-        public StockTabViewModel StockTabViewModel { get { return stockTabViewModel; } }
-        public OrdersItemsTabViewModel OrdersItemsTabViewModel { get { return ordersItemsTabViewModel; } }
+        public ClientsTabViewModel ClientsTabViewModel { get; }
+        public OrdersTabViewModel OrdersTabViewModel { get; }
+        public StockTabViewModel StockTabViewModel { get; }
+        public OrdersItemsTabViewModel OrdersItemsTabViewModel { get; }
 
         private ClientRepository clientRepo = new ClientRepository();
         private OrderRepository orderRepo = new OrderRepository();
@@ -55,10 +50,10 @@ namespace CRM.ViewModels
             exchangeRateRepo.GetAll(db.ExchangeRates);
             stockArrivalRepo.GetAll(db.StockArrivals, db.StockItems);
 
-            clientsTabViewModel = new ClientsTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
-            ordersTabViewModel = new OrdersTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
-            stockTabViewModel = new StockTabViewModel(db.StockItems, db.StockArrivals, db.Manufacturers, db.ExchangeRates, stockItemRepo, stockArrivalRepo, manufacturerRepo, exchangeRateRepo);
-            ordersItemsTabViewModel = new OrdersItemsTabViewModel(db.OrdersItems, db.StockItems, db.ExchangeRates, orderItemRepo, stockItemRepo, exchangeRateRepo);
+            ClientsTabViewModel = new ClientsTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
+            OrdersTabViewModel = new OrdersTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
+            StockTabViewModel = new StockTabViewModel(db.StockItems, db.StockArrivals, db.Manufacturers, db.ExchangeRates, stockItemRepo, stockArrivalRepo, manufacturerRepo, exchangeRateRepo);
+            OrdersItemsTabViewModel = new OrdersItemsTabViewModel(db.OrdersItems, db.StockItems, db.ExchangeRates, orderItemRepo, stockItemRepo, exchangeRateRepo);
         }
     }
 }
