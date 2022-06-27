@@ -15,20 +15,22 @@ namespace CRM.ViewModels
 {
     class MainViewModel : ViewModelBase
     {
+        private Database db;
+
         private ClientsTabViewModel clientsTabViewModel;
         private OrdersTabViewModel ordersTabViewModel;
         private StockTabViewModel stockTabViewModel;
-
-        private Database db;
-
+        private OrdersItemsTabViewModel ordersItemsTabViewModel;
+       
         //private Client selectedClient;
         //private Order selectedOrder;
         //private StockItem selectedStockItem;
-        private OrderItem selectedOrderItem;
+        //private OrderItem selectedOrderItem;
 
         public ClientsTabViewModel ClientsTabViewModel { get { return clientsTabViewModel; } }
         public OrdersTabViewModel OrdersTabViewModel { get { return ordersTabViewModel; } }
         public StockTabViewModel StockTabViewModel { get { return stockTabViewModel; } }
+        public OrdersItemsTabViewModel OrdersItemsTabViewModel { get { return ordersItemsTabViewModel; } }
 
         //public RelayCommand AddClientCommand { get; }
         //public RelayCommand EditClientCommand { get; }
@@ -44,8 +46,8 @@ namespace CRM.ViewModels
         //public RelayCommand EditManufacturerCommand { get; }
         //public RelayCommand EditStockArrivalCommand { get; }
         //public RelayCommand EditExchangeRatesCommand { get; }
-        public RelayCommand EditOrderItemCommand { get; }
-        public RelayCommand DeleteOrderItemCommand { get; }
+        //public RelayCommand EditOrderItemCommand { get; }
+        //public RelayCommand DeleteOrderItemCommand { get; }
         //public Client SelectedClient {
         //    get { return selectedClient; }
         //    set { selectedClient = value;
@@ -63,12 +65,11 @@ namespace CRM.ViewModels
         //    set { selectedOrder = value;
         //        OnPropertyChanged(nameof(IsOrdersButtonsEnabled)); }
         //}
-        public OrderItem SelectedOrderItem { 
-            get { return selectedOrderItem; } 
-            set { selectedOrderItem = value; 
-                OnPropertyChanged(nameof(IsOrdersItemsButtonsEnabled)); } 
-        }
-        public Currency SelectedCurrency { get; set; }
+        //public OrderItem SelectedOrderItem { 
+        //    get { return selectedOrderItem; } 
+        //    set { selectedOrderItem = value; 
+        //        OnPropertyChanged(nameof(IsOrdersItemsButtonsEnabled)); } 
+        //}
         //public bool IsClientsButtonsEnabled { 
         //    get { return SelectedClient != null; }
         //}
@@ -79,8 +80,8 @@ namespace CRM.ViewModels
         //{
         //    get { return SelectedStockItem != null; }
         //}
-        public bool IsOrdersItemsButtonsEnabled { get { return SelectedOrderItem != null; } }
-        public bool IsStatsEnabled { get { return db.Orders.Count != 0; } }
+        //public bool IsOrdersItemsButtonsEnabled { get { return SelectedOrderItem != null; } }
+        //public bool IsStatsEnabled { get { return db.Orders.Count != 0; } }
 
         public float CurrencyExchangeRate { get; set; }
 
@@ -112,8 +113,8 @@ namespace CRM.ViewModels
             //EditStockArrivalCommand = new RelayCommand(OnStockArrival);
             //EditExchangeRatesCommand = new RelayCommand(OnExchangeRates);
 
-            EditOrderItemCommand = new RelayCommand(OnEditOrderItem);
-            DeleteOrderItemCommand = new RelayCommand(OnDeleteOrderItem);
+            //EditOrderItemCommand = new RelayCommand(OnEditOrderItem);
+            //DeleteOrderItemCommand = new RelayCommand(OnDeleteOrderItem);
 
             db = new Database();           
 
@@ -135,6 +136,7 @@ namespace CRM.ViewModels
             clientsTabViewModel = new ClientsTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
             ordersTabViewModel = new OrdersTabViewModel(db.Clients, db.Orders, db.OrdersItems, db.StockItems, db.ExchangeRates, db.Payments, clientRepo, orderRepo, orderItemRepo, exchangeRateRepo, stockItemRepo, paymentRepo);
             stockTabViewModel = new StockTabViewModel(db.StockItems, db.StockArrivals, db.Manufacturers, db.ExchangeRates, stockItemRepo, stockArrivalRepo, manufacturerRepo, exchangeRateRepo);
+            ordersItemsTabViewModel = new OrdersItemsTabViewModel(db.OrdersItems, db.StockItems, db.ExchangeRates, orderItemRepo, stockItemRepo, exchangeRateRepo);
         }
 
         //Кнопки во вкладке "Клиенты"
@@ -455,50 +457,50 @@ namespace CRM.ViewModels
         //}
 
         //Кнопки во вкладке "Позиции"
-        public void OnEditOrderItem()
-        {
-            var vm = new OrderItemViewModel(db.StockItems, db.ExchangeRates, exchangeRateRepo);
-            OrderItemView orderItemView = new OrderItemView();
-            orderItemView.DataContext = vm;
-            orderItemView.Owner = App.Current.MainWindow;
+        //public void OnEditOrderItem()
+        //{
+        //    var vm = new OrderItemViewModel(db.StockItems, db.ExchangeRates, exchangeRateRepo);
+        //    OrderItemView orderItemView = new OrderItemView();
+        //    orderItemView.DataContext = vm;
+        //    orderItemView.Owner = App.Current.MainWindow;
 
-            vm.IsChooseStockItemButtonEnabled = false;
-            vm.OrderId = SelectedOrderItem.Order.Id;
-            vm.SelectedItem = SelectedOrderItem.StockItem;
-            vm.PurchasePrice = SelectedOrderItem.StockItem.PurchasePrice * SelectedOrderItem.ExchangeRate;
-            vm.RetailPrice = SelectedOrderItem.StockItem.RetailPrice * SelectedOrderItem.ExchangeRate;
-            vm.Quantity.Value = SelectedOrderItem.Quantity;
-            vm.Quantity.Input = SelectedOrderItem.Quantity.ToString();
-            vm.Discount.Value = SelectedOrderItem.Discount;
-            vm.Discount.Input = SelectedOrderItem.Discount.ToString();
-            vm.ExchangeRate = SelectedOrderItem.ExchangeRate;
-            vm.WindowTitle = "Изменить товарную позицию в заказе";
-            vm.CalculateBillingInfo();
+        //    vm.IsChooseStockItemButtonEnabled = false;
+        //    vm.OrderId = SelectedOrderItem.Order.Id;
+        //    vm.SelectedItem = SelectedOrderItem.StockItem;
+        //    vm.PurchasePrice = SelectedOrderItem.StockItem.PurchasePrice * SelectedOrderItem.ExchangeRate;
+        //    vm.RetailPrice = SelectedOrderItem.StockItem.RetailPrice * SelectedOrderItem.ExchangeRate;
+        //    vm.Quantity.Value = SelectedOrderItem.Quantity;
+        //    vm.Quantity.Input = SelectedOrderItem.Quantity.ToString();
+        //    vm.Discount.Value = SelectedOrderItem.Discount;
+        //    vm.Discount.Input = SelectedOrderItem.Discount.ToString();
+        //    vm.ExchangeRate = SelectedOrderItem.ExchangeRate;
+        //    vm.WindowTitle = "Изменить товарную позицию в заказе";
+        //    vm.CalculateBillingInfo();
 
-            orderItemView.ShowDialog();
+        //    orderItemView.ShowDialog();
 
-            if (orderItemView.DialogResult == true)
-            {
-                SelectedOrderItem.Quantity = vm.Quantity.Value;
-                SelectedOrderItem.Discount = vm.Discount.Value;
-                SelectedOrderItem.Total = vm.Total;
-                SelectedOrderItem.Expenses = vm.Expenses;
-                SelectedOrderItem.Profit = vm.Profit;
+        //    if (orderItemView.DialogResult == true)
+        //    {
+        //        SelectedOrderItem.Quantity = vm.Quantity.Value;
+        //        SelectedOrderItem.Discount = vm.Discount.Value;
+        //        SelectedOrderItem.Total = vm.Total;
+        //        SelectedOrderItem.Expenses = vm.Expenses;
+        //        SelectedOrderItem.Profit = vm.Profit;
 
-                orderItemRepo.Update(SelectedOrderItem);
-                stockItemRepo.UpdateQuantity(SelectedOrderItem.StockItem);
-            }
-        }
-        public void OnDeleteOrderItem()
-        {
-            var userChoice = MessageBox.Show("Наименование: " + $"{SelectedOrderItem.StockItem.Name}.\nУдалить?", "Удаление позиции заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+        //        orderItemRepo.Update(SelectedOrderItem);
+        //        stockItemRepo.UpdateQuantity(SelectedOrderItem.StockItem);
+        //    }
+        //}
+        //public void OnDeleteOrderItem()
+        //{
+        //    var userChoice = MessageBox.Show("Наименование: " + $"{SelectedOrderItem.StockItem.Name}.\nУдалить?", "Удаление позиции заказа", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
 
-            if (userChoice == MessageBoxResult.Yes)
-            {
-                orderItemRepo.Delete(SelectedOrderItem);
-                stockItemRepo.UpdateQuantity(SelectedOrderItem.StockItem);
-                db.OrdersItems.Remove(SelectedOrderItem);
-            }
-        }
+        //    if (userChoice == MessageBoxResult.Yes)
+        //    {
+        //        orderItemRepo.Delete(SelectedOrderItem);
+        //        stockItemRepo.UpdateQuantity(SelectedOrderItem.StockItem);
+        //        db.OrdersItems.Remove(SelectedOrderItem);
+        //    }
+        //}
     }
 }

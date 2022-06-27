@@ -166,8 +166,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem>
-
+            <TabItem DataContext="{Binding Path=OrdersItemsTabViewModel}">
                 <TabItem.Header>
                     <TextBlock Text="Позиции"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
@@ -185,7 +184,7 @@
                         <MenuItem Header="Удалить" Command="{Binding Path=DeleteOrderItemCommand}" IsEnabled="{Binding Path=IsOrdersItemsButtonsEnabled}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedOrderItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.OrdersItems}" Grid.Row="1">
+                    <DataGrid SelectedItem="{Binding Path=SelectedOrderItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbOrdersItems}" Grid.Row="1">
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditOrderItemCommand}" />
                         </DataGrid.InputBindings>
