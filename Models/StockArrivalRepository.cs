@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -46,7 +47,7 @@ namespace CRM.Models
             throw new NotImplementedException();
         }
 
-        public void GetAll(Database db)
+        public void GetAll(ObservableCollection<StockArrival> dbStockArrivals, IEnumerable<StockItem> dbStockItems)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -58,10 +59,10 @@ namespace CRM.Models
                 {
                     var id = sqlReader.GetInt32(0);
                     var date = DateTime.Parse(sqlReader.GetString(1));
-                    var stockItem = db.StockItems.First(x => x.Id == sqlReader.GetInt32(2));
+                    var stockItem = dbStockItems.First(x => x.Id == sqlReader.GetInt32(2));
                     var quantity = sqlReader.GetFloat(3);
 
-                    db.StockArrivals.Add(new StockArrival(id, date, stockItem, quantity));
+                    dbStockArrivals.Add(new StockArrival(id, date, stockItem, quantity));
                 }
             }
         }

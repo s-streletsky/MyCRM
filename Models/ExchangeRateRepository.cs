@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -39,7 +40,7 @@ namespace CRM.Models
         {
             throw new NotImplementedException();
         }
-        public void GetAll(Database db)
+        public void GetAll(ObservableCollection<ExchangeRate> dbExchangeRates)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -54,7 +55,7 @@ namespace CRM.Models
                     var currency = (Currency)sqlReader.GetInt32(2);
                     var value = sqlReader.GetFloat(3);
 
-                    db.ExchangeRates.Add(new ExchangeRate(id, date, currency, value));
+                    dbExchangeRates.Add(new ExchangeRate(id, date, currency, value));
                 }
             }
         }

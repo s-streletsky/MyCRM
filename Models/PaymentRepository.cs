@@ -73,7 +73,7 @@ namespace CRM.Models
                 }
             }           
         }
-        public void GetAll(ObservableCollection<Payment> payments, ObservableCollection<Client> clients, ObservableCollection<Order> orders)
+        public void GetAll(ObservableCollection<Payment> dbPayments, IEnumerable<Client> dbClients, IEnumerable<Order> dbOrders)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -84,12 +84,12 @@ namespace CRM.Models
                 {
                     var id = sqlReader.GetInt32(0);
                     var date = DateTime.Parse(sqlReader.GetString(1));
-                    var client = clients.First(x => x.Id == sqlReader.GetInt32(2));
-                    var order = orders.First(x => x.Id == sqlReader.GetInt32(3));
+                    var client = dbClients.First(x => x.Id == sqlReader.GetInt32(2));
+                    var order = dbOrders.First(x => x.Id == sqlReader.GetInt32(3));
                     var amount = sqlReader.GetFloat(4);
                     var notes = sqlReader.IsDBNull(5) ? null : sqlReader.GetString(5);
 
-                    payments.Add(new Payment(id, date,client, order,amount, notes));
+                    dbPayments.Add(new Payment(id, date,client, order,amount, notes));
                 }
             }
         }

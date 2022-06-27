@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 
 namespace CRM.Models
@@ -77,7 +78,7 @@ namespace CRM.Models
                 return balance;
             }
         }
-        public void GetAll(Database db)
+        public void GetAll(ObservableCollection<Client> dbClients)
         {
             using (var cmd = DbConnection.Open())    
             {
@@ -100,7 +101,7 @@ namespace CRM.Models
                     var postalCode = sqlReader.GetString(10);
                     var notes = sqlReader.GetString(11);
 
-                    db.Clients.Add(new Client(id, date, name, nickname, phone, email, country, city, address, shippingMethod, postalCode, notes));
+                    dbClients.Add(new Client(id, date, name, nickname, phone, email, country, city, address, shippingMethod, postalCode, notes));
                 }
             }
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -51,7 +52,7 @@ namespace CRM.Models
             throw new NotImplementedException();
         }
 
-        public void GetAll(Database db)
+        public void GetAll(ObservableCollection<StockItem> dbStockItems, IEnumerable<Manufacturer> dbManufacturers)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -65,7 +66,7 @@ namespace CRM.Models
                     var name = sqlReader.GetString(1);
 
                     var manufacturerId = sqlReader.IsDBNull(2) ? (int?)null : sqlReader.GetInt32(2);
-                    var manufacturer = manufacturerId.HasValue ? db.Manufacturers.First(x => x.Id == manufacturerId) : null;
+                    var manufacturer = manufacturerId.HasValue ? dbManufacturers.First(x => x.Id == manufacturerId) : null;
 
                     var description = sqlReader.IsDBNull(3) ? null : sqlReader.GetString(3);
 
@@ -74,10 +75,10 @@ namespace CRM.Models
                     var retailPrice = sqlReader.GetFloat(6);
                     var quantity = sqlReader.GetFloat(7);
 
-                    db.StockItems.Add(new StockItem(id, name, manufacturer, description, currency, purchasePrice, retailPrice, quantity));
+                    dbStockItems.Add(new StockItem(id, name, manufacturer, description, currency, purchasePrice, retailPrice, quantity));
                 }
 
-                foreach (var item in db.StockItems)
+                foreach (var item in dbStockItems)
                 {
                     UpdateQuantity(item);
                 }

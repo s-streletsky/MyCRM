@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -75,7 +76,7 @@ namespace CRM.Models
             return item;
         }
 
-        public void GetAll(Database db)
+        public void GetAll(ObservableCollection<OrderItem> dbOrdersItems, IEnumerable<Order> dbOrders, IEnumerable<StockItem> dbStockItems)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -90,7 +91,7 @@ namespace CRM.Models
                     var orderId = sqlReader.GetInt32(1);
                     Order order = null;
 
-                    foreach (var item in db.Orders)
+                    foreach (var item in dbOrders)
                     {
                         if (item.Id == orderId)
                         {
@@ -102,7 +103,7 @@ namespace CRM.Models
                     var stockItemId = sqlReader.GetInt32(2);
                     StockItem stockItem = null;
 
-                    foreach (var item in db.StockItems)
+                    foreach (var item in dbStockItems)
                     {
                         if (item.Id == stockItemId)
                         {
@@ -119,7 +120,7 @@ namespace CRM.Models
                     var expenses = sqlReader.GetFloat(8);
                     var exchange_rate = sqlReader.GetFloat(9);
 
-                    db.OrdersItems.Add(new OrderItem(id, order, stockItem, quantity, price, discount, total, profit, expenses, exchange_rate));
+                    dbOrdersItems.Add(new OrderItem(id, order, stockItem, quantity, price, discount, total, profit, expenses, exchange_rate));
                 }
             }
         }

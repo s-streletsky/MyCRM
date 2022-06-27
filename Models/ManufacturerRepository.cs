@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 
 namespace CRM.Models
@@ -42,7 +43,7 @@ namespace CRM.Models
             throw new NotImplementedException();
         }
 
-        public void GetAll(Database db)
+        public void GetAll(ObservableCollection<Manufacturer> dbManufacturers)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -55,7 +56,7 @@ namespace CRM.Models
                     var id = sqlReader.GetInt32(0);
                     var name = sqlReader.GetString(1);
 
-                    db.Manufacturers.Add(new Manufacturer(id, name));
+                    dbManufacturers.Add(new Manufacturer(id, name));
                 }
             }
         }

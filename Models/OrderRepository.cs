@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -46,7 +47,7 @@ namespace CRM.Models
             throw new NotImplementedException();
         }
 
-        public void GetAll (Database db)
+        public void GetAll (ObservableCollection<Order> dbOrders, IEnumerable<Client> dbClients)
         {
             using (var cmd = DbConnection.Open())
             {
@@ -63,7 +64,7 @@ namespace CRM.Models
                 {
                     var id = sqlReader.GetInt32(0);
                     var date = DateTime.Parse(sqlReader.GetString(1));
-                    var client = db.Clients.First(x => x.Id == sqlReader.GetInt32(2));
+                    var client = dbClients.First(x => x.Id == sqlReader.GetInt32(2));
                     var status = (OrderStatus)sqlReader.GetInt32(3);
                     var total = sqlReader.GetFloat(4);
                     var expenses = sqlReader.GetFloat(5);
@@ -71,7 +72,7 @@ namespace CRM.Models
                     var notes = sqlReader.GetString(7);
                     
 
-                    db.Orders.Add(new Order(id, date, client, status, total, expenses, profit, notes));
+                    dbOrders.Add(new Order(id, date, client, status, total, expenses, profit, notes));
                 }
             }
         }
