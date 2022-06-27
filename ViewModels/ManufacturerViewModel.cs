@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,7 +13,11 @@ namespace CRM.ViewModels
 {
     internal class ManufacturerViewModel : ViewModelBase
     {
+        private ObservableCollection<Manufacturer> dbManufacturers;
         private Manufacturer selectedManufacturer;
+        
+        private ManufacturerRepository manufacturerRepo;
+
         private bool isListBoxEnabled;
         private string isAddGridVisible;
         private bool isAddGridEnabled;
@@ -27,14 +32,14 @@ namespace CRM.ViewModels
         public RelayCommand AddCancelCommand { get; }
         public RelayCommand EditOKCommand { get; }
         public RelayCommand EditCancelCommand { get; }
+
+        public ObservableCollection<Manufacturer> DbManufacturers { get { return dbManufacturers; } }
         public Manufacturer SelectedManufacturer { 
             get { return selectedManufacturer; } 
             set { selectedManufacturer = value;
                 OnPropertyChanged(nameof(IsEditDeleteButtonsEnabled));
             } 
         }
-        public Database Database { get; set; }
-        public ManufacturerRepository ManufacturerRepo { get; set; }
         public bool IsListBoxEnabled { get { return isListBoxEnabled; } set { isListBoxEnabled = value; OnPropertyChanged(); } }
         public string IsAddGridVisible { get { return isAddGridVisible; } set { isAddGridVisible = value; OnPropertyChanged(); } }
         public bool IsAddGridEnabled { get { return isAddGridEnabled; } set { isAddGridEnabled = value; OnPropertyChanged(); } }
@@ -45,11 +50,10 @@ namespace CRM.ViewModels
         }
         private List<string> Visibility { get; set; } = new List<string>() { "Hidden", "Visible" };
 
-
-        public ManufacturerViewModel(Database db, ManufacturerRepository mfr)
+        public ManufacturerViewModel(ObservableCollection<Manufacturer> m, ManufacturerRepository mr)
         {
-            Database = db;
-            ManufacturerRepo = mfr;
+            dbManufacturers = m;
+            manufacturerRepo = mr;
 
             IsListBoxEnabled = true;
             IsAddGridEnabled = false;
@@ -90,16 +94,15 @@ namespace CRM.ViewModels
 
         public void OnDeleteMenuButtonClick()
         {
-            ManufacturerRepo.Delete(SelectedManufacturer);
-            var i = Database.Manufacturers.IndexOf(SelectedManufacturer);
-            Database.Manufacturers.RemoveAt(i);
+            manufacturerRepo.Delete(SelectedManufacturer);
+            dbManufacturers.Remove(SelectedManufacturer);
         }
 
         // Кнопки добавления новой записи
         public void OnAddOKButtonClick()
         {
-            var newManufacturer = ManufacturerRepo.Add(new Manufacturer(-1, Name));
-            Database.Manufacturers.Add(newManufacturer);
+            var newManufacturer = manufacturerRepo.Add(new Manufacturer(-1, Name));
+            dbManufacturers.Add(newManufacturer);
             EnableListBox();
         }
 
@@ -112,7 +115,7 @@ namespace CRM.ViewModels
         public void OnEditOKButtonClick()
         {
             SelectedManufacturer.Name = Name;
-            ManufacturerRepo.Update(SelectedManufacturer);
+            manufacturerRepo.Update(SelectedManufacturer);
 
             HideEditStackPanel();
             EnableListBox();

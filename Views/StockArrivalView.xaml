@@ -114,7 +114,7 @@
             <MenuItem Header="Удалить" Command="{Binding Path=DeleteStockArrivalCommand}" IsEnabled="{Binding Path=IsEditDeleteButtonsEnabled}"></MenuItem>
         </Menu>
 
-        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=Database.StockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}">
+        <DataGrid Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Path=DbStockArrivals}" AutoGenerateColumns="False" SelectedItem="{Binding Path=SelectedArrival}" IsReadOnly="True" IsEnabled="{Binding Path=IsDataGridEnabled}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
                 <DataGridTextColumn Header="Наименование" Binding="{Binding Path=StockItem.Name}" MinWidth="200"/>

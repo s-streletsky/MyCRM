@@ -126,8 +126,7 @@
                 </Grid>
             </TabItem>
 
-            <TabItem>
-
+            <TabItem DataContext="{Binding Path=StockTabViewModel}">
                 <TabItem.Header>
                     <TextBlock Text="Товары/Услуги"
                      Style="{StaticResource HeaderTextBlockStyle}"/>
@@ -149,7 +148,7 @@
                         <MenuItem Header="Приход товара" Command="{Binding Path=EditStockArrivalCommand}"></MenuItem>
                     </Menu>
 
-                    <DataGrid SelectedItem="{Binding Path=SelectedStockItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.StockItems}" Grid.Row="1">
+                    <DataGrid SelectedItem="{Binding Path=SelectedStockItem}" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbStockItems}" Grid.Row="1">
                         <DataGrid.InputBindings>
                             <MouseBinding Gesture="LeftDoubleClick" Command="{Binding EditStockItemCommand}" />
                         </DataGrid.InputBindings>

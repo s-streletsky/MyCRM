@@ -6,11 +6,17 @@ using System.Threading.Tasks;
 using CRM.WPF;
 using CRM.Models;
 using Microsoft.Toolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 
 namespace CRM.ViewModels
 {
     internal class StockArrivalViewModel : ViewModelBase
     {
+        private ObservableCollection<StockArrival> dbStockArrivals;
+
+        private StockItemRepository stockItemRepo;
+        private StockArrivalRepository stockArrivalRepo;
+
         private StockItem stockItem;
         private BindableFloat quantity;
         private bool isAddGridEnabled;
@@ -26,9 +32,8 @@ namespace CRM.ViewModels
         public RelayCommand AddCancelCommand { get; }
         public RelayCommand EditOKCommand { get; }
         public RelayCommand EditCancelCommand { get; }
-        public Database Database { get; set; }
-        public StockArrivalRepository StockArrivalRepo { get; set;}
-        public StockItemRepository StockItemRepo { get; set; }
+
+        public ObservableCollection<StockArrival> DbStockArrivals { get { return dbStockArrivals; } }
         public StockItem StockItem { 
             get { return stockItem; } 
             set { stockItem = value; 
@@ -68,12 +73,12 @@ namespace CRM.ViewModels
             get { return SelectedArrival != null; } 
         }
 
-        public StockArrivalViewModel(Database db, StockArrivalRepository sar, StockItemRepository sir)
+        public StockArrivalViewModel(ObservableCollection<StockArrival> si, StockArrivalRepository sar, StockItemRepository sir)
         {
-            Database = db;
-            StockArrivalRepo = sar;
-            StockItemRepo = sir;
-
+            dbStockArrivals = si;
+            stockItemRepo = sir;
+            stockArrivalRepo = sar;
+            
             IsAddGridEnabled = false;
             IsAddGridVisible = "Visible";
             IsEditGridVisible = "Hidden";
@@ -110,19 +115,17 @@ namespace CRM.ViewModels
 
         private void OnDeleteStockArrival()
         {
-            StockArrivalRepo.Delete(SelectedArrival);
-            StockItemRepo.UpdateQuantity(SelectedArrival.StockItem);
-
-            var i = Database.StockArrivals.IndexOf(SelectedArrival);
-            Database.StockArrivals.RemoveAt(i);           
+            stockArrivalRepo.Delete(SelectedArrival);
+            stockItemRepo.UpdateQuantity(SelectedArrival.StockItem);
+            dbStockArrivals.Remove(SelectedArrival);           
         }
 
         // Кнопки добавления новой записи
         private void OnAddOK()
         {
-            var newArrival = StockArrivalRepo.Add(new StockArrival(StockItem, Quantity.Value));
-            Database.StockArrivals.Insert(0, newArrival);
-            StockItemRepo.UpdateQuantity(newArrival.StockItem);
+            var newArrival = stockArrivalRepo.Add(new StockArrival(StockItem, Quantity.Value));
+            dbStockArrivals.Insert(0, newArrival);
+            stockItemRepo.UpdateQuantity(newArrival.StockItem);
 
             ClearEnteredData();
             EnableDataGrid();                        
@@ -138,8 +141,8 @@ namespace CRM.ViewModels
         private void OnEditOK()
         {
             SelectedArrival.Quantity = Quantity.Value;
-            StockArrivalRepo.Update(SelectedArrival);
-            StockItemRepo.UpdateQuantity(SelectedArrival.StockItem);
+            stockArrivalRepo.Update(SelectedArrival);
+            stockItemRepo.UpdateQuantity(SelectedArrival.StockItem);
 
             ClearEnteredData();
             HideEditGrid();

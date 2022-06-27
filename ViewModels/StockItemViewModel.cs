@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,11 @@ namespace CRM.ViewModels
 {
     class StockItemViewModel : ViewModelBase
     {
+        private ObservableCollection<Manufacturer> dbManufacturers;
+        private StockItem selectedStockItem;
+
+        private ManufacturerRepository manufacturerRepo;
+
         private int id;
         private string name;
         private Manufacturer manufacturer;
@@ -21,8 +27,7 @@ namespace CRM.ViewModels
         private BindableFloat purchasePrice;
         private BindableFloat retailPrice;
         private float quantity;
-        private StockItem selectedStockItem;
-
+        
         public RelayCommand AddManufacturerCommand { get; }
         public RelayCommand<ICloseable> ComparePricesAndCloseCommand { get; }
         public RelayCommand<ICloseable> CloseWindowCommand { get; }
@@ -35,10 +40,6 @@ namespace CRM.ViewModels
         public string Name { 
             get { return name; } 
             set { name = value;
-                //if (String.IsNullOrEmpty(value) || value.Length < 3)
-                //{
-                //    throw new ApplicationException("Минимальная длина - 3 символа");
-                //}
                 OnPropertyChanged(); }
         }
         public Manufacturer Manufacturer { 
@@ -76,31 +77,27 @@ namespace CRM.ViewModels
             set { selectedStockItem = value; 
                 OnPropertyChanged(); } 
         }
-        public Database Database { get; set; }
-        public StockItemRepository StockRepo { get; set; }
-        public ManufacturerRepository ManufacturerRepo { get; set; }
         public string WindowTitle { get; set; }
         public bool IsOKButtonEnabled { get; set; }
 
         public StockItemViewModel() { }
-        public StockItemViewModel(Database db, StockItemRepository sr, ManufacturerRepository mfr, StockItem si, string saveNewVis, string saveEditVis)
+        public StockItemViewModel(ObservableCollection<Manufacturer> m, ManufacturerRepository mr, StockItem si, string saveNewVis, string saveEditVis)
         {
-            Database = db;
-            StockRepo = sr;
-            ManufacturerRepo = mfr;
+            dbManufacturers = m;
+            manufacturerRepo = mr;
             SelectedStockItem = si;
 
             PurchasePrice = new BindableFloat();
             RetailPrice = new BindableFloat();
 
             AddManufacturerCommand = new RelayCommand(OnAddManufacturer);
-            ComparePricesAndCloseCommand = new RelayCommand<ICloseable>(ComparePricesAndClose);
+            ComparePricesAndCloseCommand = new RelayCommand<ICloseable>(ComparePricesAndCloseWindow);
             CloseWindowCommand = new RelayCommand<ICloseable>(CloseWindow);
         }
 
         private void OnAddManufacturer()
         {
-            var vm = new ManufacturerViewModel(Database, ManufacturerRepo);
+            var vm = new ManufacturerViewModel(dbManufacturers, manufacturerRepo);
             ManufacturerView manufacturerView = new ManufacturerView();
 
             manufacturerView.DataContext = vm;
@@ -108,7 +105,7 @@ namespace CRM.ViewModels
             manufacturerView.ShowDialog();
         }
 
-        private void ComparePricesAndClose(ICloseable window)
+        private void ComparePricesAndCloseWindow(ICloseable window)
         {
             if (RetailPrice.Value >= PurchasePrice.Value)
                 CloseWindow(window);

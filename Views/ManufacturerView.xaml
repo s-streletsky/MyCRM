@@ -95,6 +95,6 @@
             <MenuItem Header="Удалить" Command="{Binding DeleteManufacturerCommand}" IsEnabled="{Binding Path=IsEditDeleteButtonsEnabled}"></MenuItem>
         </Menu>
 
-        <ListBox IsEnabled="{Binding Path=IsListBoxEnabled}" Grid.Row="3" ItemsSource="{Binding Path=Database.Manufacturers, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedManufacturer}" DisplayMemberPath="Name"></ListBox>
+        <ListBox IsEnabled="{Binding Path=IsListBoxEnabled}" Grid.Row="3" ItemsSource="{Binding Path=DbManufacturers}" SelectedItem="{Binding Path=SelectedManufacturer}" DisplayMemberPath="Name"></ListBox>
     </Grid>
 </Window>

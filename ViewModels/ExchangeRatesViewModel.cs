@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,14 +12,18 @@ namespace CRM.ViewModels
 {
     internal class ExchangeRatesViewModel : ViewModelBase
     {
+        private ObservableCollection<ExchangeRate> dbExchangeRates;
+
+        private ExchangeRateRepository exchangeRateRepo;
+
         private Currency selectedCurrency;
         private BindableFloat exchangeRate;
         private ExchangeRate selectedExchangeRate;
 
         public RelayCommand AddExchangeRateCommand { get; }
         public RelayCommand DeleteExchangeRateCommand { get; }
-        public Database Database { get; set; }
-        public ExchangeRateRepository ExchangeRateRepo { get; set; }
+
+        public ObservableCollection<ExchangeRate> DbExchangeRates { get { return dbExchangeRates; } }
         public Currency SelectedCurrency { 
             get { return selectedCurrency; } 
             set { selectedCurrency = value; 
@@ -39,11 +44,10 @@ namespace CRM.ViewModels
             get { return SelectedExchangeRate != null; }
         }
 
-        public ExchangeRatesViewModel() { }
-        public ExchangeRatesViewModel(Database db, ExchangeRateRepository err)
+        public ExchangeRatesViewModel(ObservableCollection<ExchangeRate> er, ExchangeRateRepository err)
         {
-            Database = db;
-            ExchangeRateRepo = err;
+            dbExchangeRates = er;
+            exchangeRateRepo = err;
 
             ExchangeRate = new BindableFloat();
 
@@ -55,13 +59,13 @@ namespace CRM.ViewModels
 
         private void OnAddExchangeRate()
         {
-            var newExRate = ExchangeRateRepo.Add(new ExchangeRate(SelectedCurrency, ExchangeRate.Value));
-            Database.ExchangeRates.Insert(0, newExRate);
+            var newExRate = exchangeRateRepo.Add(new ExchangeRate(SelectedCurrency, ExchangeRate.Value));
+            dbExchangeRates.Insert(0, newExRate);
         }
         private void OnDeleteExchangeRate()
         {
-            ExchangeRateRepo.Delete(SelectedExchangeRate);
-            Database.ExchangeRates.Remove(SelectedExchangeRate);
+            exchangeRateRepo.Delete(SelectedExchangeRate);
+            dbExchangeRates.Remove(SelectedExchangeRate);
         }
     }
 }

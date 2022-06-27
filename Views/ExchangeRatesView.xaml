@@ -70,7 +70,7 @@
             <MenuItem Header="Удалить" Command="{Binding Path=DeleteExchangeRateCommand}" IsEnabled="{Binding Path=IsDeleteButtonEnabled}"></MenuItem>
         </Menu>
 
-        <DataGrid Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=Database.ExchangeRates, Mode=TwoWay}" SelectedItem="{Binding Path=SelectedExchangeRate, Mode=OneWayToSource}">
+        <DataGrid Grid.Row="3" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding Path=DbExchangeRates}" SelectedItem="{Binding Path=SelectedExchangeRate, Mode=OneWayToSource}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Дата" Binding="{Binding Path=Date, StringFormat=\{0:dd.MM.yy\}}" />
                 <DataGridTextColumn Header="Валюта" Binding="{Binding Path=Currency}" />
